@@ -1,0 +1,25 @@
+{
+    "name": "kartik-v/yii2-tree",
+    "description": "An extended tree selection and tree view widget based on the JSTree jQuery plugin.",
+    "keywords": ["bootstrap", "tree", "treeview", "jstree", "nested", "set", "ajax", "jquery"],
+    "homepage": "https://github.com/kartik-v/yii2-tree",
+    "type": "yii2-extension",
+    "license": "BSD 3-Clause",
+    "authors": [
+        {
+            "name": "Kartik Visweswaran",
+            "email": "kartikv2@gmail.com",
+            "homepage": "http://www.krajee.com/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "kartik-v/yii2-krajee-base": "*",
+        "creocoder/yii2-nested-set-behavior" : "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "kartik\\tree\\": ""
+        }
+    }
+}
