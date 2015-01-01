@@ -27,12 +27,18 @@ class Module extends \yii\base\Module
      * @var array the configuration of various CRUD actions
      * for managing the tree nodes
      */
-    public $actions = [
-        self::NODE_CREATE => '/treeview/node/create',
-        self::NODE_UPDATE => '/treeview/node/update',
-        self::NODE_DELETE => '/treeview/node/delete',
-        self::NODE_VIEW   => '/treeview/node/view',
-    ];
+    public $actions = [];
+    
+    /**
+     * @var array the configuration of nested set attributes structure
+     */
+    public $treeStructure = [];
+        
+    /**
+     * @var array the configuration of additional data attributes 
+     * for the tree
+     */
+    public $dataStructure = [];
     
     /**
      * @var array the the internalization configuration for this module
@@ -45,10 +51,27 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        $this->actions += [
+            self::NODE_CREATE => '/treeview/node/create',
+            self::NODE_UPDATE => '/treeview/node/update',
+            self::NODE_DELETE => '/treeview/node/delete',
+            self::NODE_VIEW   => '/treeview/node/view',
+        ];
+        $this->treeStructure += [
+            'treeAttribute' => 'root',
+            'leftAttribute' => 'lft',
+            'rightAttribute' => 'rgt',
+            'depthAttribute' => 'depth',
+        ];
+        $this->dataStructure += [
+            'nameAttribute' => 'name',
+            'iconAttribute' => 'icon',
+            'iconTypeAttribute' => 'icon_type'
+        ];
         $this->initI18N();
 
     }
-
+    
     /**
      * Initialize i18N settings
      */

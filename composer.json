@@ -15,7 +15,7 @@
     "minimum-stability": "dev",
     "require": {
         "kartik-v/yii2-krajee-base": "*",
-        "creocoder/yii2-nested-set-behavior" : "*"
+        "creocoder/yii2-nested-sets" : "*"
     },
     "autoload": {
         "psr-4": {
