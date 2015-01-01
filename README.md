@@ -1,7 +1,7 @@
 yii2-tree
 =========
 
-An extended tree widget for Yii Framework 2 based on the [JSTree jQuery plugin](http://www.jstree.com/). This plugin provides interactive trees and is easily extendable, themable and configurable. 
+An extended tree widget for Yii Framework 2.
 
 ## Demo
 ### _Extension is under development_
