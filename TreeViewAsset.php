@@ -11,10 +11,8 @@ namespace kartik\tree;
 use Yii;
 
 /**
- * Asset bundle for TreeView widget. Includes assets from
- * JSTree jQuery plugin.
+ * Asset bundle for TreeView widget.
  *
- * @see http://www.jstree.com
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
