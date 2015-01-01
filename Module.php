@@ -11,7 +11,7 @@ namespace kartik\tree;
 use Yii;
 
 /**
- * The Yii2 Tree management module
+ * The tree management module for Yii Framework 2.0.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
