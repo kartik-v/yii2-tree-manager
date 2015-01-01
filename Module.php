@@ -24,14 +24,14 @@ class Module extends \yii\base\Module
     const NODE_SELECT = 'select';
     
     /**
-     * @var array the configuration of various actions
-     * for managing the tree
+     * @var array the configuration of various CRUD actions
+     * for managing the tree nodes
      */
     public $actions = [
-        self::NODE_ADD => '/treeview/node/add',
-        self::NODE_EDIT => '/treeview/node/edit',
+        self::NODE_CREATE => '/treeview/node/create',
+        self::NODE_UPDATE => '/treeview/node/update',
         self::NODE_DELETE => '/treeview/node/delete',
-        self::NODE_SELECT => '/treeview/node/select',
+        self::NODE_VIEW   => '/treeview/node/view',
     ];
     
     /**
