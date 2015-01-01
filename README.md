@@ -1,7 +1,7 @@
 yii2-tree
 =========
 
-An extended tree widget for Yii Framework 2.
+An enhanced tree management module with tree node selection and manipulation using nested sets.
 
 ## Demo
 ### _Extension is under development_
