@@ -1,8 +1,8 @@
 {
-    "name": "kartik-v/yii2-tree",
+    "name": "kartik-v/yii2-tree-manager",
     "description": "An enhanced tree management module with tree node selection and manipulation using nested sets.",
     "keywords": ["bootstrap", "tree", "treeview", "jstree", "hierarchy", "nested", "set", "nestedset", "ajax", "jquery"],
-    "homepage": "https://github.com/kartik-v/yii2-tree",
+    "homepage": "https://github.com/kartik-v/yii2-tree-manager",
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
     "authors": [
