@@ -26,7 +26,7 @@
     "minimum-stability": "dev",
     "require": {
         "kartik-v/yii2-krajee-base": "*",
-        "kartik-v/yii2-widget-form": "*",
+        "kartik-v/yii2-widget-activeform": "*",
         "creocoder/yii2-nested-sets": "*"
     },
     "autoload": {
