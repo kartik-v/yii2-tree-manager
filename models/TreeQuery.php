@@ -9,7 +9,11 @@ use creocoder\nestedsets\NestedSetsQueryBehavior;
  */
 class TreeQuery extends \yii\db\ActiveQuery
 {
-    public function behaviors() {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
         return [
             NestedSetsQueryBehavior::className(),
         ];

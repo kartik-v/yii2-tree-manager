@@ -11,18 +11,18 @@ namespace kartik\tree;
 use Yii;
 
 /**
- * Asset bundle for TreeView widget.
+ * Asset bundle for TreeViewInput widget.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class TreeViewAsset extends \kartik\base\AssetBundle
+class TreeViewInputAsset extends \kartik\base\AssetBundle
 {
     public function init()
     {
         $this->setSourcePath(__DIR__ . '/assets');
-        $this->setupAssets('js', ['js/kv-tree']);
-        $this->setupAssets('css', ['css/kv-tree']);
+        $this->setupAssets('css', ['css/kv-tree-input']);
+        $this->setupAssets('js', ['js/kv-tree-input']);
         parent::init();
     }
 }

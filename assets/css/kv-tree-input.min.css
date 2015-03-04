@@ -1,0 +1,11 @@
+/*!
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @version 1.0.0
+ *
+ * Tree View Input Widget Style Sheet
+ *
+ * Author: Kartik Visweswaran
+ * Copyright: 2015, Kartik Visweswaran, Krajee.com
+ * For more JQuery plugins visit http://plugins.krajee.com
+ * For more Yii related demos visit http://demos.krajee.com
+ */.kv-tree-input-widget .kv-focussed{background-color:#fff}.kv-tree-input-widget .kv-disabled>.kv-tree-list .kv-node-checkbox,.kv-tree-input-widget .kv-disabled>.kv-tree-list .kv-node-detail{cursor:not-allowed}.kv-tree-dropdown{padding:0}.kv-tree-dropdown-container .form-control .caret{float:right;margin-top:8px}.kv-placeholder{color:#999}.kv-tree-input,.kv-tree-input.form-control{height:auto}.kv-tree-input.disabled{cursor:not-allowed;background-color:#eee}.kv-tree-input.has-multi{padding:3px 8px 5px}.kv-tree-input-values{margin:0;padding:0;overflow:hidden;cursor:text;white-space:nowrap}.kv-tree-input-values li{float:left;list-style:none;padding:2px 5px;margin:3px 3px 0 0;position:relative;background:#f9f9f9;border:1px solid #ddd;border-radius:3px;color:#555;font-size:12px}.kv-tree-input-values li:focus,.kv-tree-input-values li:hover{background:#ebebeb;border-color:#adadad;color:#333}.kv-tree-dropdown{width:100%}.kv-tree-dropdown .kv-header-container,.kv-tree-dropdown .kv-tree-wrapper.form-control{border:none}.kv-single-select .kv-node-checkbox,.kv-single-select .kv-root-node-checkbox{display:none}.kv-single-select .kv-node-indicators{padding-right:2px;margin-right:2px}.has-multi .kv-tree-input-values{margin-right:20px}.kv-carets{float:right;cursor:pointer}.kv-tree-input.disabled .kv-carets,.kv-tree-input.disabled .kv-tree-input-values{cursor:not-allowed}.has-multi .kv-carets{padding:4px 4px 0 0}.kv-up{border-top:none;border-bottom:4px solid}.kv-tree-dropdown-container .kv-up,.kv-tree-dropdown-container.open .kv-dn{display:none}.kv-tree-dropdown-container .kv-dn,.kv-tree-dropdown-container.open .kv-up{display:inline-block}

@@ -1,7 +1,18 @@
 {
     "name": "kartik-v/yii2-tree-manager",
     "description": "An enhanced tree management module with tree node selection and manipulation using nested sets.",
-    "keywords": ["bootstrap", "tree", "treeview", "jstree", "hierarchy", "nested", "set", "nestedset", "ajax", "jquery"],
+    "keywords": [
+        "bootstrap",
+        "tree",
+        "treeview",
+        "krajee",
+        "hierarchy",
+        "nested",
+        "set",
+        "nestedset",
+        "ajax",
+        "jquery"
+    ],
     "homepage": "https://github.com/kartik-v/yii2-tree-manager",
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
@@ -15,7 +26,8 @@
     "minimum-stability": "dev",
     "require": {
         "kartik-v/yii2-krajee-base": "*",
-        "creocoder/yii2-nested-sets" : "*"
+        "kartik-v/yii2-widget-form": "*",
+        "creocoder/yii2-nested-sets": "*"
     },
     "autoload": {
         "psr-4": {

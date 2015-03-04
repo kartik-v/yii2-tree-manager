@@ -9,6 +9,8 @@
 namespace kartik\tree;
 
 use Yii;
+use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /**
  * The tree management module for Yii Framework 2.0.
@@ -16,75 +18,83 @@ use Yii;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class Module extends \yii\base\Module
+class Module extends \kartik\base\Module
 {
-    const NODE_ADD = 'add';
-    const NODE_EDIT = 'edit';
-    const NODE_DELETE = 'delete';
-    const NODE_SELECT = 'select';
+    const MODULE = 'treemanager';
+
+    const NODE_MANAGE = 'manage';
+    const NODE_REMOVE = 'remove';
+    const NODE_MOVE = 'move';
+    const NODE_SAVE = 'save';
     
-    /**
-     * @var array the configuration of various CRUD actions
-     * for managing the tree nodes
-     */
-    public $actions = [];
+    const VIEW_PART_1 = 1;
+    const VIEW_PART_2 = 2;
+    const VIEW_PART_3 = 3;
+    const VIEW_PART_4 = 4;
+    const VIEW_PART_5 = 5;
     
     /**
      * @var array the configuration of nested set attributes structure
      */
     public $treeStructure = [];
-        
+
     /**
-     * @var array the configuration of additional data attributes 
+     * @var array the configuration of additional data attributes
      * for the tree
      */
     public $dataStructure = [];
-    
-    /**
-     * @var array the the internalization configuration for this module
-     */
-    public $i18n = [];
 
+    /**
+     * @var array the default configuration settings for the tree view widget
+     */
+    public $treeViewSettings = [
+        'nodeView' => '@kvtree/views/_form',
+        'nodeAddlViews' => [        
+            self::VIEW_PART_1 => '',
+            self::VIEW_PART_2 => '',
+            self::VIEW_PART_3 => '',
+            self::VIEW_PART_4 => '',
+            self::VIEW_PART_5 => '',
+        ]
+    ];
+
+    /**
+     * @var array the list of asset bundles that would be unset when rendering
+     * the node detail form via ajax
+     */
+    public $unsetAjaxBundles = [
+        'yii\web\YiiAsset',
+        'yii\web\JqueryAsset',
+        'yii\widgets\ActiveFormAsset',
+        'yii\validators\ValidationAsset'
+    ];
+    
     /**
      * @inherit doc
      */
     public function init()
     {
+        $this->_msgCat = 'kvtree';
         parent::init();
-        $this->actions += [
-            self::NODE_CREATE => '/treeview/node/create',
-            self::NODE_UPDATE => '/treeview/node/update',
-            self::NODE_DELETE => '/treeview/node/delete',
-            self::NODE_VIEW   => '/treeview/node/view',
-        ];
         $this->treeStructure += [
             'treeAttribute' => 'root',
             'leftAttribute' => 'lft',
             'rightAttribute' => 'rgt',
-            'depthAttribute' => 'depth',
+            'depthAttribute' => 'lvl',
         ];
         $this->dataStructure += [
+            'keyAttribute' => 'id',
             'nameAttribute' => 'name',
             'iconAttribute' => 'icon',
             'iconTypeAttribute' => 'icon_type'
         ];
-        $this->initI18N();
-
-    }
-    
-    /**
-     * Initialize i18N settings
-     */
-    public function initI18N()
-    {
-        Yii::setAlias('@kvtree', dirname(__FILE__));
-        if (empty($this->i18n)) {
-            $this->i18n = [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => '@kvtree/messages',
-                'forceTranslation' => true
-            ];
-        }
-        Yii::$app->i18n->translations['kvtree'] = $this->i18n;
+        $nodeActions = ArrayHelper::getValue($this->treeViewSettings, 'nodeActions', []);
+        $nodeActions += [
+            self::NODE_MANAGE => Url::to(['/treemanager/node/manage']),
+            self::NODE_SAVE => Url::to(['/treemanager/node/save']),
+            self::NODE_REMOVE => Url::to(['/treemanager/node/remove']),
+            self::NODE_MOVE => Url::to(['/treemanager/node/move']),
+        ];
+        $this->treeViewSettings['nodeActions'] = $nodeActions;
     }
 }
