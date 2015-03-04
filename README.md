@@ -1,5 +1,12 @@
 yii2-tree-manager
 =================
+
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager) 
+[![License](https://poser.pugx.org/kartik-v/yii2-tree-manager/license.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/downloads.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager) 
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/monthly.png)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/daily.png)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+
 An enhanced tree management module from Krajee with tree node selection and manipulation using nested sets. The extension features are listed below:
 
 - A complete tree management solution which provides ability to manage hierarchical data stored using nested sets. Utilizes the [yii2-nested-sets](https://github.com/creocoder/yii2-nested-sets) extension to manage the tree structure in your database. Refer the documentation for yii2-nested-sets extension before you start using this module.
