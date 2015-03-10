@@ -88,7 +88,6 @@ class NodeController extends \yii\web\Controller
          */
         if ($treeNodeModify) {
             $node = new $modelClass;
-            $node->initDefaults();
             $successMsg = Yii::t('kvtree', 'The node was successfully created.');
             $errorMsg = Yii::t('kvtree', 'Error while creating the node. Try again later.');
         } else {
@@ -101,7 +100,6 @@ class NodeController extends \yii\web\Controller
             $errorMsg = Yii::t('kvtree', 'Error while saving the node. Try again later.');
         }
         $node->load($_POST);
-        Yii::$app->session->set('kvNodeId', $node->id);
         if ($treeNodeModify) {
             if ($parentKey == 'root') {
                 $node->makeRoot();
@@ -113,13 +111,24 @@ class NodeController extends \yii\web\Controller
         $success = false;
         if ($node->save()) {
             if ($node->active) {
-                $success = $node->activateNode();
+                $success = $node->activateNode(false);
+                $errors = $node->nodeActivationErrors;
             } else {
-                $success = $node->removeNode($softDelete);
+                $success = $node->removeNode($softDelete, false);
+                $errors = $node->nodeRemovalErrors;
+            }
+            if (!empty($errors)) {
+                $success = false;
+                $errorMsg = "<ul style='padding:0'>\n";
+                foreach ($errors as $err) {
+                    $errorMsg .= "<li>" . Yii::t('kvtree', "Node # {id} - '{name}': {error}", $err) . "</li>\n";
+                }
+                $errorMsg .= "</ul>";
             }
         } else {
             $errorMsg = '<ul style="padding:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
+        Yii::$app->session->set('kvNodeId', $node->id);
         if ($success) {
             Yii::$app->session->setFlash('success', $successMsg);
         } else {

@@ -56,6 +56,16 @@ class Tree extends \yii\db\ActiveRecord
     ];
 
     /**
+     * @var array activation errors for the node
+     */
+    public $nodeActivationErrors = [];
+
+    /**
+     * @var array node removal errors
+     */
+    public $nodeRemovalErrors = [];
+    
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -70,9 +80,10 @@ class Tree extends \yii\db\ActiveRecord
     {
         $module = TreeView::module();
         extract($module->dataStructure);
+        $attribs = array_merge([$nameAttribute, $iconAttribute, $iconTypeAttribute], static::$boolAttribs);
         return [
             [[$nameAttribute], 'required'],
-            [[$nameAttribute, $iconAttribute, $iconTypeAttribute] + static::$boolAttribs, 'safe']
+            [$attribs, 'safe']
         ];
     }
 
@@ -210,40 +221,84 @@ class Tree extends \yii\db\ActiveRecord
     /**
      * Activates a node (for undoing a soft deletion scenario)
      *
+     * @param bool $currNode whether to update the current node value also
      * @return bool status of activation
      */
-    public function activateNode()
+    public function activateNode($currNode = true)
     {
-        $this->active = true;
+        $this->nodeActivationErrors = [];
+        $module = TreeView::module();
+        extract($module->treeStructure);
         if ($this->isRemovableAll()) {
             $children = $this->children()->all();
             foreach ($children as $child) {
                 $child->active = true;
-                $child->save();
+                if (!$child->save()) {
+                    $this->nodeActivationErrors[] = [
+                        'id' => $child->$idAttribute, 
+                        'name' => $child->$nameAttribute,
+                        'error' => $child->getFirstErrors()
+                    ];
+                }
             }
         }
-        return $this->save();
+        if (!empty($this->nodeActivationErrors)) {
+            if ($currNode) {
+                $this->active = true;
+                if (!$this->save()) {
+                    $this->nodeActivationErrors[] = [
+                        'id' => $this->$idAttribute, 
+                        'name' => $this->$nameAttribute,
+                        'error' => $this->getFirstErrors()
+                    ];
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
      * Removes a node
      *
      * @param bool $softDelete whether to soft delete or hard delete
+     * @param bool $currNode whether to update the current node value also
      *
      * @return bool status of activation/inactivation
      */
-    public function removeNode($softDelete = true)
+    public function removeNode($softDelete = true, $currNode = true)
     {
         if ($softDelete == true) {
-            $this->active = false;
+            $this->nodeRemovalErrors = [];
+            $module = TreeView::module();
+            extract($module->treeStructure);
             if ($this->isRemovableAll()) {
                 $children = $this->children()->all();
                 foreach ($children as $child) {
                     $child->active = false;
-                    $child->save();
+                    if (!$child->save()) {
+                        $this->nodeRemovalErrors[] = [
+                            'id' => $child->$idAttribute, 
+                            'name' => $child->$nameAttribute,
+                            'error' => $child->getFirstErrors()
+                        ];
+                    }
                 }
             }
-            return $this->save();
+            if (!empty($this->nodeRemovalErrors)) {
+                if ($currNode) {
+                    $this->active = false;
+                    if (!$this->save()) {
+                        $this->nodeRemovalErrors[] = [
+                            'id' => $this->$idAttribute, 
+                            'name' => $this->$nameAttribute,
+                            'error' => $this->getFirstErrors()
+                        ];
+                        return false;
+                    }
+                }
+            }
+            return true;
         } else {
             return $this->removable_all ? $this->deleteWithChildren() : $this->delete();
         }
