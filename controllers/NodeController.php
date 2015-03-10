@@ -44,7 +44,12 @@ class NodeController extends \yii\web\Controller
         static::checkValidRequest();
         $parentKey = null;
         extract($_POST);
-        $node = ($id == null) ? (new $modelClass) : $modelClass::findOne($id);
+        if (!isset($id) || empty($id)) {
+            $node = new $modelClass;
+            $node->initDefaults();
+        } else {
+            $node = $modelClass::findOne($id);
+        }
         $module = TreeView::module();
         $params = $module->treeStructure + $module->dataStructure + [
                 'node' => $node,
@@ -83,6 +88,7 @@ class NodeController extends \yii\web\Controller
          */
         if ($treeNodeModify) {
             $node = new $modelClass;
+            $node->initDefaults();
             $successMsg = Yii::t('kvtree', 'The node was successfully created.');
             $errorMsg = Yii::t('kvtree', 'Error while creating the node. Try again later.');
         } else {
@@ -101,8 +107,8 @@ class NodeController extends \yii\web\Controller
                 $node->makeRoot();
             } else {
                 $parent = $modelClass::findOne($parentKey);
+                $node->appendTo($parent);
             }
-            $node->appendTo($parent);
         }
         $success = false;
         if ($node->save()) {

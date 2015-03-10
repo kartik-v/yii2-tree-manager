@@ -52,6 +52,7 @@ return [
     'Move Right' => '',
     'Move Up' => '',
     'Name' => '',
+    'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.' => '',
     'Read Only' => '',
     'Refresh' => '',
     'Removable' => '',

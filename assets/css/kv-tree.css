@@ -284,3 +284,10 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
 .kv-node-detail:focus, .kv-focussed {
     background-color: #f5f5f5;
 }
+
+.kv-node-message {
+    padding: 60px 0;
+    text-align: center;
+    color: #999;
+    font-size: 1.4em;
+}
