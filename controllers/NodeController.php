@@ -44,7 +44,12 @@ class NodeController extends \yii\web\Controller
         static::checkValidRequest();
         $parentKey = null;
         extract($_POST);
-        $node = ($id == null) ? (new $modelClass) : $modelClass::findOne($id);
+        if (!isset($id) || empty($id)) {
+            $node = new $modelClass;
+            $node->initDefaults();
+        } else {
+            $node = $modelClass::findOne($id);
+        }
         $module = TreeView::module();
         $params = $module->treeStructure + $module->dataStructure + [
                 'node' => $node,
@@ -101,8 +106,8 @@ class NodeController extends \yii\web\Controller
                 $node->makeRoot();
             } else {
                 $parent = $modelClass::findOne($parentKey);
+                $node->appendTo($parent);
             }
-            $node->appendTo($parent);
         }
         $success = false;
         if ($node->save()) {

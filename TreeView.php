@@ -98,6 +98,17 @@ class TreeView extends Widget
     public $value = '';
 
     /**
+     * @var string message shown on tree initialization when either the entire 
+     * tree is empty or no node is found for the selected `displayValue`.
+     */
+    public $emptyNodeMsg;
+
+    /**
+     * @var array HTML attributes for the empty node message displayed.
+     */
+    public $emptyNodeMsgOptions = ['class' => 'kv-node-message'];
+
+    /**
      * @var bool whether to show the form action buttons in the node
      * details form/view.
      */
@@ -433,6 +444,9 @@ HTML;
         $this->validateSourceData();
         $this->_module = Config::initModule(Module::classname());
         $this->initSelectedNode();
+        if (empty($this->emptyNodeMsg)) {
+             $this->emptyNodeMsg =  Yii::t('kvtree', 'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.');
+        }
         parent::init();
     }
 
@@ -1022,6 +1036,10 @@ HTML;
     {
         $modelClass = $this->query->modelClass;
         $node = $modelClass::findOne($this->displayValue);
+        if (empty($node)) {
+            $msg = Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions);
+            return Html::tag('div', $msg, $this->detailOptions);
+        }
         $iconTypeAttribute = $this->_module->dataStructure['iconTypeAttribute'];
         if ($this->_iconsList !== false) {
             $node->$iconTypeAttribute = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);

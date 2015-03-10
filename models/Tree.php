@@ -32,6 +32,29 @@ use creocoder\nestedsets\NestedSetsBehavior;
  */
 class Tree extends \yii\db\ActiveRecord
 {
+    public static $boolAttribs = [
+        'active',
+        'selected',
+        'disabled',
+        'readonly',
+        'visible',
+        'collapsed',
+        'movable_u',
+        'movable_d',
+        'movable_r',
+        'movable_l',
+        'removable',
+        'removable_all'
+    ];
+    
+    public static $falseAttribs = [
+        'selected',
+        'disabled',
+        'readonly',
+        'collapsed',
+        'removable_all'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -49,29 +72,35 @@ class Tree extends \yii\db\ActiveRecord
         extract($module->dataStructure);
         return [
             [[$nameAttribute], 'required'],
-            [
-                [
-                    $nameAttribute,
-                    $iconAttribute,
-                    $iconTypeAttribute,
-                    'active',
-                    'selected',
-                    'disabled',
-                    'readonly',
-                    'visible',
-                    'collapsed',
-                    'movable_u',
-                    'movable_d',
-                    'movable_r',
-                    'movable_l',
-                    'removable',
-                    'removable_all'
-                ],
-                'safe'
-            ]
+            [[$nameAttribute, $iconAttribute, $iconTypeAttribute] + static::$boolAttribs, 'safe']
         ];
     }
 
+    /**
+     * Initialize default values
+     */
+    public function initDefaults()
+    {
+        $module = TreeView::module();
+        extract($module->dataStructure);
+        $this->setDefault($iconTypeAttribute, TreeView::ICON_CSS);
+        foreach (static::$boolAttribs as $attr) {
+            $val = in_array($attr, static::$falseAttribs) ? false : true;
+            $this->setDefault($attr, $val);
+        }
+    }
+    
+    /**
+     * Sets default value of a model attribute
+     * @param string $attr the attribute name
+     * @param mixed $val the default value
+     */
+    protected function setDefault($attr, $val)
+    {
+        if (empty($this->$attr)) {
+            $this->$attr = $val;
+        }
+    }
     /**
      * Parses an attribute value if set - else returns the default
      *
