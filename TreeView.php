@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
 use kartik\tree\models\Tree;
 use kartik\base\Config;
 use kartik\base\Widget;
+use yii\widgets\ActiveFormAsset;
 
 /**
  * An enhanced tree view widget for Yii Framework 2 that allows
@@ -1093,6 +1094,7 @@ HTML;
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
+        ActiveFormAsset::register($view);
 
         $this->pluginOptions += [
             'treeId' => $this->treeOptions['id'],
