@@ -1018,7 +1018,7 @@ HTML;
             if (!$node->isActive()) {
                 $css .= ' kv-inactive ';
             }
-            $indicators .= $isChild ? '' : $this->renderToggleIconContainer(false) . "\n";
+            $indicators .= $this->renderToggleIconContainer(false) . "\n";
             $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer(false) . "\n" : '';
             $css = trim($css);
             if (!empty($css)) {
