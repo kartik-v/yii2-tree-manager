@@ -228,16 +228,22 @@ class TreeView extends Widget
     public $showTooltips = true;
 
     /**
-     * @var string the icon markup for the child if no icon was setup
+     * @var string the icon markup for the child node if no icon was setup
      * in the database.
      */
     public $defaultChildNodeIcon;
 
     /**
-     * @var string the icon markup for the parent if no icon was setup
+     * @var string the icon markup for the collapsed parent node if no icon was setup
      * in the database.
      */
     public $defaultParentNodeIcon;
+
+    /**
+     * @var string the icon markup for the opened parent node if no icon was setup
+     * in the database.
+     */
+    public $defaultParentNodeOpenIcon;
 
     /**
      * @var array the HTML attributes for the child node icon.
@@ -645,10 +651,13 @@ HTML;
         }
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
         if ($this->defaultChildNodeIcon === null) {
-            $this->defaultChildNodeIcon = $this->getNodeIcon(true);
+            $this->defaultChildNodeIcon = $this->getNodeIcon(1);
         }
         if ($this->defaultParentNodeIcon === null) {
-            $this->defaultParentNodeIcon = $this->getNodeIcon(false);
+            $this->defaultParentNodeIcon = $this->getNodeIcon(2);
+        }
+        if ($this->defaultParentNodeOpenIcon === null) {
+            $this->defaultParentNodeOpenIcon = $this->getNodeIcon(3);
         }
         $this->_iconsList = $this->getIconsList();
     }
@@ -656,22 +665,27 @@ HTML;
     /**
      * Gets the default node icon markup
      *
-     * @param bool $action whether child or parent
+     * @param int $type 1 = child, 2 = parent, 3 = parent open
      *
      * @return string
      */
-    protected function getNodeIcon($child = true)
+    protected function getNodeIcon($type)
     {
         $css = $this->_iconPrefix;
-        if ($child) {
-            $options = $this->childNodeIconOptions;
-            $css .= 'file';
-        } else {
-            $options = $this->parentNodeIconOptions;
-            $css .= $this->fontAwesome ? 'folder' : 'folder-close';
+        switch ($type) {
+            case 1:
+                $css .= "file";
+                break;
+            case 2:
+                $css .= ($this->fontAwesome ? 'folder' : 'folder-close') . " kv-node-closed";
+                break;
+            case 3:
+                $css .= "folder-open kv-node-opened";
+                break;
+            default:
+                return null;
         }
-        $icon = Html::tag('span', '', ['class' => $css]);
-        return Html::tag('span', $icon, $options);
+        return Html::tag('span', '', ['class' => $css]);
     }
 
     /**
@@ -687,15 +701,14 @@ HTML;
      */
     protected function renderNodeIcon($icon, $iconType, $child = true)
     {
+        $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
         if (!empty($icon)) {
             $icon = $iconType == self::ICON_CSS ? Html::tag('span', '',
                 ['class' => $this->_iconPrefix . $icon]) : $icon;
-            $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $icon = Html::tag('span', $icon, $options);
         } else {
-            $icon = $child ? $this->defaultChildNodeIcon : $this->defaultParentNodeIcon;
+            $icon = $child ? $this->defaultChildNodeIcon : $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon;
         }
-        return $icon;
+        return Html::tag('span', $icon, $options);
     }
 
     /**
@@ -1078,7 +1091,9 @@ HTML;
         }
         $newSettings = [
             '' => '<em>' . Yii::t('kvtree', 'Default') . '</em> ( ' .
-                $this->defaultParentNodeIcon . ' / ' . $this->defaultChildNodeIcon . ')'
+                Html::tag('span', $this->defaultParentNodeIcon, $this->parentNodeIconOptions) . ' / ' . 
+                Html::tag('span', $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) . ' / ' . 
+                Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions) . ')'
         ];
         foreach ($settings as $suffix => $label) {
             $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->_iconPrefix . $suffix]) . ' ' . $label;

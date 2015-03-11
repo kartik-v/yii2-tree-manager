@@ -291,3 +291,15 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
     color: #999;
     font-size: 1.4em;
 }
+
+.kv-tree-container  .kv-node-closed {
+    display: none;
+}
+
+.kv-collapsed   > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-opened {
+    display: none;
+}
+
+.kv-collapsed   > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-closed {
+    display: inline;
+}
