@@ -18,6 +18,10 @@ use Yii;
  */
 class TreeViewAsset extends \kartik\base\AssetBundle
 {
+    public $depends = [
+        'yii\widgets\ActiveFormAsset'
+    ];
+
     public function init()
     {
         $this->setSourcePath(__DIR__ . '/assets');
