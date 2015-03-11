@@ -1,5 +1,5 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @version 1.0.0
  *
  * Tree View Style Sheet
@@ -292,14 +292,22 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
     font-size: 1.4em;
 }
 
-.kv-tree-container  .kv-node-closed {
+.kv-tree-container .kv-node-closed, .kv-tree-container .kv-node-opened,
+.kv-tree-container .kv-icon-parent, .kv-node-toggle,
+.kv-parent > .kv-tree-list > .kv-node-detail > .kv-node-icon.kv-icon-child {
     display: none;
 }
 
-.kv-collapsed   > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-opened {
+.kv-parent > .kv-tree-list > .kv-node-detail > .kv-node-icon.kv-icon-parent,
+.kv-parent > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-opened {
+    display: inline;
+}
+
+.kv-collapsed > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-opened {
     display: none;
 }
 
-.kv-collapsed   > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-closed {
+.kv-collapsed > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-closed,
+.kv-parent > .kv-tree-list > .kv-node-indicators > .kv-node-toggle {
     display: inline;
 }

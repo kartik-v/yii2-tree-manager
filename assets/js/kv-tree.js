@@ -1,5 +1,5 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @version 1.0.0
  *
  * Tree View Validation Module.
@@ -10,11 +10,12 @@
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
+    /*jshint bitwise: false*/
     "use strict";
     var defaultBtns = {
             'create': 'create',
             'createR': 'create-root',
-            'remove': 'remove',
+            'trash': 'remove',
             'moveU': 'move-up',
             'moveD': 'move-down',
             'moveL': 'move-left',
@@ -35,6 +36,11 @@
                 a = ((a << 5) - a) + b.charCodeAt(0);
                 return a & a;
             }, 0);
+        },
+        trigAlert = function ($alert) {
+            setTimeout(function () {
+                $alert.fadeOut(1000);
+            }, 5000);
         },
         delay = (function () {
             var timer = 0;
@@ -77,9 +83,9 @@
         constructor: TreeView,
         init: function (options) {
             var self = this;
-            for (var key in options) {
-                self[key] = options[key];
-            }
+            $.each(options, function (key, data) {
+                self[key] = data;
+            });
             self.btns = $.extend({}, defaultBtns, self.btns);
             self.$tree = $('#' + self.treeId);
             self.$treeContainer = self.$tree.parent();
@@ -98,7 +104,7 @@
         },
         selectNodes: function () {
             var self = this, selected = self.$element.val();
-            if (selected.length == 0 || isEmpty(selected)) {
+            if (selected.length === 0 || isEmpty(selected)) {
                 return;
             }
             var $nodes = self.$tree.find('li');
@@ -135,24 +141,19 @@
         },
         showAlert: function (msg, type) {
             var self = this, $alert = self.$detail.find('.alert-' + type);
-            self.$detail.find('.alert').addClass('hide');
             $alert.removeClass('hide').hide().find('div').remove();
             $alert.append('<div>' + msg + '</div>').fadeIn(1000);
-            setTimeout(function () {
-                $alert.fadeOut(1000)
-            }, 3500);
+            trigAlert($alert);
         },
         removeAlert: function () {
             var self = this;
             self.$detail.find('.alert').addClass('hide');
         },
-        renderForm: function (key) {
-            var self = this;
-            var $detail = self.$detail, vUrl = self.actions.manage,
-                parent = arguments.length > 1 ? arguments[1] : '';
-            var params = hashString(key + self.modelClass + self.isAdmin + parent);
-            vUrl = encodeURI(self.actions.manage + '?q=' + params);
-            self.parseCache(vUrl);
+        renderForm: function (key, par, mesg) {
+            var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
+                params = hashString(key + self.modelClass + self.isAdmin + parent),
+                vUrl = encodeURI(self.actions.manage + '?q=' + params);
+            self.parseCache();
             $.ajax({
                 type: 'post',
                 dataType: 'json',
@@ -177,7 +178,7 @@
                     addCss($detail, 'kv-loading');
                 },
                 success: function (data) {
-                    if (data.status == 'error') {
+                    if (data.status === 'error') {
                         $detail.html(data.out);
                         self.raise('treeview.selecterror', [key]);
                     } else {
@@ -190,17 +191,19 @@
                         self.removeAlert();
                     });
                     self.removeAlert();
+                    if (msg !== false && !isEmpty(msg.out)) {
+                        self.showAlert(msg.out, msg.type);
+                    }
                 }
             });
         },
-        select: function (key) {
-            var $selNode;
+        select: function (key, init, mesg) {
             if (isEmpty(key)) {
                 return;
             }
-            var isInit = arguments.length > 1 && arguments[1], self = this,
-                $currNode = arguments.length > 2 ? arguments[2] : self.$tree.find('li[data-key="' + key + '"]>.kv-tree-list .kv-node-detail');
-            if ($currNode.length == 0) {
+            var self = this, $selNode, isInit = init || false, msg = mesg || false,
+                $currNode = self.$tree.find('li[data-key="' + key + '"]>.kv-tree-list .kv-node-detail');
+            if ($currNode.length === 0) {
                 return;
             }
             self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
@@ -213,7 +216,7 @@
                     }
                 });
             } else {
-                self.renderForm(key);
+                self.renderForm(key, null, msg);
             }
             $selNode = $currNode.closest('li');
             if ($selNode.hasClass('kv-disabled')) {
@@ -236,15 +239,31 @@
             if (!$selNode.data('movable-r')) {
                 self.disable('movable-r');
             }
+            self.parseParentFlag(key);
+        },
+        parseParentFlag: function (key) {
+            var self = this, $flags = self.$detail.find('input[class="kv-parent-flag"]'), $div,
+                $node = self.$tree.find('li[data-key="' + key + '"]');
+            $flags.each(function () {
+                var $flag = $(this);
+                $div = $flag.closest('div.checkbox');
+                $div.removeClass('disabled');
+                if ($node.hasClass('kv-parent')) {
+                    $flag.removeAttr('disabled');
+                } else {
+                    $flag.attr('disabled', 'disabled');
+                    $div.addClass('disabled');
+                }
+            });
         },
         remove: function () {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $node = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
                 $form = $detail.find('form'), $alert, clearNode;
-            if ($nodeText.length == 0 && !$node.hasClass('kv-empty') || !confirm(msg.removeNode) || $node.hasClass('kv-disabled')) {
+            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || !window.confirm(msg.removeNode) || $node.hasClass('kv-disabled')) {
                 return;
             }
-            clearNode = function(isEmpty) {
+            clearNode = function (isEmpty) {
                 var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved;
                 $node.remove();
                 $alert = $detail.find('.alert');
@@ -252,9 +271,9 @@
                     $detail.before($alert).html('').append($alert);
                 }
                 self.showAlert(m, 'info');
-                setTimeout(function() {
+                setTimeout(function () {
                     $detail.append('<h4 class="alert text-center text-muted">' + msg.selectNode + '</h4>').hide().fadeIn('slow');
-                }, 4500);
+                }, 5000);
             };
             if ($node.hasClass('kv-empty')) {
                 clearNode(true);
@@ -272,7 +291,7 @@
                     addCss($detail, 'kv-loading');
                 },
                 success: function (data) {
-                    if (data.status == 'success') {
+                    if (data.status === 'success') {
                         if ((self.isAdmin || self.showInactive) && self.softDelete) {
                             self.showAlert(data.out, 'info');
                             $form.show();
@@ -298,45 +317,46 @@
                         self.raise('treeview.removeerror', [key]);
                     }
                     $detail.removeClass('kv-loading');
-                },
+                }
             });
         },
         move: function (dir) {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $nodeFrom = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
-                $form = $detail.find('form'), $nodeTo = null, keyFrom, keyTo;
-            if ($nodeText.length == 0 || $nodeFrom.hasClass('kv-disabled')) {
+                $form = $detail.find('form'), $nodeTo = null, keyFrom, keyTo, parentIcon, childIcon,
+                outMsg;
+            if ($nodeText.length === 0 || $nodeFrom.hasClass('kv-disabled')) {
                 return;
             }
             if ($nodeFrom.hasClass('kv-empty')) {
-                alert(msg.nodeNewMove);
+                window.alert(msg.nodeNewMove);
                 return;
             }
-            if (dir == 'u') {
+            if (dir === 'u') {
                 $nodeTo = $nodeFrom.prev();
-                if ($nodeTo.length == 0) {
-                    alert(msg.nodeTop);
+                if ($nodeTo.length === 0) {
+                    window.alert(msg.nodeTop);
                     return;
                 }
             }
-            if (dir == 'd') {
+            if (dir === 'd') {
                 $nodeTo = $nodeFrom.next();
-                if ($nodeTo.length == 0) {
-                    alert(msg.nodeBottom);
+                if ($nodeTo.length === 0) {
+                    window.alert(msg.nodeBottom);
                     return;
                 }
             }
-            if (dir == 'l') {
+            if (dir === 'l') {
                 $nodeTo = $nodeFrom.parent('ul').closest('li.kv-parent');
-                if ($nodeTo.length == 0 || $nodeTo.parent('ul').hasClass('kv-tree')) {
-                    alert(msg.nodeLeft);
+                if ($nodeTo.length === 0 || $nodeTo.parent('ul').hasClass('kv-tree')) {
+                    window.alert(msg.nodeLeft);
                     return;
                 }
             }
-            if (dir == 'r') {
+            if (dir === 'r') {
                 $nodeTo = $nodeFrom.prev();
-                if ($nodeTo.length == 0) {
-                    alert(msg.nodeRight);
+                if ($nodeTo.length === 0) {
+                    window.alert(msg.nodeRight);
                     return;
                 }
             }
@@ -354,34 +374,44 @@
                     if ($detail.length > 0) {
                         self.removeAlert();
                     }
-                    if (data.status == 'success') {
-                        if (dir == 'u') {
-                            $nodeTo.before($nodeFrom);
-                        } else {
-                            if (dir == 'd') {
+                    if (data.status === 'success') {
+                        switch (dir) {
+                            case 'u':
+                                $nodeTo.before($nodeFrom);
+                                break;
+                            case 'd':
                                 $nodeTo.after($nodeFrom);
-                            } else {
-                                if (dir == 'l') {
-                                    $nodeTo.after($nodeFrom);
-                                    if ($nodeTo.find('li').length == 0) {
-                                        $nodeTo.removeClass('kv-parent');
-                                        $nodeTo.find('ul').remove();
-                                        $nodeTo.find('> .kv-tree-list .kv-node-toggle').remove();
-                                    }
-                                } else {
-                                    if (dir == 'r') {
-                                        if ($nodeTo.find('li').length > 0) {
-                                            $nodeTo.children('ul').append($nodeFrom);
-                                        } else {
-                                            var $ul = $(document.createElement('ul')),
-                                                $nodeToggle = self.$tree.find('.kv-node-toggle:first');
-                                            addCss($nodeTo, 'kv-parent');
-                                            $nodeTo.find('> .kv-tree-list > .kv-node-indicators').prepend($nodeToggle);
-                                            $ul.appendTo($nodeTo);
-                                            $ul.append($nodeFrom);
-                                        }
-                                    }
+                                break;
+                            case 'l':
+                                $nodeTo.after($nodeFrom);
+                                if ($nodeTo.find('li').length === 0) {
+                                    $nodeTo.removeClass('kv-parent');
+                                    $nodeTo.find('ul').remove();
                                 }
+                                break;
+                            case 'r':
+                                if ($nodeTo.find('li').length > 0) {
+                                    $nodeTo.children('ul').append($nodeFrom);
+                                } else {
+                                    addCss($nodeTo, 'kv-parent');
+                                    $(document.createElement('ul')).appendTo($nodeTo).append($nodeFrom);
+                                }
+                                break;
+                            default:
+                                throw "Invalid move direction '" + dir + "'";
+                        }
+                        if (dir === 'l' || dir === 'r') {
+                            kvTreeCache.timeout = 0;
+                            if ($detail.length > 0) {
+                                outMsg = {out: data.out, type: 'success'};
+                            } else {
+                                outMsg = false;
+                            }
+                            self.select(keyFrom, false, outMsg);
+                            kvTreeCache.timeout = self.cacheTimeout;
+                        } else {
+                            if ($detail.length > 0) {
+                                self.showAlert(data.out, 'success');
                             }
                         }
                         self.$tree.find('li.kv-collapsed').each(function () {
@@ -389,9 +419,6 @@
                                 $(this).removeClass('kv-collapsed');
                             }
                         });
-                        if ($detail.length > 0) {
-                            self.showAlert(data.out, 'success');
-                        }
                         self.raise('treeview.move', [dir, keyFrom, keyTo]);
                     } else {
                         if ($detail.length > 0) {
@@ -414,7 +441,7 @@
         setSelected: function () {
             var self = this, keys = '', desc = '';
             self.$tree.find('.kv-selected').each(function () {
-                var $node = $(this), sep = keys == '' ? '' : ',';
+                var $node = $(this), sep = isEmpty(keys) ? '' : ',';
                 keys += sep + $node.data('key');
                 desc += sep + $node.find('>.kv-tree-list .kv-node-label').text();
             });
@@ -435,17 +462,17 @@
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'), $n, key,
                 $node = $nodeText.closest('li'), msg = self.messages, content, $nodeDetail, $newNode;
             if ($node.hasClass('kv-disabled')) {
-                alert(msg.nodeDisabled);
+                window.alert(msg.nodeDisabled);
                 return;
             }
-            if ($nodeText.length == 0 || $node.hasClass('kv-empty')) {
-                alert(msg.invalidCreateNode);
+            if ($nodeText.length === 0 || $node.hasClass('kv-empty')) {
+                window.alert(msg.invalidCreateNode);
                 return;
             }
-            self.$toolbar.find('.kv-' + self.btns.remove).removeAttr('disabled');
+            self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             $newNode = $node.find('> ul > li.kv-empty');
             if ($newNode.length > 0) {
-                key = $newNode.data('key').replace('empty-', '')
+                key = $newNode.data('key').replace('empty-', '');
                 self.renderForm(null, key);
                 $nodeText.removeClass('kv-focussed');
                 addCss($newNode.find('.kv-node-detail'), 'kv-focussed');
@@ -474,7 +501,7 @@
                 addCss($nodeDetail, 'kv-focussed');
                 key = $newNode.data('key').replace('empty-', '');
                 self.renderForm(null, key);
-                self.$toolbar.find('.kv-' + self.btns.remove).removeAttr('disabled');
+                self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
             self.raise('treeview.create', [parent]);
         },
@@ -494,12 +521,12 @@
             self.renderForm(null, 'root');
             var $nodeDetail = $node.find('.kv-node-detail');
             addCss($nodeDetail, 'kv-focussed');
-            self.$toolbar.find('.kv-' + self.btns.remove).removeAttr('disabled');
+            self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             $nodeDetail.on('click', function () {
                 self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
                 addCss($nodeDetail, 'kv-focussed');
                 self.renderForm(null, 'root');
-                self.$toolbar.find('.kv-' + self.btns.remove).removeAttr('disabled');
+                self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
             self.raise('treeview.createroot');
         },
@@ -513,8 +540,8 @@
                 self.raise('treeview.collapse', [nodeKey]);
             }
         },
-        toggleAll: function (action) {
-            var self = this, trig = arguments.length > 1 && arguments[1];
+        toggleAll: function (action, trig) {
+            var self = this;
             if (action === 'expand') {
                 self.$tree.removeClass('kv-collapsed');
                 self.$tree.find('.kv-collapsed').removeClass('kv-collapsed');
@@ -569,7 +596,7 @@
             self.$treeContainer.removeClass('kv-loading-search');
             self.$tree.find('.kv-node-label').removeClass('kv-highlight');
         },
-        parseCache: function (vUrl) {
+        parseCache: function () {
             var self = this;
             if (!self.enableCache) {
                 return false;
@@ -623,22 +650,16 @@
                 var $node = $(this), $root = $node.closest('.kv-tree-container');
                 self.check(true);
             });
-            // toolbar actions
-            self.$toolbar.find('.kv-toolbar-btn').each(function () {
-                $(this).on('click', function () {
-                    var $btn = $(this);
-                });
-            });
             // search
             self.$search.on('keyup', function () {
                 var filter = $(this).val();
                 self.clear();
-                if (filter.length == 0) {
+                if (filter.length === 0) {
                     return;
                 }
                 addCss(self.$treeContainer, 'kv-loading-search');
                 delay(function () {
-                    self.toggleAll('collapse');
+                    self.toggleAll('collapse', false);
                     filter = escapeRegExp(filter);
                     self.$tree.find('.kv-node-label').each(function () {
                         var $label = $(this), text = $label.text();
@@ -691,7 +712,7 @@
                 self.createRoot();
             });
             // remove node
-            self.$toolbar.find('.kv-' + self.btns.remove).on('click', function () {
+            self.$toolbar.find('.kv-' + self.btns.trash).on('click', function () {
                 self.remove();
             });
             // move node up
@@ -714,9 +735,7 @@
                 var $alert = $(this);
                 if (!$alert.hasClass('hide')) {
                     $alert.hide().fadeIn(1500);
-                    setTimeout(function () {
-                        $alert.fadeOut(1000)
-                    }, 3500);
+                    trigAlert($alert);
                 }
             });
         }

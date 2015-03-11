@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @package yii2-tree-manager
  * @version 1.5.0
  */
@@ -14,15 +14,15 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * @var yii\web\View $this
+ * @var yii\web\View            $this
  * @var kartik\tree\models\Tree $node
- * @var kartik\form\ActiveForm $form
+ * @var kartik\form\ActiveForm  $form
  */
 extract($params);
 $isAdmin = ($isAdmin == true || $isAdmin === "true");
 if (empty($parentKey)) {
     $parent = $node->parents(1)->one();
-    $parentKey = empty($parent)? '' : Html::getAttributeValue($parent, $keyAttribute);
+    $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
 } elseif ($parentKey == 'root') {
     $parent = '';
 } else {
@@ -30,6 +30,7 @@ if (empty($parentKey)) {
 }
 $parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
 $inputOpts = [];
+$flagOptions = ['class' => 'kv-parent-flag'];
 if ($node->isNewRecord) {
     $name = Yii::t('kvtree', 'Untitled');
 } else {
@@ -40,23 +41,28 @@ if ($node->isNewRecord) {
     if ($node->isDisabled()) {
         $inputOpts['disabled'] = true;
     }
+    $flagOptions['disabled'] = $node->isLeaf();
 }
 $form = ActiveForm::begin(['action' => $action]);
-function showAlert($type, $body = '', $hide = true) {
+function showAlert($type, $body = '', $hide = true)
+{
     $class = "alert alert-{$type}";
     if ($hide) {
         $class .= ' hide';
     }
-    return Html::tag('div', '<div>'.$body.'</div>', ['class'=>$class]);
+    return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
 }
-function renderContent($part) {
+
+function renderContent($part)
+{
     if (empty($nodeAddlViews[$part])) {
         return '';
     }
     $p = $params;
     $p['form'] = $form;
-    return $this->render($nodeAddlViews[$part], $p); 
+    return $this->render($nodeAddlViews[$part], $p);
 }
+
 $module = TreeView::module();
 // In case you are extending this form, it is mandatory to set 
 // all these hidden inputs as defined below.
@@ -65,40 +71,40 @@ echo Html::hiddenInput('parentKey', $parentKey);
 echo Html::hiddenInput('currUrl', $currUrl);
 echo Html::hiddenInput('modelClass', $modelClass);
 echo Html::hiddenInput('softDelete', $softDelete);
-$keyField = $form->field($node, $keyAttribute)->textInput(['readonly'=>true]);
+$keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
 ?>
 <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
-<div class="pull-right">
-    <?= Html::resetButton(
-        '<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
-        ['class' => 'btn btn-default']
-    ) ?>
-    <?= Html::submitButton(
-        '<i class="glyphicon glyphicon-floppy-disk"></i> ' . Yii::t('kvtree', 'Save'),
-        ['class' => 'btn btn-primary']
-    ) ?>
-</div>
+    <div class="pull-right">
+        <?= Html::resetButton(
+            '<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
+            ['class' => 'btn btn-default']
+        ) ?>
+        <?= Html::submitButton(
+            '<i class="glyphicon glyphicon-floppy-disk"></i> ' . Yii::t('kvtree', 'Save'),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    </div>
 <?php endif; ?>
-<h3><?= $parentName . $name ?></h3>
-<div class="clearfix"></div>
-<hr style="margin: 10px 0;">
+    <h3><?= $parentName . $name ?></h3>
+    <div class="clearfix"></div>
+    <hr style="margin: 10px 0;">
 <?php /* The alerts container is important */ ?>
-<div class="kv-treeview-alerts">
-<?php 
-    if (Yii::$app->session->hasFlash('success')) {
-        echo showAlert('success', Yii::$app->session->getFlash('success'), false);
-    } else {
-        echo showAlert('success');
-    }
-    if (Yii::$app->session->hasFlash('error')) {
-        echo showAlert('danger', Yii::$app->session->getFlash('error'), false);
-    } else {
-        echo showAlert('danger');
-    }
-    echo showAlert('warning');
-    echo showAlert('info');
-?>
-</div>
+    <div class="kv-treeview-alerts">
+        <?php
+        if (Yii::$app->session->hasFlash('success')) {
+            echo showAlert('success', Yii::$app->session->getFlash('success'), false);
+        } else {
+            echo showAlert('success');
+        }
+        if (Yii::$app->session->hasFlash('error')) {
+            echo showAlert('danger', Yii::$app->session->getFlash('error'), false);
+        } else {
+            echo showAlert('danger');
+        }
+        echo showAlert('warning');
+        echo showAlert('info');
+        ?>
+    </div>
 <?= renderContent(Module::VIEW_PART_1); ?>
 <?php if ($iconsList == 'text' || $iconsList == 'none') : ?>
     <div class="row">
@@ -106,7 +112,7 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly'=>true]);
             <?= $keyField ?>
         </div>
         <div class="col-sm-8">
-            <?=  $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
+            <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
         </div>
     </div>
     <?php if ($iconsList === 'text') : ?>
@@ -136,7 +142,7 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly'=>true]);
             <?= $form->field($node, $iconAttribute)->multiselect(
                 $iconsList,
                 [
-                    'item' => function ($index, $label, $name, $checked, $value) use($inputOpts) {
+                    'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
                         if ($index == 0 && $value == '') {
                             $checked = true;
                             $value = '';
@@ -145,9 +151,9 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly'=>true]);
                             $name,
                             $checked,
                             [
-                                'value' => $value, 
-                                'label' => $label, 
-                                'disabled'=>!empty($inputOpts['readonly']) || !empty($inputOpts['disabled'])
+                                'value' => $value,
+                                'label' => $label,
+                                'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled'])
                             ]
                         ) . '</div>';
                     },
@@ -165,14 +171,14 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly'=>true]);
         <div class="col-sm-4">
             <?= $form->field($node, 'active')->checkbox() ?>
             <?= $form->field($node, 'selected')->checkbox() ?>
-            <?= $form->field($node, 'collapsed')->checkbox() ?>
+            <?= $form->field($node, 'collapsed')->checkbox($flagOptions) ?>
             <?= $form->field($node, 'visible')->checkbox() ?>
         </div>
         <div class="col-sm-4">
             <?= $form->field($node, 'readonly')->checkbox() ?>
             <?= $form->field($node, 'disabled')->checkbox() ?>
             <?= $form->field($node, 'removable')->checkbox() ?>
-            <?= $form->field($node, 'removable_all')->checkbox() ?>
+            <?= $form->field($node, 'removable_all')->checkbox($flagOptions) ?>
         </div>
         <div class="col-sm-4">
             <?= $form->field($node, 'movable_u')->checkbox() ?>

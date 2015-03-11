@@ -46,7 +46,7 @@ class Tree extends \yii\db\ActiveRecord
         'removable',
         'removable_all'
     ];
-    
+
     public static $falseAttribs = [
         'selected',
         'disabled',
@@ -64,7 +64,7 @@ class Tree extends \yii\db\ActiveRecord
      * @var array node removal errors
      */
     public $nodeRemovalErrors = [];
-    
+
     /**
      * @inheritdoc
      */
@@ -100,11 +100,12 @@ class Tree extends \yii\db\ActiveRecord
             $this->setDefault($attr, $val);
         }
     }
-    
+
     /**
      * Sets default value of a model attribute
+     *
      * @param string $attr the attribute name
-     * @param mixed $val the default value
+     * @param mixed  $val the default value
      */
     protected function setDefault($attr, $val)
     {
@@ -112,6 +113,7 @@ class Tree extends \yii\db\ActiveRecord
             $this->$attr = $val;
         }
     }
+
     /**
      * Parses an attribute value if set - else returns the default
      *
@@ -222,6 +224,7 @@ class Tree extends \yii\db\ActiveRecord
      * Activates a node (for undoing a soft deletion scenario)
      *
      * @param bool $currNode whether to update the current node value also
+     *
      * @return bool status of activation
      */
     public function activateNode($currNode = true)
@@ -235,7 +238,7 @@ class Tree extends \yii\db\ActiveRecord
                 $child->active = true;
                 if (!$child->save()) {
                     $this->nodeActivationErrors[] = [
-                        'id' => $child->$idAttribute, 
+                        'id' => $child->$idAttribute,
                         'name' => $child->$nameAttribute,
                         'error' => $child->getFirstErrors()
                     ];
@@ -247,7 +250,7 @@ class Tree extends \yii\db\ActiveRecord
                 $this->active = true;
                 if (!$this->save()) {
                     $this->nodeActivationErrors[] = [
-                        'id' => $this->$idAttribute, 
+                        'id' => $this->$idAttribute,
                         'name' => $this->$nameAttribute,
                         'error' => $this->getFirstErrors()
                     ];
@@ -278,7 +281,7 @@ class Tree extends \yii\db\ActiveRecord
                     $child->active = false;
                     if (!$child->save()) {
                         $this->nodeRemovalErrors[] = [
-                            'id' => $child->$idAttribute, 
+                            'id' => $child->$idAttribute,
                             'name' => $child->$nameAttribute,
                             'error' => $child->getFirstErrors()
                         ];
@@ -290,7 +293,7 @@ class Tree extends \yii\db\ActiveRecord
                     $this->active = false;
                     if (!$this->save()) {
                         $this->nodeRemovalErrors[] = [
-                            'id' => $this->$idAttribute, 
+                            'id' => $this->$idAttribute,
                             'name' => $this->$nameAttribute,
                             'error' => $this->getFirstErrors()
                         ];

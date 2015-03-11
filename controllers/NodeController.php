@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @package yii2-tree-manager
  * @version 1.0.0
  */
@@ -70,9 +70,9 @@ class NodeController extends \yii\web\Controller
             }
         });
         return Json::encode([
-                'out' => $this->renderAjax($nodeView, ['params' => $params]),
-                'status' => 'success'
-            ]);
+            'out' => $this->renderAjax($nodeView, ['params' => $params]),
+            'status' => 'success'
+        ]);
     }
 
     /**

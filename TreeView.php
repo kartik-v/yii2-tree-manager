@@ -16,7 +16,6 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use kartik\tree\models\Tree;
-use kartik\base\Config;
 use kartik\base\Widget;
 
 /**
@@ -56,29 +55,6 @@ class TreeView extends Widget
     const MOVE_RIGHT = 'r';
 
     /**
-     * @var array the actions for managing, deleting, and moving the tree nodes.
-     * The keys must be one of 'manage', 'save', 'remove', and 'move'. Defaults to:
-     *     [
-     *         'save' => Url::to(['/treemanager/node/save']),
-     *         'manage' => Url::to(['/treemanager/node/manage']),
-     *         'remove' => Url::to(['/treemanager/node/remove']),
-     *         'move' => Url::to(['/treemanager/node/move']),
-     *     ]
-     */
-    public $nodeActions = [];
-
-    /**
-     * @var string the view file that will render the form for editing the node.
-     */
-    public $nodeView;
-
-    /**
-     * @var array the list of additional view files that will be used
-     * to append content at various sections in the `nodeView` form.
-     */
-    public $nodeAddlViews = [];
-
-    /**
      * @var ActiveQuery the query that will be used
      * as the data source for the TreeView. For example:
      * `Tree::find()->addOrderBy('root, lft')`
@@ -98,21 +74,10 @@ class TreeView extends Widget
     public $value = '';
 
     /**
-     * @var string message shown on tree initialization when either the entire 
-     * tree is empty or no node is found for the selected `displayValue`.
+     * @var bool whether to show a checkbox before each tree node label
+     * to allow multiple node selection.
      */
-    public $emptyNodeMsg;
-
-    /**
-     * @var array HTML attributes for the empty node message displayed.
-     */
-    public $emptyNodeMsgOptions = ['class' => 'kv-node-message'];
-
-    /**
-     * @var bool whether to show the form action buttons in the node
-     * details form/view.
-     */
-    public $showFormButtons = true;
+    public $showCheckbox = false;
 
     /**
      * @var bool whether the tree is to be allowed for editing in admin mode.
@@ -128,19 +93,6 @@ class TreeView extends Widget
      * - If `false`, it will attempt to hard delete the whole record.
      */
     public $softDelete = true;
-
-    /**
-     * @var bool whether to show a checkbox before each tree node label
-     * to allow multiple node selection.
-     */
-    public $showCheckbox = false;
-
-    /**
-     * @var bool whether to allow multiple selection of checkboxes. Defaults to `true`.
-     * If set to `false` will not show a checkbox and allow only single selection of
-     * tree nodes.
-     */
-    public $multiple = true;
 
     /**
      * @var array cache settings for displaying the detail form content
@@ -168,13 +120,13 @@ class TreeView extends Widget
      *   'text', the icon will be shown as a plain text input along with icon type. If
      *   set to 'list', a list will be shown. If set to 'none', then no icon settings
      *   will be shown for editing.
-     * - type: string, the iconTypeAttribute value, defaults to TreeView::ICON_CSS. Should
-     *   be one of TreeView::ICON_CSS or TreeView::ICON_RAW.
+     * - type: string, the iconTypeAttribute value, defaults to Tree::ICON_CSS. Should
+     *   be one of Tree::ICON_CSS or Tree::ICON_RAW.
      * - listData: array, the configuration of the icon list data to be shown for selection.
-     *   This is mandatory if you set `show` to 'list'. You must set the data as `$key => $value`
-     *   format. The list will be parsed to display the icon list and will depend on the `type`.
+     *   You must set the data as `$key => $value` format. The list will be parsed to
+     *   display the icon list and will depend on the `type`.
      *
-     *   - If type = TreeView::ICON_CSS: `$key` will be the icon suffix name and `$value` will be the
+     *   - If type = Tree::ICON_CSS: `$key` will be the icon suffix name and `$value` will be the
      *     description for the icon. The icon markup will be automatically parsed then based on
      *     whether its a glyphicon or font-awesome when `fontAwesome` property is `true`. For example
      *          [
@@ -182,12 +134,12 @@ class TreeView extends Widget
      *              'file' => 'File',
      *              'tag' => 'Tag'
      *          ]
-     *   - If type = TreeView::ICON_RAW:  `$key` is the icon markup to be stored and `$value` is the output
-     *     markup to be displayed as a selection in the list. For example:
+     *   - If type = Tree::ICON_RAW:  `$key` is the icon markup to be stored and `$value` is the output
+     *     markup to be displayed. For example:
      *          [
-     *              '<img src="images/folder.jpg">' => 'Folder',
-     *              '<img src="images/file.jpg">' => 'File',
-     *              '<img src="images/tag.jpg">' => 'Tag',
+     *              'folder-close' => '<img src="folder"> Folder',
+     *              'file' => '<img src="file"> File',
+     *              'tag' => '<img src="tag"> Tag'
      *          ]
      */
     public $iconEditSettings = [
@@ -202,48 +154,16 @@ class TreeView extends Widget
     public $toolbar = [];
 
     /**
-     * @var array the HTML attributes for the toolbar.
-     */
-    public $toolbarOptions = [];
-
-    /**
-     * @var array the HTML attributes for the button groups
-     * within the toolbar.
-     */
-    public $buttonGroupOptions = ['class' => 'btn-group-sm'];
-
-    /**
-     * @var string the default HTML attributes for the toolbar buttons
-     */
-    public $buttonOptions = ['class' => 'btn btn-default'];
-
-    /**
-     * @var string the default HTML attributes for the toolbar button icons
-     */
-    public $buttonIconOptions = [];
-
-    /**
-     * @var bool show toolbar button tooltips (using bootstrap tooltip plugin)
-     */
-    public $showTooltips = true;
-
-    /**
-     * @var string the icon markup for the child node if no icon was setup
+     * @var string the icon markup for the child if no icon was setup
      * in the database.
      */
     public $defaultChildNodeIcon;
 
     /**
-     * @var string the icon markup for the collapsed parent node if no icon was setup
+     * @var string the icon markup for the parent if no icon was setup
      * in the database.
      */
     public $defaultParentNodeIcon;
-
-    /**
-     * @var string the icon markup for the opened parent node if no icon was setup
-     * in the database.
-     */
-    public $defaultParentNodeOpenIcon;
 
     /**
      * @var array the HTML attributes for the child node icon.
@@ -266,7 +186,7 @@ class TreeView extends Widget
     public $clientMessages = [];
 
     /**
-     * @var array the HTML attributes for the topmost root node container. The following
+     * @var array the HTML attributes for the topmost root container. The following
      * special options are recognized:
      * - label: string, the label for the topmost root node (this is not HTML encoded).
      *   Defaults to 'Root'. Set this to empty to not display a label.
@@ -311,7 +231,7 @@ class TreeView extends Widget
     public $collapseNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the indicator which will represent a checked checkbox. The
+     * @var string the HTML attributes for the indicator to display a checked checkbox. The
      * following special options are recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-check-square-o"></span>` if `fontAwesome` is true
@@ -320,7 +240,7 @@ class TreeView extends Widget
     public $checkedNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the indicator which will represent an unchecked checkbox. The
+     * @var string the HTML attributes for the indicator to display an unchecked checkbox. The
      * following special options are recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-square-o"></span>` if `fontAwesome` is true
@@ -333,6 +253,21 @@ class TreeView extends Widget
      * for the tree header, body, and footer.
      */
     public $treeWrapperOptions = ['class' => 'kv-tree-wrapper form-control'];
+
+    /**
+     * @var bool show toolbar button tooltips
+     */
+    public $showTooltips = true;
+
+    /**
+     * @var string the default HTML attributes for the toolbar buttons
+     */
+    public $buttonOptions = ['class' => 'btn btn-default'];
+
+    /**
+     * @var string the default HTML attributes for the toolbar button icons
+     */
+    public $buttonIconOptions = [];
 
     /**
      * @var string the HTML attributes for the heading. The following additional
@@ -362,7 +297,18 @@ class TreeView extends Widget
     public $searchClearOptions = ['class' => 'close'];
 
     /**
-     * @var array the HTML attributes for the tree footer container.
+     * @var array the HTML attributes for the toolbar.
+     */
+    public $toolbarOptions = [];
+
+    /**
+     * @var array the HTML attributes for the button groups
+     * within the toolbar.
+     */
+    public $buttonGroupOptions = ['class' => 'btn-group-sm'];
+
+    /**
+     * @var array the HTML attributes for the toolbar container.
      */
     public $footerOptions = [];
 
@@ -372,8 +318,8 @@ class TreeView extends Widget
     public $treeOptions = ['style' => 'height:410px'];
 
     /**
-     * @var array the HTML attributes for the detail form container
-     * which will display the details of the selected node
+     * @var array the HTML attributes for the details container
+     * (that will display the details of the selected node)
      */
     public $detailOptions = [];
 
@@ -384,22 +330,22 @@ class TreeView extends Widget
     public $options = ['class' => 'form-control hide'];
 
     /**
-     * @var the main template for rendering the tree view navigation
-     * widget and the node detail view form.
+     * @var the main template for rendering both the tree view navigation
+     * and the node detail view.
      */
     public $mainTemplate = <<< HTML
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         {wrapper}
     </div>
-    <div class="col-sm-9">
+    <div class="col-sm-8">
         {detail}
     </div>
 </div>
 HTML;
 
     /**
-     * @var the wrapper template for rendering the tree view navigation widget
+     * @var the wrapper template for rendering the tree view navigation
      */
     public $wrapperTemplate = "{header}\n{tree}{footer}";
 
@@ -430,12 +376,12 @@ HTML;
     /**
      * @var string the icon prefix
      */
-    protected $_iconPrefix = 'glyphicon glyphicon-';
+    private $_iconPrefix = 'glyphicon glyphicon-';
 
     /**
      * @var mixed the icons list
      */
-    protected $_iconsList;
+    private $_iconsList;
 
     /**
      * @var array the queried tree nodes
@@ -448,12 +394,58 @@ HTML;
     public function init()
     {
         $this->validateSourceData();
-        $this->_module = Config::initModule(Module::classname());
-        $this->initSelectedNode();
-        if (empty($this->emptyNodeMsg)) {
-             $this->emptyNodeMsg =  Yii::t('kvtree', 'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.');
-        }
+        $this->_module = self::module();
+        $this->saveNode();
         parent::init();
+    }
+
+    /**
+     * Saves a node based on form submitted
+     */
+    public function saveNode()
+    {
+        if (!isset($_POST['tree_node_modify'])) {
+            return;
+        }
+        $class = $this->query->modelClass;
+        $isNewRecord = $_POST['tree_node_modify'];
+        if ($isNewRecord) {
+            $model = new $class;
+            $successMsg = Yii::t('kvtree', 'The node was successfully created.');
+            $errorMsg = Yii::t('kvtree', 'Error while creating the node. Try again later.');
+        } else {
+            $idAttr = $this->_module->dataStructure['keyAttribute'];
+            $tag = explode("\\", $this->query->modelClass);
+            $tag = array_pop($tag);
+            $id = $_POST[$tag][$idAttr];
+            $model = $class::findOne($id);
+            $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
+            $errorMsg = Yii::t('kvtree', 'Error while saving the node. Try again later.');
+        }
+        $model->load($_POST);
+        $parentKey = $_POST['parent_key'];
+        if ($isNewRecord) {
+            if ($parentKey == 'root') {
+                $model->makeRoot();
+            } else {
+                $parent = $class::findOne($parentKey);
+            }
+            $model->appendTo($parent);
+        }
+        $success = false;
+        if ($model->save()) {
+            $this->displayValue = $model->id;
+            if ($model->active) {
+                $success = self::activateNode($model, $this->softDelete);
+            } else {
+                $success = self::removeNode($model, $this->softDelete);
+            }
+        }
+        if ($success) {
+            Yii::$app->session->setFlash('success', $successMsg);
+        } else {
+            Yii::$app->session->setFlash('error', $errorMsg);
+        }
     }
 
     /**
@@ -465,20 +457,6 @@ HTML;
         $this->initOptions();
         $this->registerAssets();
         echo $this->renderWidget();
-    }
-
-    /**
-     * Initializes the selected node
-     *
-     * @return void
-     */
-    protected function initSelectedNode()
-    {
-        $nodeSelected = Yii::$app->session->get('kvNodeId', '');
-        if (!empty($nodeSelected)) {
-            $this->displayValue = $nodeSelected;
-            Yii::$app->session->set('kvNodeId', '');
-        }
     }
 
     /**
@@ -508,7 +486,7 @@ HTML;
      */
     public static function module()
     {
-        return Config::getModule(Module::MODULE);
+        return Yii::$app->getModule('treemanager');
     }
 
     /**
@@ -523,6 +501,9 @@ HTML;
     public static function getConfig($config = [])
     {
         $module = self::module();
+        if (empty($module)) {
+            throw new InvalidConfigException("The 'tree-manager' module has not been setup in your Yii configuration file.");
+        }
         if (!empty($module->treeViewSettings)) {
             $config = array_replace_recursive($module->treeViewSettings, $config);
         }
@@ -565,9 +546,6 @@ HTML;
         if ($this->showCheckbox) {
             $css .= ' kv-has-checkbox';
         }
-        if (!$this->multiple) {
-            $css .= ' kv-single-select';
-        }
         Html::addCssClass($this->treeOptions, $css);
         Html::addCssClass($this->rootOptions, 'kv-tree-root');
         Html::addCssClass($this->nodeToggleOptions, 'kv-node-toggle');
@@ -596,7 +574,8 @@ HTML;
         $this->toolbarOptions['role'] = 'toolbar';
         $this->buttonGroupOptions['role'] = 'group';
         $this->clientMessages += [
-            'invalidCreateNode' => Yii::t('kvtree', 'Cannot create node. Parent node is not saved or is invalid.'),
+            'invalidCreateNode' => Yii::t('kvtree',
+                'You must select a valid node under which you wish to create an entry.'),
             'emptyNode' => Yii::t('kvtree', '(new)'),
             'removeNode' => Yii::t('kvtree', 'Are you sure you want to remove this node?'),
             'nodeRemoved' => Yii::t('kvtree', 'The node was removed successfully.'),
@@ -606,8 +585,8 @@ HTML;
             'nodeBottom' => Yii::t('kvtree', 'Already at bottom-most node in the hierarchy.'),
             'nodeLeft' => Yii::t('kvtree', 'Already at left-most node in the hierarchy.'),
             'nodeRight' => Yii::t('kvtree', 'Already at right-most node in the hierarchy.'),
-            'emptyNodeRemoved' => Yii::t('kvtree', 'The untitled node was removed.'),
-            'selectNode' => Yii::t('kvtree', 'Select a node by clicking on one of the tree items.'),
+            'noNodesSelected' => Yii::t('kvtree',
+                'No nodes selected. Select a node by clicking on one of the tree items.'),
         ];
         $defaultToolbar = [
             self::BTN_CREATE => [
@@ -651,13 +630,10 @@ HTML;
         }
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
         if ($this->defaultChildNodeIcon === null) {
-            $this->defaultChildNodeIcon = $this->getNodeIcon(1);
+            $this->defaultChildNodeIcon = $this->getNodeIcon(true);
         }
         if ($this->defaultParentNodeIcon === null) {
-            $this->defaultParentNodeIcon = $this->getNodeIcon(2);
-        }
-        if ($this->defaultParentNodeOpenIcon === null) {
-            $this->defaultParentNodeOpenIcon = $this->getNodeIcon(3);
+            $this->defaultParentNodeIcon = $this->getNodeIcon(false);
         }
         $this->_iconsList = $this->getIconsList();
     }
@@ -665,27 +641,22 @@ HTML;
     /**
      * Gets the default node icon markup
      *
-     * @param int $type 1 = child, 2 = parent, 3 = parent open
+     * @param bool $action whether child or parent
      *
      * @return string
      */
-    protected function getNodeIcon($type)
+    protected function getNodeIcon($child = true)
     {
         $css = $this->_iconPrefix;
-        switch ($type) {
-            case 1:
-                $css .= "file";
-                break;
-            case 2:
-                $css .= ($this->fontAwesome ? 'folder' : 'folder-close') . " kv-node-closed";
-                break;
-            case 3:
-                $css .= "folder-open kv-node-opened";
-                break;
-            default:
-                return null;
+        if ($child) {
+            $options = $this->childNodeIconOptions;
+            $css .= 'file';
+        } else {
+            $options = $this->parentNodeIconOptions;
+            $css .= $this->fontAwesome ? 'folder' : 'folder-close';
         }
-        return Html::tag('span', '', ['class' => $css]);
+        $icon = Html::tag('span', '', ['class' => $css]);
+        return Html::tag('span', $icon, $options);
     }
 
     /**
@@ -701,14 +672,15 @@ HTML;
      */
     protected function renderNodeIcon($icon, $iconType, $child = true)
     {
-        $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
         if (!empty($icon)) {
             $icon = $iconType == self::ICON_CSS ? Html::tag('span', '',
                 ['class' => $this->_iconPrefix . $icon]) : $icon;
+            $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
+            $icon = Html::tag('span', $icon, $options);
         } else {
-            $icon = $child ? $this->defaultChildNodeIcon : $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon;
+            $icon = $child ? $this->defaultChildNodeIcon : $this->defaultParentNodeIcon;
         }
-        return Html::tag('span', $icon, $options);
+        return $icon;
     }
 
     /**
@@ -826,7 +798,7 @@ HTML;
             '{search}' => $this->renderSearch(),
             '{toolbar}' => $this->renderToolbar(),
         ]) . "\n" .
-        Html::textInput('kv-node-selected', $this->value, $this->options) . "\n";
+        Html::textInput('kv-node-selected', $this->value, $this->options);
     }
 
     /**
@@ -1000,22 +972,22 @@ HTML;
                 'data-removable-all' => $node->isRemovableAll(),
             ];
             if (!$isChild) {
-                $css = ' kv-parent ';
+                $css = 'kv-parent ';
             }
             if (!$node->isVisible() && $this->isAdmin) {
-                $css .= ' kv-invisible';
+                $css .= 'kv-invisible';
             }
             if ($this->showCheckbox && $node->isSelected()) {
-                $css .= ' kv-selected ';
+                $css .= 'kv-selected ';
             }
             if ($node->isCollapsed()) {
-                $css .= ' kv-collapsed ';
+                $css .= 'kv-collapsed ';
             }
             if ($node->isDisabled()) {
-                $css .= ' kv-disabled ';
+                $css .= 'kv-disabled ';
             }
             if (!$node->isActive()) {
-                $css .= ' kv-inactive ';
+                $css .= 'kv-inactive ';
             }
             $indicators .= $isChild ? '' : $this->renderToggleIconContainer(false) . "\n";
             $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer(false) . "\n" : '';
@@ -1047,29 +1019,20 @@ HTML;
      */
     public function renderDetail()
     {
-        $modelClass = $this->query->modelClass;
-        $node = $modelClass::findOne($this->displayValue);
-        if (empty($node)) {
-            $msg = Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions);
-            return Html::tag('div', $msg, $this->detailOptions);
-        }
+        $class = $this->query->modelClass;
+        $node = $class::findOne($this->displayValue);
         $iconTypeAttribute = $this->_module->dataStructure['iconTypeAttribute'];
         if ($this->_iconsList !== false) {
             $node->$iconTypeAttribute = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);
         }
         $params = $this->_module->treeStructure + $this->_module->dataStructure + [
                 'node' => $node,
-                'action' => $this->nodeActions[Module::NODE_SAVE],
-                'modelClass' => $modelClass,
-                'currUrl' => Yii::$app->request->url,
+                'class' => $class,
+                'action' => Yii::$app->request->url,
                 'isAdmin' => $this->isAdmin,
-                'iconsList' => $this->_iconsList,
-                'softDelete' => $this->softDelete,
-                'showFormButtons' => $this->showFormButtons,
-                'nodeView' => $this->nodeView,
-                'nodeAddlViews' => $this->nodeAddlViews
+                'iconsList' => $this->_iconsList
             ];
-        $content = $this->render($this->nodeView, ['params' => $params]);
+        $content = $this->render($this->_module->nodeView, $params);
         return Html::tag('div', $content, $this->detailOptions);
     }
 
@@ -1091,9 +1054,7 @@ HTML;
         }
         $newSettings = [
             '' => '<em>' . Yii::t('kvtree', 'Default') . '</em> ( ' .
-                Html::tag('span', $this->defaultParentNodeIcon, $this->parentNodeIconOptions) . ' / ' . 
-                Html::tag('span', $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) . ' / ' . 
-                Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions) . ')'
+                $this->defaultParentNodeIcon . ' / ' . $this->defaultChildNodeIcon . ')'
         ];
         foreach ($settings as $suffix => $label) {
             $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->_iconPrefix . $suffix]) . ' ' . $label;
@@ -1108,16 +1069,14 @@ HTML;
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
-
         $this->pluginOptions += [
             'treeId' => $this->treeOptions['id'],
             'detailId' => $this->detailOptions['id'],
             'toolbarId' => $this->toolbarOptions['id'],
             'wrapperId' => $this->treeWrapperOptions['id'],
-            'actions' => $this->nodeActions,
+            'actions' => $this->_module->nodeActions,
             'modelClass' => $this->query->modelClass,
-            'formAction' => $this->nodeActions[Module::NODE_SAVE],
-            'currUrl' => Yii::$app->request->url,
+            'formAction' => Yii::$app->request->url,
             'messages' => $this->clientMessages,
             'enableCache' => ArrayHelper::getValue($this->cacheSettings, 'enableCache', true),
             'cacheTimeout' => ArrayHelper::getValue($this->cacheSettings, 'cacheTimeout', 300000),
@@ -1125,12 +1084,61 @@ HTML;
             'isAdmin' => $this->isAdmin,
             'showInactive' => $this->showInactive,
             'softDelete' => $this->softDelete,
-            'iconsList' => $this->_iconsList,
-            'showFormButtons' => $this->showFormButtons,
-            'nodeView' => $this->nodeView,
-            'nodeAddlViews' => $this->nodeAddlViews,
-            'multiple' => $this->multiple
+            'iconsList' => $this->_iconsList
         ];
         $this->registerPlugin('treeview');
+    }
+
+
+    /**
+     * Removes a node
+     *
+     * @param Tree $node the current node instance
+     * @param bool $softDelete whether to soft delete or hard delete
+     *
+     * @return bool status of activation/inactivation
+     */
+    public static function removeNode($node, $softDelete)
+    {
+        if (empty($node)) {
+            return false;
+        }
+        if ($softDelete == true) {
+            $node->active = false;
+            if ($node->removable_all) {
+                $children = $node->children()->all();
+                foreach ($children as $child) {
+                    $child->active = false;
+                    $child->save();
+                }
+            }
+            return $node->save();
+        } else {
+            return $node->removable_all ? $node->deleteWithChildren() : $node->delete();
+        }
+    }
+
+    /**
+     * Activates a node
+     *
+     * @param Tree $node the current node instance
+     * @param bool $softDelete whether to soft delete or hard delete
+     *
+     * @return bool status of activation/inactivation
+     */
+    public static function activateNode($node, $softDelete)
+    {
+        if (!$softDelete) {
+            return true;
+        }
+        $node->active = true;
+        if ($node->removable_all) {
+            $children = $node->children()->all();
+            foreach ($children as $child) {
+                $child->active = true;
+                $child->save();
+            }
+        }
+        return $node->save();
     }
 }
