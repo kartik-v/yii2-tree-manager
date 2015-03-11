@@ -55,6 +55,29 @@ class TreeView extends Widget
     const MOVE_RIGHT = 'r';
 
     /**
+     * @var array the actions for managing, deleting, and moving the tree nodes.
+     * The keys must be one of 'manage', 'save', 'remove', and 'move'. Defaults to:
+     *     [
+     *         'save' => Url::to(['/treemanager/node/save']),
+     *         'manage' => Url::to(['/treemanager/node/manage']),
+     *         'remove' => Url::to(['/treemanager/node/remove']),
+     *         'move' => Url::to(['/treemanager/node/move']),
+     *     ]
+     */
+    public $nodeActions = [];
+
+    /**
+     * @var string the view file that will render the form for editing the node.
+     */
+    public $nodeView;
+
+    /**
+     * @var array the list of additional view files that will be used
+     * to append content at various sections in the `nodeView` form.
+     */
+    public $nodeAddlViews = [];
+    
+    /**
      * @var ActiveQuery the query that will be used
      * as the data source for the TreeView. For example:
      * `Tree::find()->addOrderBy('root, lft')`
