@@ -40,7 +40,7 @@
         trigAlert = function ($alert) {
             setTimeout(function () {
                 $alert.fadeOut(1000);
-            }, 5000);
+            }, 6000);
         },
         delay = (function () {
             var timer = 0;
@@ -152,7 +152,8 @@
         renderForm: function (key, par, mesg) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = hashString(key + self.modelClass + self.isAdmin + parent),
-                vUrl = encodeURI(self.actions.manage + '?q=' + params);
+                vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
+            vUrl = encodeURI(vUrl + sep + 'q=' + params);
             self.parseCache();
             $.ajax({
                 type: 'post',

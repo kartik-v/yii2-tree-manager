@@ -8,3 +8,4 @@ version 1.0.0
 - (enh #4): Error trapping enhancements to `Tree::activateNode` and `Tree::removeNode`
 - (enh #5): Different default parent icons for collapsed and opened node states.
 - (enh #6): Selectively disable parent only flags for leaf nodes.
+- (enh #7): Client script enhancements.
