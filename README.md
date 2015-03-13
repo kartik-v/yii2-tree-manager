@@ -99,7 +99,18 @@ Configure the module named `treemanager` in the modules section of your Yii conf
 ```php
 'modules' => [
    'treemanager' =>  [
-        'class' => '\kartik\tree\Module',
+        'class'            => '\kartik\tree\Module',
+        'treeViewSettings' => [
+                'nodeView' => '@vendor/dmstr/yii2-pages-module/views/treeview/_form',
+                'nodeAddlViews' => [
+                    \kartik\tree\Module::VIEW_PART_1 => '',
+                    \kartik\tree\Module::VIEW_PART_2 => '',
+                    \kartik\tree\Module::VIEW_PART_3 => '',
+                    \kartik\tree\Module::VIEW_PART_4 => '',
+                    \kartik\tree\Module::VIEW_PART_5 => '',
+                ],
+                'fontAwesome' => true
+            ],
         // other module settings, refer detailed documentation
     ]
 ]
