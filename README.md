@@ -123,13 +123,12 @@ In your view files, you can now use the tree view directly to manage tree data a
 use kartik\tree\TreeView;
 echo TreeView::widget([
     // single query fetch to render the tree
-    'query' => Tree::find()->addOrderBy('root, lft'), 
-    'headingOptions' => ['label' => 'Categories'],
-    'fontAwesome' => false,     // optional
-    'isAdmin' => false,         // optional (toggle to enable admin mode)
-    'displayValue' => 1,        // initial display value
-    //'softDelete' => true,    // normally not needed to change
-    //'cacheSettings' => ['enableCache' => true] // normally not needed to change
+    'query'             => Tree::find()->addOrderBy('root, lft'), 
+    'headingOptions'    => ['label' => 'Categories'],
+    'isAdmin'           => false,                       // optional (toggle to enable admin mode)
+    'displayValue'      => 1,                           // initial display value
+    //'softDelete'      => true,                        // normally not needed to change
+    //'cacheSettings'   => ['enableCache' => true]      // normally not needed to change
 ]);
 ```
 
