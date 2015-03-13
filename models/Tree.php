@@ -251,7 +251,7 @@ class Tree extends \yii\db\ActiveRecord
                 }
             }
         }
-        if (!empty($this->nodeActivationErrors)) {
+        if ($this->nodeActivationErrors) {
             if ($currNode) {
                 $this->active = true;
                 if (!$this->save()) {
@@ -264,6 +264,9 @@ class Tree extends \yii\db\ActiveRecord
                 }
             }
         }
+        $this->active = true;
+        $this->save();
+
         return true;
     }
 
@@ -294,7 +297,7 @@ class Tree extends \yii\db\ActiveRecord
                     }
                 }
             }
-            if (!empty($this->nodeRemovalErrors)) {
+            if ($this->nodeRemovalErrors) {
                 if ($currNode) {
                     $this->active = false;
                     if (!$this->save()) {
@@ -307,6 +310,9 @@ class Tree extends \yii\db\ActiveRecord
                     }
                 }
             }
+            $this->active = false;
+            $this->save();
+
             return true;
         } else {
             return $this->removable_all ? $this->deleteWithChildren() : $this->delete();
@@ -320,6 +326,7 @@ class Tree extends \yii\db\ActiveRecord
     {
         $module = TreeView::module();
         $settings = ['class' => NestedSetsBehavior::className()] + $module->treeStructure;
+
         return [$settings];
     }
 

@@ -145,6 +145,12 @@ class NodeController extends \yii\web\Controller
         static::checkValidRequest();
         extract($_POST);
         $node = $class::findOne($id);
+
+        // Since variables from GET or POST requests are always strings, manually cast to boolean
+        if($softDelete == 'false') {
+            $softDelete = false;
+        }
+
         $success = $node->removeNode($softDelete);
         if ($success) {
             return Json::encode([

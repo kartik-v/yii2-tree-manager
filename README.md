@@ -99,7 +99,18 @@ Configure the module named `treemanager` in the modules section of your Yii conf
 ```php
 'modules' => [
    'treemanager' =>  [
-        'class' => '\kartik\tree\Module',
+        'class'            => '\kartik\tree\Module',
+        'treeViewSettings' => [
+                'nodeView' => '@vendor/dmstr/yii2-pages-module/views/treeview/_form',
+                'nodeAddlViews' => [
+                    \kartik\tree\Module::VIEW_PART_1 => '',
+                    \kartik\tree\Module::VIEW_PART_2 => '',
+                    \kartik\tree\Module::VIEW_PART_3 => '',
+                    \kartik\tree\Module::VIEW_PART_4 => '',
+                    \kartik\tree\Module::VIEW_PART_5 => '',
+                ],
+                'fontAwesome' => true
+            ],
         // other module settings, refer detailed documentation
     ]
 ]
@@ -112,13 +123,12 @@ In your view files, you can now use the tree view directly to manage tree data a
 use kartik\tree\TreeView;
 echo TreeView::widget([
     // single query fetch to render the tree
-    'query' => Tree::find()->addOrderBy('root, lft'), 
-    'headingOptions' => ['label' => 'Categories'],
-    'fontAwesome' => false,     // optional
-    'isAdmin' => false,         // optional (toggle to enable admin mode)
-    'displayValue' => 1,        // initial display value
-    //'softDelete' => true,    // normally not needed to change
-    //'cacheSettings' => ['enableCache' => true] // normally not needed to change
+    'query'             => Tree::find()->addOrderBy('root, lft'), 
+    'headingOptions'    => ['label' => 'Categories'],
+    'isAdmin'           => false,                       // optional (toggle to enable admin mode)
+    'displayValue'      => 1,                           // initial display value
+    //'softDelete'      => true,                        // normally not needed to change
+    //'cacheSettings'   => ['enableCache' => true]      // normally not needed to change
 ]);
 ```
 
