@@ -112,13 +112,12 @@ In your view files, you can now use the tree view directly to manage tree data a
 use kartik\tree\TreeView;
 echo TreeView::widget([
     // single query fetch to render the tree
-    'query' => Tree::find()->addOrderBy('root, lft'), 
-    'headingOptions' => ['label' => 'Categories'],
-    'fontAwesome' => false,     // optional
-    'isAdmin' => false,         // optional (toggle to enable admin mode)
-    'displayValue' => 1,        // initial display value
-    //'softDelete' => true,    // normally not needed to change
-    //'cacheSettings' => ['enableCache' => true] // normally not needed to change
+    'query'             => Tree::find()->addOrderBy('root, lft'), 
+    'headingOptions'    => ['label' => 'Categories'],
+    'isAdmin'           => false,                       // optional (toggle to enable admin mode)
+    'displayValue'      => 1,                           // initial display value
+    //'softDelete'      => true,                        // normally not needed to change
+    //'cacheSettings'   => ['enableCache' => true]      // normally not needed to change
 ]);
 ```
 
@@ -129,15 +128,18 @@ If you wish to use the tree input to select tree items, you can use the TreeView
 use kartik\tree\TreeViewInput;
 echo TreeViewInput::widget([
     // single query fetch to render the tree
-    'query' => Tree::find()->addOrderBy('root, lft'), 
-    'headingOptions'=>['label'=>'Categories'],
-    'name' => 'kv-product', // input name
-    'value' => '1,2,3',     // values selected (comma separated for multiple select)
-    'asDropdown' => true,   // will render the tree input widget as a dropdown.
-    'multiple' => true,     // set to false if you do not need multiple selection
-    'fontAwesome' => true,  // render font awesome icons
-    'rootOptions' => ['label'=>'<i class="fa fa-tree"></i>', 'class'=>'text-success'], // custom root label
-    //'options'=>['disabled' => true],
+    'query'             => Tree::find()->addOrderBy('root, lft'), 
+    'headingOptions'    => ['label' => 'Categories'],
+    'name'              => 'kv-product',    // input name
+    'value'             => '1,2,3',         // values selected (comma separated for multiple select)
+    'asDropdown'        => true,            // will render the tree input widget as a dropdown.
+    'multiple'          => true,            // set to false if you do not need multiple selection
+    'fontAwesome'       => true,            // render font awesome icons
+    'rootOptions'       => [
+        'label' => '<i class="fa fa-tree"></i>', 
+        'class'=>'text-success'
+    ],                                      // custom root label
+    //'options'         => ['disabled' => true],
 ]);
 ```
 
