@@ -251,17 +251,15 @@ class Tree extends \yii\db\ActiveRecord
                 }
             }
         }
-        if (!empty($this->nodeActivationErrors)) {
-            if ($currNode) {
-                $this->active = true;
-                if (!$this->save()) {
-                    $this->nodeActivationErrors[] = [
-                        'id' => $this->$idAttribute,
-                        'name' => $this->$nameAttribute,
-                        'error' => $this->getFirstErrors()
-                    ];
-                    return false;
-                }
+        if ($currNode) {
+            $this->active = true;
+            if (!$this->save()) {
+                $this->nodeActivationErrors[] = [
+                    'id' => $this->$idAttribute,
+                    'name' => $this->$nameAttribute,
+                    'error' => $this->getFirstErrors()
+                ];
+                return false;
             }
         }
         return true;
@@ -294,17 +292,15 @@ class Tree extends \yii\db\ActiveRecord
                     }
                 }
             }
-            if (!empty($this->nodeRemovalErrors)) {
-                if ($currNode) {
-                    $this->active = false;
-                    if (!$this->save()) {
-                        $this->nodeRemovalErrors[] = [
-                            'id' => $this->$idAttribute,
-                            'name' => $this->$nameAttribute,
-                            'error' => $this->getFirstErrors()
-                        ];
-                        return false;
-                    }
+            if ($currNode) {
+                $this->active = false;
+                if (!$this->save()) {
+                    $this->nodeRemovalErrors[] = [
+                        'id' => $this->$idAttribute,
+                        'name' => $this->$nameAttribute,
+                        'error' => $this->getFirstErrors()
+                    ];
+                    return false;
                 }
             }
             return true;

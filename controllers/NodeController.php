@@ -18,6 +18,27 @@ use kartik\tree\TreeView;
 class NodeController extends \yii\web\Controller
 {
     /**
+     * @var array the list of keys in $_POST which must be cast as boolean
+     */
+    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'multiple', 'treeNodeModify'];
+    
+    /**
+     * Gets the data from $_POST after parsing boolean values
+     * @return array
+     */
+    protected static function getPostData()
+    {
+        if (empty($_POST)) {
+            return [];
+        }
+        $out = [];
+        foreach ($_POST as $key => $value) {
+            $out[$key] = in_array($key, static::$boolKeys) ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : $value;
+        }
+        return $out;
+    }
+    
+    /**
      * Checks if request is valid and throws exception if invalid condition is true
      *
      * @param bool $isInvalid whether the request is invalid
@@ -43,7 +64,7 @@ class NodeController extends \yii\web\Controller
     {
         static::checkValidRequest();
         $parentKey = null;
-        extract($_POST);
+        extract(static::getPostData());
         if (!isset($id) || empty($id)) {
             $node = new $modelClass;
             $node->initDefaults();
@@ -81,7 +102,7 @@ class NodeController extends \yii\web\Controller
     public function actionSave()
     {
         static::checkValidRequest(!isset($_POST['treeNodeModify']));
-        extract($_POST);
+        extract(static::getPostData());
         $module = TreeView::module();
         /**
          * @var \kartik\tree\models\Tree $node
@@ -143,7 +164,7 @@ class NodeController extends \yii\web\Controller
     public function actionRemove()
     {
         static::checkValidRequest();
-        extract($_POST);
+        extract(static::getPostData());
         $node = $class::findOne($id);
         $success = $node->removeNode($softDelete);
         if ($success) {
@@ -165,7 +186,7 @@ class NodeController extends \yii\web\Controller
     public function actionMove()
     {
         static::checkValidRequest();
-        extract($_POST);
+        extract(static::getPostData());
         $nodeFrom = $class::findOne($idFrom);
         $nodeTo = $class::findOne($idTo);
         $success = false;
