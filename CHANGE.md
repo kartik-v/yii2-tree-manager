@@ -10,3 +10,4 @@ version 1.0.0
 - (enh #6): Selectively disable parent only flags for leaf nodes.
 - (enh #7): Client script enhancements.
 - (enh #9): Cast true & false variables in `$_POST` to boolean.
+- (enh #10): Avoid duplicate URL encoding.

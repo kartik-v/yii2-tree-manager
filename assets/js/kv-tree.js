@@ -1,7 +1,8 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @package yii2-tree-manager
  * @version 1.0.0
- *
+ * 
  * Tree View Validation Module.
  *
  * Author: Kartik Visweswaran
@@ -12,7 +13,8 @@
 (function ($) {
     /*jshint bitwise: false*/
     "use strict";
-    var defaultBtns = {
+    var QUERY_PARAM = 'kvtree',
+        defaultBtns = {
             'create': 'create',
             'createR': 'create-root',
             'trash': 'remove',
@@ -153,7 +155,7 @@
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = hashString(key + self.modelClass + self.isAdmin + parent),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
-            vUrl = encodeURI(vUrl + sep + 'q=' + params);
+            vUrl += encodeURI(sep + QUERY_PARAM + '=' + params);
             self.parseCache();
             $.ajax({
                 type: 'post',
