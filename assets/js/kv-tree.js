@@ -153,7 +153,7 @@
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = hashString(key + self.modelClass + self.isAdmin + parent),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
-            vUrl = encodeURI(vUrl + sep + 'q=' + params);
+            vUrl += encodeURI(sep + 'q=' + params);
             self.parseCache();
             $.ajax({
                 type: 'post',
