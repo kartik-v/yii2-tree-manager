@@ -18,6 +18,10 @@ use yii\helpers\Url;
  * @var kartik\tree\models\Tree $node
  * @var kartik\form\ActiveForm  $form
  */
+
+/**
+ * SECTION 1: Initialize params & setup helper methods.
+ */
 extract($params);
 $isAdmin = ($isAdmin == true || $isAdmin === "true");
 if (empty($parentKey)) {
@@ -44,36 +48,43 @@ if ($node->isNewRecord) {
     $flagOptions['disabled'] = $node->isLeaf();
 }
 $form = ActiveForm::begin(['action' => $action]);
-function showAlert($type, $body = '', $hide = true)
-{
+
+$showAlert = function ($type, $body = '', $hide = true) {
     $class = "alert alert-{$type}";
     if ($hide) {
         $class .= ' hide';
     }
     return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
-}
+};
 
-function renderContent($part)
-{
+$renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
     if (empty($nodeAddlViews[$part])) {
         return '';
     }
     $p = $params;
     $p['form'] = $form;
     return $this->render($nodeAddlViews[$part], $p);
-}
+};
 
 $module = TreeView::module();
-// In case you are extending this form, it is mandatory to set 
-// all these hidden inputs as defined below.
+
+
+/**
+ * SECTION 2: Initialize hidden attributes. In case you are extending this
+ * and creating your own view, it is mandatory to set all these hidden
+ * inputs as defined below.
+ */
 echo Html::hiddenInput('treeNodeModify', $node->isNewRecord);
 echo Html::hiddenInput('parentKey', $parentKey);
 echo Html::hiddenInput('currUrl', $currUrl);
 echo Html::hiddenInput('modelClass', $modelClass);
 echo Html::hiddenInput('softDelete', $softDelete);
 $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
-?>
-<?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
+
+/**
+ * SECTION 3: Setup form action buttons.
+ */
+if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
     <div class="pull-right">
         <?= Html::resetButton(
             '<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
@@ -88,25 +99,38 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
     <h3><?= $parentName . $name ?></h3>
     <div class="clearfix"></div>
     <hr style="margin: 10px 0;">
-<?php /* The alerts container is important */ ?>
+<?php
+/**
+ * SECTION 4: Setup alert containers. Mandatory to set this up.
+ */
+?>
     <div class="kv-treeview-alerts">
         <?php
         if (Yii::$app->session->hasFlash('success')) {
-            echo showAlert('success', Yii::$app->session->getFlash('success'), false);
+            echo $showAlert('success', Yii::$app->session->getFlash('success'), false);
         } else {
-            echo showAlert('success');
+            echo $showAlert('success');
         }
         if (Yii::$app->session->hasFlash('error')) {
-            echo showAlert('danger', Yii::$app->session->getFlash('error'), false);
+            echo $showAlert('danger', Yii::$app->session->getFlash('error'), false);
         } else {
-            echo showAlert('danger');
+            echo $showAlert('danger');
         }
-        echo showAlert('warning');
-        echo showAlert('info');
+        echo $showAlert('warning');
+        echo $showAlert('info');
         ?>
     </div>
-<?= renderContent(Module::VIEW_PART_1); ?>
-<?php if ($iconsList == 'text' || $iconsList == 'none') : ?>
+<?php
+/**
+ * SECTION 5: Additional views part 1 - before all form attributes.
+ */
+echo $renderContent(Module::VIEW_PART_1);
+
+/**
+ * SECTION 6: Basic node attributes for editing.
+ */
+if ($iconsList == 'text' || $iconsList == 'none') :
+    ?>
     <div class="row">
         <div class="col-sm-4">
             <?= $keyField ?>
@@ -116,21 +140,21 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
         </div>
     </div>
     <?php if ($iconsList === 'text') : ?>
-        <div class="row">
-            <div class="col-sm-4">
-                <?= $form->field($node, $iconTypeAttribute)->dropdownList(
-                    [
-                        TreeView::ICON_CSS => 'CSS Suffix',
-                        TreeView::ICON_RAW => 'Raw Markup',
-                    ],
-                    $inputOpts
-                ) ?>
-            </div>
-            <div class="col-sm-8">
-                <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>
-            </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <?= $form->field($node, $iconTypeAttribute)->dropdownList(
+                [
+                    TreeView::ICON_CSS => 'CSS Suffix',
+                    TreeView::ICON_RAW => 'Raw Markup',
+                ],
+                $inputOpts
+            ) ?>
         </div>
-    <?php endif; ?>
+        <div class="col-sm-8">
+            <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>
+        </div>
+    </div>
+<?php endif; ?>
 <?php else : ?>
     <div class="row">
         <div class="col-sm-6">
@@ -163,10 +187,24 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
         </div>
     </div>
 <?php endif; ?>
-<?= renderContent(Module::VIEW_PART_2); ?>
-<?php if ($isAdmin): ?>
+<?php
+/**
+ * SECTION 7: Additional views part 2 - before admin zone.
+ */
+echo $renderContent(Module::VIEW_PART_2);
+
+/**
+ * SECTION 8: Administrator attributes zone.
+ */
+if ($isAdmin):
+    ?>
     <h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
-    <?= renderContent(Module::VIEW_PART_3); ?>
+    <?php
+    /**
+     * SECTION 9: Additional views part 3 - within admin zone @ BEGIN.
+     */
+    echo $renderContent(Module::VIEW_PART_3);
+    ?>
     <div class="row">
         <div class="col-sm-4">
             <?= $form->field($node, 'active')->checkbox() ?>
@@ -187,7 +225,17 @@ $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
             <?= $form->field($node, 'movable_r')->checkbox() ?>
         </div>
     </div>
-    <?= renderContent(Module::VIEW_PART_4); ?>
+    <?php
+    /**
+     * SECTION 9: Additional views part 4 - within admin zone @ END.
+     */
+    echo $renderContent(Module::VIEW_PART_4);
+    ?>
 <?php endif; ?>
 <?php ActiveForm::end() ?>
-<?= renderContent(Module::VIEW_PART_5); ?>
+<?php
+/**
+ * SECTION 10: Additional views part 5 - after admin zone.
+ */
+echo $renderContent(Module::VIEW_PART_5);
+?>

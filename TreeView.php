@@ -1054,7 +1054,7 @@ HTML;
             $msg = Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions);
             return Html::tag('div', $msg, $this->detailOptions);
         }
-        $iconTypeAttribute = $this->_module->dataStructure['iconTypeAttribute'];
+        $iconTypeAttribute = ArrayHelper::getValue($this->_module->dataStructure, 'iconTypeAttribute', 'icon_type');
         if ($this->_iconsList !== false) {
             $node->$iconTypeAttribute = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);
         }
