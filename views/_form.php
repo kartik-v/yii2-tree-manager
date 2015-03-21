@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
  * @package yii2-tree-manager
- * @version 1.5.0
+ * @version 1.0.0
  */
 
 use kartik\form\ActiveForm;
@@ -18,12 +18,20 @@ use yii\helpers\Url;
  * @var kartik\tree\models\Tree $node
  * @var kartik\form\ActiveForm  $form
  */
+?>
 
+<?php
 /**
- * SECTION 1: Initialize params & setup helper methods.
+ * SECTION 1: Initialize node view params & setup helper methods.
  */
+?>
+<?php
 extract($params);
-$isAdmin = ($isAdmin == true || $isAdmin === "true");
+$isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
+$inputOpts = [];                                      // readonly/disabled input options for node
+$flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
+
+// parse parent info
 if (empty($parentKey)) {
     $parent = $node->parents(1)->one();
     $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
@@ -33,8 +41,14 @@ if (empty($parentKey)) {
     $parent = $modelClass::findOne($parentKey);
 }
 $parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
-$inputOpts = [];
-$flagOptions = ['class' => 'kv-parent-flag'];
+
+// get module and setup form
+$module = TreeView::module();                     // the treemanager module
+$form = ActiveForm::begin(['action' => $action]); // the active form instance
+// the primary key input field
+$keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
+
+// initialize for create or update
 if ($node->isNewRecord) {
     $name = Yii::t('kvtree', 'Untitled');
 } else {
@@ -47,8 +61,8 @@ if ($node->isNewRecord) {
     }
     $flagOptions['disabled'] = $node->isLeaf();
 }
-$form = ActiveForm::begin(['action' => $action]);
 
+// show alert helper
 $showAlert = function ($type, $body = '', $hide = true) {
     $class = "alert alert-{$type}";
     if ($hide) {
@@ -56,7 +70,7 @@ $showAlert = function ($type, $body = '', $hide = true) {
     }
     return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
 };
-
+// render additional view content helper
 $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
     if (empty($nodeAddlViews[$part])) {
         return '';
@@ -65,40 +79,40 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
     $p['form'] = $form;
     return $this->render($nodeAddlViews[$part], $p);
 };
+?>
 
-$module = TreeView::module();
-
-
+<?php
 /**
  * SECTION 2: Initialize hidden attributes. In case you are extending this
  * and creating your own view, it is mandatory to set all these hidden
  * inputs as defined below.
  */
+?>
+<?php
 echo Html::hiddenInput('treeNodeModify', $node->isNewRecord);
 echo Html::hiddenInput('parentKey', $parentKey);
 echo Html::hiddenInput('currUrl', $currUrl);
 echo Html::hiddenInput('modelClass', $modelClass);
 echo Html::hiddenInput('softDelete', $softDelete);
-$keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
+?>
 
+<?php
 /**
  * SECTION 3: Setup form action buttons.
  */
-if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
+?>
+<?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
     <div class="pull-right">
-        <?= Html::resetButton(
-            '<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
-            ['class' => 'btn btn-default']
-        ) ?>
-        <?= Html::submitButton(
-            '<i class="glyphicon glyphicon-floppy-disk"></i> ' . Yii::t('kvtree', 'Save'),
-            ['class' => 'btn btn-primary']
-        ) ?>
+        <?= Html::resetButton('<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
+            ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('<i class="glyphicon glyphicon-floppy-disk"></i> ' . Yii::t('kvtree', 'Save'),
+            ['class' => 'btn btn-primary']) ?>
     </div>
 <?php endif; ?>
     <h3><?= $parentName . $name ?></h3>
     <div class="clearfix"></div>
     <hr style="margin: 10px 0;">
+
 <?php
 /**
  * SECTION 4: Setup alert containers. Mandatory to set this up.
@@ -120,17 +134,22 @@ if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
         echo $showAlert('info');
         ?>
     </div>
+
 <?php
 /**
  * SECTION 5: Additional views part 1 - before all form attributes.
  */
+?>
+<?php
 echo $renderContent(Module::VIEW_PART_1);
+?>
 
+<?php
 /**
  * SECTION 6: Basic node attributes for editing.
  */
-if ($iconsList == 'text' || $iconsList == 'none') :
-    ?>
+?>
+<?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
     <div class="row">
         <div class="col-sm-4">
             <?= $keyField ?>
@@ -139,23 +158,20 @@ if ($iconsList == 'text' || $iconsList == 'none') :
             <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
         </div>
     </div>
-    <?php if ($iconsList === 'text') : ?>
-    <div class="row">
-        <div class="col-sm-4">
-            <?= $form->field($node, $iconTypeAttribute)->dropdownList(
-                [
+    <?php if ($iconsList === 'text'): ?>
+        <div class="row">
+            <div class="col-sm-4">
+                <?= $form->field($node, $iconTypeAttribute)->dropdownList([
                     TreeView::ICON_CSS => 'CSS Suffix',
                     TreeView::ICON_RAW => 'Raw Markup',
-                ],
-                $inputOpts
-            ) ?>
+                ], $inputOpts) ?>
+            </div>
+            <div class="col-sm-8">
+                <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>
+            </div>
         </div>
-        <div class="col-sm-8">
-            <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>
-        </div>
-    </div>
-<?php endif; ?>
-<?php else : ?>
+    <?php endif; ?>
+<?php else: ?>
     <div class="row">
         <div class="col-sm-6">
             <?= $keyField ?>
@@ -163,47 +179,51 @@ if ($iconsList == 'text' || $iconsList == 'none') :
             <?= $form->field($node, $nameAttribute)->textArea(['rows' => 2] + $inputOpts) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($node, $iconAttribute)->multiselect(
-                $iconsList,
-                [
-                    'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
-                        if ($index == 0 && $value == '') {
-                            $checked = true;
-                            $value = '';
-                        }
-                        return '<div class="radio">' . Html::radio(
-                            $name,
-                            $checked,
-                            [
-                                'value' => $value,
-                                'label' => $label,
-                                'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled'])
-                            ]
-                        ) . '</div>';
-                    },
-                    'selector' => 'radio',
-                ]
-            ) ?>
+            <?= $form->field($node, $iconAttribute)->multiselect($iconsList, [
+                'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
+                    if ($index == 0 && $value == '') {
+                        $checked = true;
+                        $value = '';
+                    }
+                    return '<div class="radio">' . Html::radio($name, $checked, [
+                        'value' => $value,
+                        'label' => $label,
+                        'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled'])
+                    ]) . '</div>';
+                },
+                'selector' => 'radio',
+            ]) ?>
         </div>
     </div>
 <?php endif; ?>
+
 <?php
 /**
  * SECTION 7: Additional views part 2 - before admin zone.
  */
-echo $renderContent(Module::VIEW_PART_2);
+?>
+<?= $renderContent(Module::VIEW_PART_2) ?>
 
+<?php
 /**
  * SECTION 8: Administrator attributes zone.
  */
-if ($isAdmin):
-    ?>
+?>
+<?php if ($isAdmin): ?>
     <h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
+
     <?php
     /**
-     * SECTION 9: Additional views part 3 - within admin zone @ BEGIN.
+     * SECTION 9: Additional views part 3 - within admin zone
+     * BEFORE mandatory attributes.
      */
-    echo $renderContent(Module::VIEW_PART_3);
+    ?>
+    <?= $renderContent(Module::VIEW_PART_3) ?>
+
+    <?php
+    /**
+     * SECTION 10: Default mandatory admin controlled attributes.
+     */
     ?>
     <div class="row">
         <div class="col-sm-4">
@@ -225,17 +245,22 @@ if ($isAdmin):
             <?= $form->field($node, 'movable_r')->checkbox() ?>
         </div>
     </div>
+
     <?php
     /**
-     * SECTION 9: Additional views part 4 - within admin zone @ END.
+     * SECTION 11: Additional views part 4 - within admin zone
+     * AFTER mandatory attributes.
      */
-    echo $renderContent(Module::VIEW_PART_4);
     ?>
+    <?= $renderContent(Module::VIEW_PART_4) ?>
+
 <?php endif; ?>
 <?php ActiveForm::end() ?>
+
 <?php
 /**
- * SECTION 10: Additional views part 5 - after admin zone.
+ * SECTION 12: Additional views part 5 accessible by all users
+ * after admin zone.
  */
-echo $renderContent(Module::VIEW_PART_5);
 ?>
+<?= $renderContent(Module::VIEW_PART_5) ?>
