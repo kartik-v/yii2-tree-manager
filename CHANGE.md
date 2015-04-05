@@ -1,6 +1,6 @@
 version 1.0.0
 =============
-** Date:** 11-Mar-2015
+** Date:** 05-Apr-2015
 
 - Initial release
 - (bug #2): Empty node validation on tree init.
@@ -12,3 +12,4 @@ version 1.0.0
 - (enh #9): Cast true & false variables in `$_POST` to boolean.
 - (enh #10): Avoid duplicate URL encoding.
 - (enh #13): Use Closure methods for rendering `nodeAddlViews`.
+- (enh #15): Missing namespace for `Model` class in `TreeViewInput`.

@@ -12,12 +12,10 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\base\Model;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\web\View;
 use kartik\tree\models\Tree;
-use kartik\base\Widget;
 
 /**
  * An input widget that extends kartik\tree\TreeView, and allows one to
