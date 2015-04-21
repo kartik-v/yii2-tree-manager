@@ -1,11 +1,11 @@
 yii2-tree-manager
 =================
 
-[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager) 
-[![License](https://poser.pugx.org/kartik-v/yii2-tree-manager/license.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
-[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/downloads.svg)](https://packagist.org/packages/kartik-v/yii2-tree-manager) 
-[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/monthly.png)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
-[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/daily.png)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![License](https://poser.pugx.org/kartik-v/yii2-tree-manager/license)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/downloads)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/monthly)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/daily)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
 
 An enhanced tree management module from Krajee with tree node selection and manipulation using nested sets. The extension features are listed below:
 
