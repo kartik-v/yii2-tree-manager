@@ -1,6 +1,6 @@
 version 1.0.0
 =============
-** Date:** 05-Apr-2015
+**Date:** 21-Apr-2015
 
 - Initial release
 - (bug #2): Empty node validation on tree init.
