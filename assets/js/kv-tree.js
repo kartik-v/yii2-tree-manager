@@ -176,17 +176,18 @@
                 },
                 url: vUrl,
                 cache: true,
-                beforeSend: function () {
+                beforeSend: function (jqXHR) {
+                    self.raise('treeview.beforeselect', [key, jqXHR]);
                     $detail.html('');
                     addCss($detail, 'kv-loading');
                 },
-                success: function (data) {
+                success: function (data, textStatus, jqXHR) {
                     if (data.status === 'error') {
                         $detail.html(data.out);
-                        self.raise('treeview.selecterror', [key]);
+                        self.raise('treeview.selecterror', [key, data, textStatus, jqXHR]);
                     } else {
                         $detail.html(data.out);
-                        self.raise('treeview.selected', [key]);
+                        self.raise('treeview.selected', [key, data, textStatus, jqXHR]);
                     }
                     $detail.removeClass('kv-loading');
                     // form reset
@@ -197,6 +198,9 @@
                     if (msg !== false && !isEmpty(msg.out)) {
                         self.showAlert(msg.out, msg.type);
                     }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    self.raise('treeview.selectajaxerror', [key, jqXHR, textStatus, errorThrown]);
                 }
             });
         },
@@ -284,50 +288,56 @@
             }
             var key = $node.data('key');
             $.ajax({
-                type: 'post',
-                dataType: 'json',
-                data: {'id': key, 'class': self.modelClass, 'softDelete': self.softDelete},
-                url: self.actions.remove,
-                beforeSend: function () {
-                    $form.hide();
-                    self.removeAlert();
-                    addCss($detail, 'kv-loading');
-                },
-                success: function (data) {
-                    if (data.status === 'success') {
-                        if ((self.isAdmin || self.showInactive) && self.softDelete) {
-                            self.showAlert(data.out, 'info');
-                            $form.show();
-                            var fld = self.modelClass.split('\\').pop(),
-                                $cbx = $form.find('input[name="' + fld + '[active]"]');
-                            $cbx.val(false);
-                            $cbx.prop('checked', false);
-                            addCss($node, 'kv-inactive');
-                            if ($node.data('removableAll')) {
-                                addCss($node.find('li'), 'kv-inactive');
+                    type: 'post',
+                    dataType: 'json',
+                    data: {'id': key, 'class': self.modelClass, 'softDelete': self.softDelete},
+                    url: self.actions.remove,
+                    beforeSend: function (jqXHR) {
+                        self.raise('treeview.beforeremove', [key, jqXHR]);
+                        $form.hide();
+                        self.removeAlert();
+                        addCss($detail, 'kv-loading');
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status === 'success') {
+                            if ((self.isAdmin || self.showInactive) && self.softDelete) {
+                                self.showAlert(data.out, 'info');
+                                $form.show();
+                                var fld = self.modelClass.split('\\').pop(),
+                                    $cbx = $form.find('input[name="' + fld + '[active]"]');
+                                $cbx.val(false);
+                                $cbx.prop('checked', false);
+                                addCss($node, 'kv-inactive');
+                                if ($node.data('removableAll')) {
+                                    addCss($node.find('li'), 'kv-inactive');
+                                }
+                                addCss($node, 'kv-inactive');
+                            } else {
+                                clearNode();
                             }
-                            addCss($node, 'kv-inactive');
+                            if (!self.softDelete) {
+                                self.disableToolbar();
+                            }
+                            self.raise('treeview.remove', [key, data, textStatus, jqXHR]);
                         } else {
-                            clearNode();
+                            self.showAlert(data.out, 'danger');
+                            $form.show();
+                            self.raise('treeview.removeerror', [key, data, textStatus, jqXHR]);
                         }
-                        if (!self.softDelete) {
-                            self.disableToolbar();
-                        }
-                        self.raise('treeview.remove', [key]);
-                    } else {
-                        self.showAlert(data.out, 'danger');
-                        $form.show();
-                        self.raise('treeview.removeerror', [key]);
+                        $detail.removeClass('kv-loading');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        self.raise('treeview.removeajaxerror', [key, jqXHR, textStatus, errorThrown]);
                     }
-                    $detail.removeClass('kv-loading');
                 }
-            });
+            )
+            ;
         },
         move: function (dir) {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $nodeFrom = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
                 $form = $detail.find('form'), $nodeTo = null, keyFrom, keyTo, parentIcon, childIcon,
-                outMsg;
+                outMsg, isRoot = false, $parent;
             if ($nodeText.length === 0 || $nodeFrom.hasClass('kv-disabled')) {
                 return;
             }
@@ -351,9 +361,14 @@
             }
             if (dir === 'l') {
                 $nodeTo = $nodeFrom.parent('ul').closest('li.kv-parent');
-                if ($nodeTo.length === 0 || $nodeTo.parent('ul').hasClass('kv-tree')) {
+                if ($nodeTo.length === 0) {
                     window.alert(msg.nodeLeft);
                     return;
+                }
+                $parent = $nodeTo.parent('ul');
+                isRoot = $parent.hasClass('kv-tree');
+                if (isRoot) {
+                    $nodeTo = $parent.children('li:last-child');
                 }
             }
             if (dir === 'r') {
@@ -364,16 +379,17 @@
                 }
             }
             keyFrom = $nodeFrom.data('key');
-            keyTo = $nodeTo.data('key');
+            keyTo = isRoot ? '' : $nodeTo.data('key');
             $.ajax({
                 type: 'post',
                 dataType: 'json',
                 data: {'idFrom': keyFrom, 'idTo': keyTo, 'class': self.modelClass, 'dir': dir},
                 url: self.actions.move,
-                beforeSend: function () {
+                beforeSend: function (jqXHR) {
+                    self.raise('treeview.beforemove', [dir, keyFrom, keyTo, jqXHR]);
                     addCss(self.$treeContainer, 'kv-loading-search');
                 },
-                success: function (data) {
+                success: function (data, textStatus, jqXHR) {
                     if ($detail.length > 0) {
                         self.removeAlert();
                     }
@@ -422,11 +438,11 @@
                                 $(this).removeClass('kv-collapsed');
                             }
                         });
-                        self.raise('treeview.move', [dir, keyFrom, keyTo]);
+                        self.raise('treeview.move', [dir, keyFrom, keyTo, data, textStatus, jqXHR]);
                     } else {
                         if ($detail.length > 0) {
                             self.showAlert(data.out, 'danger');
-                            self.raise('treeview.moveerror', [dir, keyFrom, keyTo]);
+                            self.raise('treeview.moveerror', [dir, keyFrom, keyTo, data, textStatus, jqXHR]);
                         }
                     }
                     self.$treeContainer.removeClass('kv-loading-search');
@@ -437,7 +453,7 @@
                         self.showAlert(errorThrown, 'danger');
                     }
                     self.$treeContainer.removeClass('kv-loading-search');
-                    self.raise('treeview.moveerror', [dir, keyFrom, keyTo]);
+                    self.raise('treeview.moveajaxerror', [dir, keyFrom, keyTo, jqXHR, textStatus, errorThrown]);
                 }
             });
         },
@@ -742,7 +758,8 @@
                 }
             });
         }
-    };
+    }
+    ;
 
     $.fn.treeview = function (option) {
         var args = Array.apply(null, arguments), $this, data, options;
@@ -767,4 +784,5 @@
 
     $.fn.treeview.Constructor = TreeView;
 
-})(window.jQuery);
+})
+(window.jQuery);

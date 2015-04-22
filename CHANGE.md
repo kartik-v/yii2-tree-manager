@@ -1,3 +1,9 @@
+version 1.0.1
+=============
+**Date:** 22-Apr-2015
+
+- (enh #18): Add new plugin events and enhance plugin event parameters.
+
 version 1.0.0
 =============
 **Date:** 21-Apr-2015
