@@ -21,6 +21,7 @@ An enhanced tree management module from Krajee with tree node selection and mani
     - Ability to reorder tree nodes (move up, down, left or right).
     - Configure tree node icons, styles, and ability to add checkboxes to tree nodes
     - i18N translations enabled across the module.
+- Includes various jquery plugin events for advanced usage that are triggered on various tree manipulation actions.
 - **Bonus:** Includes a **TreeViewInput** widget that allows you to use the treeview as an input widget. The TreeViewInput widget is uniquely designed by Krajee (using jQuery & PHP with HTML5/CSS) to appear as a dropdown selection menu. It allows multiple selection or single selection of values/nodes from the tree.    
 - A Tree model that builds upon the yii2-nested-set model and is made to be easily extensible for various use cases. It includes prebuilt flags for each tree node. Check the Tree Model documentation for more.
 - **active:** whether a tree node is active (if soft delete is enabled, the tree node will be just inactivated instead of deleting from database).
