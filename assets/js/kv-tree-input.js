@@ -38,7 +38,7 @@
                 self.$input.html(self.caret + self.placeholder);
                 return;
             }
-            keys = self.value.split(',');
+            keys = self.value.toString().split(',');
             for (i = 0; i < keys.length; i++) {
                 $node = self.$tree.find('li[data-key="' + keys[i] + '"]');
                 desc = $node.find('>.kv-tree-list .kv-node-label').text();
