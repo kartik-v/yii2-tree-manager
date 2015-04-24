@@ -9,7 +9,8 @@
 namespace kartik\tree\models;
 
 use Yii;
-use \kartik\tree\TreeView;
+use yii\helpers\Html;
+use kartik\tree\TreeView;
 use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
@@ -38,6 +39,14 @@ use creocoder\nestedsets\NestedSetsBehavior;
  */
 class Tree extends \yii\db\ActiveRecord
 {
+    /**
+     * @var bool whether to HTML encode the tree node names. Defaults to `true`.
+     */
+    public $encodeNodeNames = true;
+
+    /**
+     * @var array the list of boolean value attributes
+     */
     public static $boolAttribs = [
         'active',
         'selected',
@@ -53,6 +62,9 @@ class Tree extends \yii\db\ActiveRecord
         'removable_all'
     ];
 
+    /**
+     * @var array the default list of boolean attributes with initial value = `false`
+     */
     public static $falseAttribs = [
         'selected',
         'disabled',
@@ -107,6 +119,18 @@ class Tree extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * Gets the parsed node name based on `Tree::encodeNodeNames` property
+     *
+     * @return string
+     */
+    public function getNodeName()
+    {
+        $module = TreeView::module();
+        extract($module->dataStructure);
+        return $this->encodeNodeNames === false ? $this->$nameAttribute : Html::encode($this->$nameAttribute);
+    }
+    
     /**
      * Sets default value of a model attribute
      *
@@ -245,7 +269,7 @@ class Tree extends \yii\db\ActiveRecord
                 if (!$child->save()) {
                     $this->nodeActivationErrors[] = [
                         'id' => $child->$idAttribute,
-                        'name' => $child->$nameAttribute,
+                        'name' => $child->getNodeName(),
                         'error' => $child->getFirstErrors()
                     ];
                 }
@@ -256,7 +280,7 @@ class Tree extends \yii\db\ActiveRecord
             if (!$this->save()) {
                 $this->nodeActivationErrors[] = [
                     'id' => $this->$idAttribute,
-                    'name' => $this->$nameAttribute,
+                    'name' => $this->getNodeName(),
                     'error' => $this->getFirstErrors()
                 ];
                 return false;
@@ -286,7 +310,7 @@ class Tree extends \yii\db\ActiveRecord
                     if (!$child->save()) {
                         $this->nodeRemovalErrors[] = [
                             'id' => $child->$idAttribute,
-                            'name' => $child->$nameAttribute,
+                            'name' => $child->getNodeName(),
                             'error' => $child->getFirstErrors()
                         ];
                     }
@@ -297,7 +321,7 @@ class Tree extends \yii\db\ActiveRecord
                 if (!$this->save()) {
                     $this->nodeRemovalErrors[] = [
                         'id' => $this->$idAttribute,
-                        'name' => $this->$nameAttribute,
+                        'name' => $this->getNodeName(),
                         'error' => $this->getFirstErrors()
                     ];
                     return false;

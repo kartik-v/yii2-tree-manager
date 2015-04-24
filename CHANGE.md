@@ -4,6 +4,7 @@ version 1.0.1
 
 - (enh #18): Add new plugin events and enhance plugin event parameters.
 - (enh #19): Add Russian translations and fix minor bugs in kv-tree-input.js.
+- (enh #20): Encode node names feature in `Tree` model.
 
 version 1.0.0
 =============

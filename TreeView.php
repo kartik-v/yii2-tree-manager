@@ -965,7 +965,7 @@ HTML;
             $nodeLeft = $node->$leftAttribute;
             $nodeRight = $node->$rightAttribute;
             $nodeKey = $node->$keyAttribute;
-            $nodeName = $node->$nameAttribute;
+            $nodeName = $node->getNodeName();
             $nodeIcon = $node->$iconAttribute;
             $nodeIconType = $node->$iconTypeAttribute;
 
