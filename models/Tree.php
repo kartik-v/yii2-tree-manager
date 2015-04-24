@@ -10,6 +10,7 @@ namespace kartik\tree\models;
 
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 use kartik\tree\TreeView;
 use creocoder\nestedsets\NestedSetsBehavior;
 
@@ -43,6 +44,12 @@ class Tree extends \yii\db\ActiveRecord
      * @var bool whether to HTML encode the tree node names. Defaults to `true`.
      */
     public $encodeNodeNames = true;
+
+    /**
+     * @var bool whether to HTML purify the tree node icon content before saving. 
+     * Defaults to `true`.
+     */
+    public $purifyNodeIcons = true;
 
     /**
      * @var array the list of boolean value attributes
@@ -367,6 +374,19 @@ class Tree extends \yii\db\ActiveRecord
     public static function createQuery()
     {
         return new TreeQuery(['modelClass' => get_called_class()]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $module = TreeView::module();
+        extract($module->dataStructure);
+        if ($this->purifyNodeIcons) {
+            $this->$iconAttribute = HtmlPurifier::process($this->$iconAttribute);
+        }
+        return parent::beforeSave($insert);
     }
 
     /**
