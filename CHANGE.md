@@ -1,10 +1,11 @@
 version 1.0.1
 =============
-**Date:** 24-Apr-2015
+**Date:** 29-Apr-2015
 
 - (enh #18): Add new plugin events and enhance plugin event parameters.
 - (enh #19): Add Russian translations and fix minor bugs in kv-tree-input.js.
 - (enh #20): Encode node names feature in `Tree` model.
+- (enh #22): Create jQuery helper methods for treeview input and toggle actions.
 
 version 1.0.0
 =============

@@ -757,7 +757,37 @@
                     trigAlert($alert);
                 }
             });
-        }
+        },
+        expandAll: function() {
+            this.toggleAll('expand');
+        },
+        collapseAll: function() {
+            this.toggleAll('collapse');
+        },
+        checkAll: function() {
+            var self = this;
+            self.$tree.removeClass('kv-selected');
+            self.check(true);
+        },
+        uncheckAll: function() {
+            var self = this;
+            addCss(self.$tree, 'kv-selected');
+            self.check(true);
+        },
+        checkNode: function(key) {
+            var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
+            if ($node.length) {
+                $node.removeClass('kv-selected');
+                self.check($node);
+            }
+        },
+        uncheckNode: function(key) {
+            var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
+            if ($node.length) {
+                addCss($node, 'kv-selected');
+                self.check($node);
+            }
+        },
     }
     ;
 
