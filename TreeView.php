@@ -109,6 +109,12 @@ class TreeView extends Widget
     public $emptyNodeMsgOptions = ['class' => 'kv-node-message'];
 
     /**
+     * @var bool whether to show the key attribute (ID) in the node
+     * details form/view.
+     */
+    public $showIDAttribute = true;
+
+    /**
      * @var bool whether to show the form action buttons in the node
      * details form/view.
      */
@@ -1067,6 +1073,7 @@ HTML;
                 'iconsList' => $this->_iconsList,
                 'softDelete' => $this->softDelete,
                 'showFormButtons' => $this->showFormButtons,
+                'showIDAttribute' => $this->showIDAttribute,
                 'nodeView' => $this->nodeView,
                 'nodeAddlViews' => $this->nodeAddlViews
             ];
@@ -1128,6 +1135,7 @@ HTML;
             'softDelete' => $this->softDelete,
             'iconsList' => $this->_iconsList,
             'showFormButtons' => $this->showFormButtons,
+            'showIDAttribute' => $this->showIDAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
             'multiple' => $this->multiple

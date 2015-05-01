@@ -20,7 +20,7 @@ class NodeController extends \yii\web\Controller
     /**
      * @var array the list of keys in $_POST which must be cast as boolean
      */
-    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'multiple', 'treeNodeModify'];
+    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'showIDAttribute', 'multiple', 'treeNodeModify'];
     
     /**
      * Gets the data from $_POST after parsing boolean values
@@ -82,6 +82,7 @@ class NodeController extends \yii\web\Controller
                 'iconsList' => $iconsList,
                 'softDelete' => $softDelete,
                 'showFormButtons' => $showFormButtons,
+                'showIDAttribute' => $showIDAttribute,
                 'nodeView' => $nodeView,
                 'nodeAddlViews' => $nodeAddlViews
             ];

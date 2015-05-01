@@ -170,6 +170,7 @@
                     'currUrl': self.currUrl,
                     'softDelete': self.softDelete,
                     'showFormButtons': self.showFormButtons,
+                    'showIDAttribute': self.showIDAttribute,
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
                     'nodeAddlViews': self.nodeAddlViews

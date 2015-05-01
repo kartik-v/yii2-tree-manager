@@ -7,6 +7,7 @@ version 1.0.1
 - (enh #20): Encode node names feature in `Tree` model.
 - (enh #21): Purify node icons feature in `Tree` model.
 - (enh #22): Create jQuery helper methods for treeview input and toggle actions.
+- (enh #25): New property `TreeView::showIDAttribute` to hide/show key attribute in form.
 
 version 1.0.0
 =============

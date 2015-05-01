@@ -46,7 +46,11 @@ $parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
 $module = TreeView::module();                     // the treemanager module
 $form = ActiveForm::begin(['action' => $action]); // the active form instance
 // the primary key input field
-$keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
+if ($showIDAttribute) {
+    $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
+} else {
+    $keyField = Html::activeHiddenInput($node, $keyAttribute);
+}
 
 // initialize for create or update
 if ($node->isNewRecord) {
@@ -150,6 +154,7 @@ echo $renderContent(Module::VIEW_PART_1);
  */
 ?>
 <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
+    <?php if ($showIDAttribute): ?>
     <div class="row">
         <div class="col-sm-4">
             <?= $keyField ?>
@@ -158,6 +163,10 @@ echo $renderContent(Module::VIEW_PART_1);
             <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
         </div>
     </div>
+    <?php else: ?>
+        <?= $keyField ?>
+        <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
+    <?php endif; ?>
     <?php if ($iconsList === 'text'): ?>
         <div class="row">
             <div class="col-sm-4">
@@ -176,7 +185,7 @@ echo $renderContent(Module::VIEW_PART_1);
         <div class="col-sm-6">
             <?= $keyField ?>
             <?= Html::activeHiddenInput($node, $iconTypeAttribute) ?>
-            <?= $form->field($node, $nameAttribute)->textArea(['rows' => 2] + $inputOpts) ?>
+            <?= $form->field($node, $nameAttribute)->textArea(['rows' => 3] + $inputOpts) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($node, $iconAttribute)->multiselect($iconsList, [
