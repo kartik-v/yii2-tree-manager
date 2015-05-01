@@ -106,10 +106,21 @@ class Tree extends \yii\db\ActiveRecord
         $module = TreeView::module();
         extract($module->dataStructure);
         $attribs = array_merge([$nameAttribute, $iconAttribute, $iconTypeAttribute], static::$boolAttribs);
-        return [
+        $rules = [
             [[$nameAttribute], 'required'],
             [$attribs, 'safe']
         ];
+        if ($this->encodeNodeNames) {
+            $rules[] = [$nameAttribute, 'filter', 'filter' => function ($value) {
+                return Html::encode($value);
+            }];
+        }
+        if ($this->purifyNodeIcons) {
+            $rules[] = [$iconAttribute, 'filter', 'filter' => function ($value) {
+                return HtmlPurifier::process($value);
+            }];
+        }
+        return $rules;
     }
 
     /**
@@ -124,18 +135,6 @@ class Tree extends \yii\db\ActiveRecord
             $val = in_array($attr, static::$falseAttribs) ? false : true;
             $this->setDefault($attr, $val);
         }
-    }
-
-    /**
-     * Gets the parsed node name based on `Tree::encodeNodeNames` property
-     *
-     * @return string
-     */
-    public function getNodeName()
-    {
-        $module = TreeView::module();
-        extract($module->dataStructure);
-        return $this->encodeNodeNames === false ? $this->$nameAttribute : Html::encode($this->$nameAttribute);
     }
     
     /**
@@ -276,7 +275,7 @@ class Tree extends \yii\db\ActiveRecord
                 if (!$child->save()) {
                     $this->nodeActivationErrors[] = [
                         'id' => $child->$idAttribute,
-                        'name' => $child->getNodeName(),
+                        'name' => $child->$nameAttribute,
                         'error' => $child->getFirstErrors()
                     ];
                 }
@@ -287,7 +286,7 @@ class Tree extends \yii\db\ActiveRecord
             if (!$this->save()) {
                 $this->nodeActivationErrors[] = [
                     'id' => $this->$idAttribute,
-                    'name' => $this->getNodeName(),
+                    'name' => $this->$nameAttribute,
                     'error' => $this->getFirstErrors()
                 ];
                 return false;
@@ -317,7 +316,7 @@ class Tree extends \yii\db\ActiveRecord
                     if (!$child->save()) {
                         $this->nodeRemovalErrors[] = [
                             'id' => $child->$idAttribute,
-                            'name' => $child->getNodeName(),
+                            'name' => $child->$nameAttribute,
                             'error' => $child->getFirstErrors()
                         ];
                     }
@@ -328,7 +327,7 @@ class Tree extends \yii\db\ActiveRecord
                 if (!$this->save()) {
                     $this->nodeRemovalErrors[] = [
                         'id' => $this->$idAttribute,
-                        'name' => $this->getNodeName(),
+                        'name' => $this->$nameAttribute,
                         'error' => $this->getFirstErrors()
                     ];
                     return false;
@@ -374,19 +373,6 @@ class Tree extends \yii\db\ActiveRecord
     public static function createQuery()
     {
         return new TreeQuery(['modelClass' => get_called_class()]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave($insert)
-    {
-        $module = TreeView::module();
-        extract($module->dataStructure);
-        if ($this->purifyNodeIcons) {
-            $this->$iconAttribute = HtmlPurifier::process($this->$iconAttribute);
-        }
-        return parent::beforeSave($insert);
     }
 
     /**
