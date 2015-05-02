@@ -199,7 +199,11 @@ class NodeController extends \yii\web\Controller
                 } elseif ($dir == 'd') {
                     $nodeFrom->insertAfter($nodeTo);
                 } elseif ($dir == 'l') {
-                    $nodeFrom->insertAfter($nodeTo);
+                    if ($nodeTo->isRoot() && $nodeTo->treeAttribute !== false) {
+                        $nodeFrom->makeRoot();
+                    } else {
+                        $nodeFrom->insertAfter($nodeTo);
+                    }
                 } elseif ($dir == 'r') {
                     $nodeFrom->appendTo($nodeTo);
                 }

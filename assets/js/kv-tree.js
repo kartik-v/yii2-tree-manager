@@ -380,7 +380,7 @@
                 }
             }
             keyFrom = $nodeFrom.data('key');
-            keyTo = isRoot ? '' : $nodeTo.data('key');
+            keyTo = $nodeTo.data('key');
             $.ajax({
                 type: 'post',
                 dataType: 'json',
