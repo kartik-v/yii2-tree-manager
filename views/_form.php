@@ -10,6 +10,7 @@ use kartik\tree\Module;
 use kartik\tree\TreeView;
 use yii\bootstrap\Alert;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -43,8 +44,12 @@ if (empty($parentKey)) {
 $parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
 
 // get module and setup form
-$module = TreeView::module();                     // the treemanager module
-$form = ActiveForm::begin(['action' => $action]); // the active form instance
+$module = TreeView::module(); // the treemanager module
+$formOptions['id'] = 'kv-' . uniqid();
+$form = ActiveForm::begin([   // the active form instance
+    'action' => $action,
+    'options' => $formOptions
+]); 
 // the primary key input field
 if ($showIDAttribute) {
     $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
@@ -98,6 +103,7 @@ echo Html::hiddenInput('parentKey', $parentKey);
 echo Html::hiddenInput('currUrl', $currUrl);
 echo Html::hiddenInput('modelClass', $modelClass);
 echo Html::hiddenInput('softDelete', $softDelete);
+echo Html::hiddenInput('formOptions', Json::encode($formOptions));
 ?>
 
 <?php

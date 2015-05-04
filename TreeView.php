@@ -92,6 +92,11 @@ class TreeView extends Widget
     public $displayValue = 1;
 
     /**
+     * @var array the HTML attributes for the node detail form.
+     */
+    public $nodeFormOptions = [];    
+
+    /**
      * @var string the comma separated initial value (keys) to be
      * checked and selected in the tree
      */
@@ -147,6 +152,12 @@ class TreeView extends Widget
      * tree nodes.
      */
     public $multiple = true;
+
+    /**
+     * @var int animation duration (ms) for fading in and out alerts that are 
+     * displayed during manipulation of nodes.
+     */
+    public $alertFadeDuration = 3000;
 
     /**
      * @var array cache settings for displaying the detail form content
@@ -387,7 +398,7 @@ class TreeView extends Widget
      * @var array the HTML attributes for the input that will store the
      * selected nodes for the widget
      */
-    public $options = ['class' => 'form-control hide'];
+    public $options = [];
 
     /**
      * @var the main template for rendering the tree view navigation
@@ -563,6 +574,9 @@ HTML;
             $this->buttonIconOptions['class'] = $this->fontAwesome ? 'kv-icon-10' : 'kv-icon-05';
         }
         $this->options['data-key'] = $this->displayValue;
+        if (empty($this->options['class'])) {
+            $this->options['class'] = 'form-control hide';
+        }
         Html::addCssClass($this->headerOptions, 'kv-header-container');
         Html::addCssClass($this->headingOptions, 'kv-heading-container');
         Html::addCssClass($this->toolbarOptions, 'kv-toolbar-container');
@@ -1067,6 +1081,7 @@ HTML;
         $params = $this->_module->treeStructure + $this->_module->dataStructure + [
                 'node' => $node,
                 'action' => $this->nodeActions[Module::NODE_SAVE],
+                'formOptions' => $this->nodeFormOptions,
                 'modelClass' => $modelClass,
                 'currUrl' => Yii::$app->request->url,
                 'isAdmin' => $this->isAdmin,
@@ -1127,6 +1142,7 @@ HTML;
             'formAction' => $this->nodeActions[Module::NODE_SAVE],
             'currUrl' => Yii::$app->request->url,
             'messages' => $this->clientMessages,
+            'alertFadeDuration' => $this->alertFadeDuration,
             'enableCache' => ArrayHelper::getValue($this->cacheSettings, 'enableCache', true),
             'cacheTimeout' => ArrayHelper::getValue($this->cacheSettings, 'cacheTimeout', 300000),
             'showTooltips' => $this->showTooltips,

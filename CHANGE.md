@@ -1,6 +1,6 @@
 version 1.0.1
 =============
-**Date:** 02-May-2015
+**Date:** 03-May-2015
 
 - (enh #18): Add new plugin events and enhance plugin event parameters.
 - (enh #19): Add Russian translations and fix minor bugs in kv-tree-input.js.
@@ -9,6 +9,10 @@ version 1.0.1
 - (enh #22): Create jQuery helper methods for treeview input and toggle actions.
 - (enh #25): New property `TreeView::showIDAttribute` to hide/show key attribute in form.
 - (enh #26): Special validation for `move left` when the parent is root.
+- (enh #27): Implement root node deletion.
+- (enh #28): Enhance alert fade styling for deletions.
+- (enh #29): Reinitialize yii active form/jquery plugins after ajax success more correctly.
+- (enh #30): New property `TreeView::nodeFormOptions` to control HTML attributes for form.
 
 version 1.0.0
 =============

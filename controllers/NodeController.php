@@ -9,8 +9,9 @@
 namespace kartik\tree\controllers;
 
 use Yii;
-use yii\base\InvalidCallException;
 use yii\helpers\Json;
+use yii\web\Response;
+use yii\base\InvalidCallException;
 use yii\web\View;
 use yii\base\Event;
 use kartik\tree\TreeView;
@@ -62,6 +63,7 @@ class NodeController extends \yii\web\Controller
      */
     public function actionManage()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $parentKey = null;
         extract(static::getPostData());
@@ -76,6 +78,7 @@ class NodeController extends \yii\web\Controller
                 'node' => $node,
                 'parentKey' => $parentKey,
                 'action' => $formAction,
+                'formOptions' => Json::decode($formOptions),
                 'modelClass' => $modelClass,
                 'currUrl' => $currUrl,
                 'isAdmin' => $isAdmin,
@@ -91,10 +94,10 @@ class NodeController extends \yii\web\Controller
                 unset($e->sender->assetBundles[$bundle]);
             }
         });
-        return Json::encode([
+        return [
             'out' => $this->renderAjax($nodeView, ['params' => $params]),
             'status' => 'success'
-        ]);
+        ];
     }
 
     /**
@@ -148,7 +151,7 @@ class NodeController extends \yii\web\Controller
                 $errorMsg .= "</ul>";
             }
         } else {
-            $errorMsg = '<ul style="padding:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
+            $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
         Yii::$app->session->set('kvNodeId', $node->id);
         if ($success) {
@@ -164,20 +167,21 @@ class NodeController extends \yii\web\Controller
      */
     public function actionRemove()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         extract(static::getPostData());
         $node = $class::findOne($id);
         $success = $node->removeNode($softDelete);
         if ($success) {
-            return Json::encode([
+            return [
                 'out' => Yii::t('kvtree', 'The node was removed successfully.'),
                 'status' => 'success'
-            ]);
+            ];
         } else {
-            return Json::encode([
+            return [
                 'out' => Yii::t('kvtree', 'Error while removing the node. Please try again later.'),
                 'status' => 'error'
-            ]);
+            ];
         }
     }
 
@@ -186,6 +190,7 @@ class NodeController extends \yii\web\Controller
      */
     public function actionMove()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         extract(static::getPostData());
         $nodeFrom = $class::findOne($idFrom);
@@ -217,9 +222,9 @@ class NodeController extends \yii\web\Controller
             $error = $e->getMessage();
         }
         if ($success) {
-            return Json::encode(['out' => Yii::t('kvtree', 'The node was moved successfully.'), 'status' => 'success']);
+            return ['out' => Yii::t('kvtree', 'The node was moved successfully.'), 'status' => 'success'];
         } else {
-            return Json::encode(['out' => $error, 'status' => 'error']);
+            return ['out' => $error, 'status' => 'error'];
         }
     }
 }

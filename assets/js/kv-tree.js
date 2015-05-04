@@ -39,11 +39,6 @@
                 return a & a;
             }, 0);
         },
-        trigAlert = function ($alert) {
-            setTimeout(function () {
-                $alert.fadeOut(1000);
-            }, 6000);
-        },
         delay = (function () {
             var timer = 0;
             return function (callback, ms) {
@@ -104,6 +99,16 @@
             kvTreeCache.timeout = self.cacheTimeout;
             self.selectNodes();
         },
+        trigAlert: function ($alert, callback) {
+            var dur = this.alertFadeDuration;
+            if (!callback || !$.isFunction(callback)) {
+                callback = function () {
+                };
+            }
+            setTimeout(function () {
+                $alert.fadeOut(dur, callback());
+            }, dur * 2);
+        },
         selectNodes: function () {
             var self = this, selected = self.$element.val();
             if (selected.length === 0 || isEmpty(selected)) {
@@ -141,11 +146,12 @@
             var self = this;
             self.$toolbar.find('.kv-' + self.btns[action]).attr('disabled', true);
         },
-        showAlert: function (msg, type) {
+        showAlert: function (msg, type, callback) {
             var self = this, $alert = self.$detail.find('.alert-' + type);
             $alert.removeClass('hide').hide().find('div').remove();
-            $alert.append('<div>' + msg + '</div>').fadeIn(1000);
-            trigAlert($alert);
+            $alert.append('<div>' + msg + '</div>').fadeIn(self.alertFadeDuration, function () {
+                self.trigAlert($alert, callback);
+            })
         },
         removeAlert: function () {
             var self = this;
@@ -154,6 +160,7 @@
         renderForm: function (key, par, mesg) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = hashString(key + self.modelClass + self.isAdmin + parent),
+                $form = $detail.find('form'), formdata = $form.clone().data('yiiActiveForm'),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
             vUrl += encodeURI(sep + QUERY_PARAM + '=' + params);
             self.parseCache();
@@ -165,6 +172,7 @@
                     'modelClass': self.modelClass,
                     'isAdmin': self.isAdmin,
                     'formAction': self.formAction,
+                    'formOptions': $form.find('input[name="formOptions"]').val(),
                     'parentKey': parent,
                     'iconsList': self.iconsList,
                     'currUrl': self.currUrl,
@@ -179,20 +187,17 @@
                 cache: true,
                 beforeSend: function (jqXHR) {
                     self.raise('treeview.beforeselect', [key, jqXHR]);
+                    $form.off().yiiActiveForm('destroy').remove();
                     $detail.html('');
                     addCss($detail, 'kv-loading');
                 },
                 success: function (data, textStatus, jqXHR) {
-                    if (data.status === 'error') {
-                        $detail.html(data.out);
-                        self.raise('treeview.selecterror', [key, data, textStatus, jqXHR]);
-                    } else {
-                        $detail.html(data.out);
-                        self.raise('treeview.selected', [key, data, textStatus, jqXHR]);
-                    }
+                    var ev = data.status === 'error' ? 'treeview.selecterror' : 'treeview.selected';
+                    $detail.html(data.out);
+                    self.raise(ev, [key, data, textStatus, jqXHR]);
                     $detail.removeClass('kv-loading');
                     // form reset
-                    self.$detail.find('button[type="reset"]').on('click', function () {
+                    $detail.find('button[type="reset"]').on('click', function () {
                         self.removeAlert();
                     });
                     self.removeAlert();
@@ -275,13 +280,16 @@
                 var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved;
                 $node.remove();
                 $alert = $detail.find('.alert');
+                $detail.find('.kv-select-node').remove();
                 if ($alert.length) {
                     $detail.before($alert).html('').append($alert);
                 }
-                self.showAlert(m, 'info');
-                setTimeout(function () {
-                    $detail.append('<h4 class="alert text-center text-muted">' + msg.selectNode + '</h4>').hide().fadeIn('slow');
-                }, 5000);
+                self.showAlert(m, 'info', function () {
+                    $detail.append('<h4 class="alert text-center kv-select-node" style="display:none;">' + msg.selectNode + '</h4>');
+                    setTimeout(function () {
+                        $detail.find('.kv-select-node').fadeIn(self.alertFadeDuration);
+                    }, self.alertFadeDuration);
+                });
             };
             if ($node.hasClass('kv-empty')) {
                 clearNode(true);
@@ -755,34 +763,34 @@
                 var $alert = $(this);
                 if (!$alert.hasClass('hide')) {
                     $alert.hide().fadeIn(1500);
-                    trigAlert($alert);
+                    self.trigAlert($alert);
                 }
             });
         },
-        expandAll: function() {
+        expandAll: function () {
             this.toggleAll('expand');
         },
-        collapseAll: function() {
+        collapseAll: function () {
             this.toggleAll('collapse');
         },
-        checkAll: function() {
+        checkAll: function () {
             var self = this;
             self.$tree.removeClass('kv-selected');
             self.check(true);
         },
-        uncheckAll: function() {
+        uncheckAll: function () {
             var self = this;
             addCss(self.$tree, 'kv-selected');
             self.check(true);
         },
-        checkNode: function(key) {
+        checkNode: function (key) {
             var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
             if ($node.length) {
                 $node.removeClass('kv-selected');
                 self.check($node);
             }
         },
-        uncheckNode: function(key) {
+        uncheckNode: function (key) {
             var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
             if ($node.length) {
                 addCss($node, 'kv-selected');

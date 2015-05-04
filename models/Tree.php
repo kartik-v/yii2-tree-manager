@@ -335,7 +335,8 @@ class Tree extends \yii\db\ActiveRecord
             }
             return true;
         } else {
-            return $this->removable_all ? $this->deleteWithChildren() : $this->delete();
+            return $this->removable_all || $this->isRoot() && $this->children()->count() == 0 ? 
+                $this->deleteWithChildren() : $this->delete();
         }
     }
 
