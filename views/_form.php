@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\widgets\Select2;
 
 /**
  * @var yii\web\View            $this

@@ -59,7 +59,9 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * View, Create or Update a tree node
+     * View, create, or update a tree node via ajax
+     *
+     * @return string json encoded response
      */
     public function actionManage()
     {
@@ -89,11 +91,13 @@ class NodeController extends \yii\web\Controller
                 'nodeView' => $nodeView,
                 'nodeAddlViews' => $nodeAddlViews
             ];
-        Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
-            foreach ($module->unsetAjaxBundles as $bundle) {
-                unset($e->sender->assetBundles[$bundle]);
-            }
-        });
+        if (!empty($module->unsetAjaxBundles)) {
+            Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
+                foreach ($module->unsetAjaxBundles as $bundle) {
+                    unset($e->sender->assetBundles[$bundle]);
+                }
+            });
+        }
         return [
             'out' => $this->renderAjax($nodeView, ['params' => $params]),
             'status' => 'success'

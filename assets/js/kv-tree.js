@@ -93,6 +93,7 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             self.select(self.$element.data('key'), true);
+            self.formOptions = self.$detail.find('input[name="formOptions"]').val();
             if (self.showTooltips) {
                 self.$toolbar.find('.btn').tooltip();
             }
@@ -147,7 +148,8 @@
             self.$toolbar.find('.kv-' + self.btns[action]).attr('disabled', true);
         },
         showAlert: function (msg, type, callback) {
-            var self = this, $alert = self.$detail.find('.alert-' + type);
+            var self = this, $detail = self.$detail, $alert = $detail.find('.alert-' + type);
+            $detail.find('.kv-select-node-msg').remove();
             $alert.removeClass('hide').hide().find('div').remove();
             $alert.append('<div>' + msg + '</div>').fadeIn(self.alertFadeDuration, function () {
                 self.trigAlert($alert, callback);
@@ -163,7 +165,9 @@
                 $form = $detail.find('form'), formdata = $form.clone().data('yiiActiveForm'),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
             vUrl += encodeURI(sep + QUERY_PARAM + '=' + params);
+            self.formViewBegin = true;
             self.parseCache();
+            self.removeAlert();
             $.ajax({
                 type: 'post',
                 dataType: 'json',
@@ -172,7 +176,7 @@
                     'modelClass': self.modelClass,
                     'isAdmin': self.isAdmin,
                     'formAction': self.formAction,
-                    'formOptions': $form.find('input[name="formOptions"]').val(),
+                    'formOptions': self.formOptions,
                     'parentKey': parent,
                     'iconsList': self.iconsList,
                     'currUrl': self.currUrl,
@@ -187,7 +191,9 @@
                 cache: true,
                 beforeSend: function (jqXHR) {
                     self.raise('treeview.beforeselect', [key, jqXHR]);
-                    $form.off().yiiActiveForm('destroy').remove();
+                    if ($form.length) {
+                        $form.off().yiiActiveForm('destroy').remove();
+                    }
                     $detail.html('');
                     addCss($detail, 'kv-loading');
                 },
@@ -238,7 +244,7 @@
                 self.enableToolbar();
             }
             if (!$selNode.data('removable') || $selNode.hasClass('kv-inactive') || (!$selNode.data('removableAll') && $selNode.hasClass('kv-parent'))) {
-                self.disable('remove');
+                self.disable('trash');
             }
             if (!$selNode.data('movable-u')) {
                 self.disable('movable-u');
@@ -280,14 +286,17 @@
                 var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved;
                 $node.remove();
                 $alert = $detail.find('.alert');
-                $detail.find('.kv-select-node').remove();
+                self.formViewBegin = false;
+                $detail.find('.kv-select-node-msg').remove();
                 if ($alert.length) {
                     $detail.before($alert).html('').append($alert);
                 }
                 self.showAlert(m, 'info', function () {
-                    $detail.append('<h4 class="alert text-center kv-select-node" style="display:none;">' + msg.selectNode + '</h4>');
+                    $detail.append('<h4 class="alert text-center kv-select-node-msg" style="display:none;">' + msg.selectNode + '</h4>');
                     setTimeout(function () {
-                        $detail.find('.kv-select-node').fadeIn(self.alertFadeDuration);
+                        if (!self.formViewBegin) {
+                            $detail.find('.kv-select-node-msg').fadeIn(self.alertFadeDuration);
+                        }
                     }, self.alertFadeDuration);
                 });
             };
@@ -299,7 +308,11 @@
             $.ajax({
                     type: 'post',
                     dataType: 'json',
-                    data: {'id': key, 'class': self.modelClass, 'softDelete': self.softDelete},
+                    data: {
+                        'id': key, 
+                        'class': self.modelClass, 
+                        'softDelete': self.softDelete
+                    },
                     url: self.actions.remove,
                     beforeSend: function (jqXHR) {
                         self.raise('treeview.beforeremove', [key, jqXHR]);

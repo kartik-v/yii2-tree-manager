@@ -252,7 +252,7 @@ ul.kv-tree, .kv-tree ul {
 
 li.kv-inactive > .kv-tree-list .kv-node-label {
     color: #a94442;
-    font-style: italic;
+    text-decoration: line-through;
 }
 
 li.kv-disabled > .kv-tree-list .kv-node-checkbox,
@@ -275,7 +275,9 @@ li.kv-empty {
 
 li.kv-invisible > .kv-tree-list .kv-node-label {
     color: #999;
-    text-decoration: line-through;
+    font-style: italic;
+    border-top: 1px dotted #999;
+    border-bottom: 1px dotted #999;
 }
 
 .kv-tree-nofooter {

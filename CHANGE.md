@@ -1,6 +1,6 @@
 version 1.0.1
 =============
-**Date:** 03-May-2015
+**Date:** 04-May-2015
 
 - (enh #18): Add new plugin events and enhance plugin event parameters.
 - (enh #19): Add Russian translations and fix minor bugs in kv-tree-input.js.
@@ -13,6 +13,8 @@ version 1.0.1
 - (enh #28): Enhance alert fade styling for deletions.
 - (enh #29): Reinitialize yii active form/jquery plugins after ajax success more correctly.
 - (enh #30): New property `TreeView::nodeFormOptions` to control HTML attributes for form.
+- (enh #32): Better styling for inactive and invisible nodes.
+- (bug #33): Fix minor bug in jquery plugin's button actions code.
 
 version 1.0.0
 =============

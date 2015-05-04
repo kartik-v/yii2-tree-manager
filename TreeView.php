@@ -157,7 +157,7 @@ class TreeView extends Widget
      * @var int animation duration (ms) for fading in and out alerts that are 
      * displayed during manipulation of nodes.
      */
-    public $alertFadeDuration = 3000;
+    public $alertFadeDuration = 1000;
 
     /**
      * @var array cache settings for displaying the detail form content
