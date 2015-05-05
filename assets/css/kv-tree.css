@@ -274,10 +274,9 @@ li.kv-empty {
 }
 
 li.kv-invisible > .kv-tree-list .kv-node-label {
-    color: #999;
     font-style: italic;
-    border-top: 1px dotted #999;
-    border-bottom: 1px dotted #999;
+    border-top: 1px dotted;
+    border-bottom: 1px dotted;
 }
 
 .kv-tree-nofooter {
