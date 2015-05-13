@@ -1,3 +1,9 @@
+version 1.0.2
+=============
+**Date:** 13-May-2015
+
+- (enh #34): Better ability to disable `treeAttribute` by setting it to `false`.
+
 version 1.0.1
 =============
 **Date:** 11-May-2015

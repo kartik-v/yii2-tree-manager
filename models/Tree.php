@@ -383,10 +383,9 @@ class Tree extends \yii\db\ActiveRecord
     {
         $module = TreeView::module();
         extract($module->treeStructure + $module->dataStructure);
-        return [
+        $labels = [
             $keyAttribute => Yii::t('kvtree', 'ID'),
             $nameAttribute => Yii::t('kvtree', 'Name'),
-            $treeAttribute => Yii::t('kvtree', 'Root'),
             $leftAttribute => Yii::t('kvtree', 'Left'),
             $rightAttribute => Yii::t('kvtree', 'Right'),
             $depthAttribute => Yii::t('kvtree', 'Depth'),
@@ -405,5 +404,9 @@ class Tree extends \yii\db\ActiveRecord
             'removable' => Yii::t('kvtree', 'Removable'),
             'removable_all' => Yii::t('kvtree', 'Removable (with children)')
         ];
+        if (!$treeAttribute) {
+            $labels[$treeAttribute] = Yii::t('kvtree', 'Root');
+        }
+        return $labels;
     }
 }

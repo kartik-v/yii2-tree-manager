@@ -478,6 +478,9 @@ HTML;
      */
     public function run()
     {
+        if (!$this->_module->treeStructure['treeAttribute']) {
+            $this->allowNewRoots = false;
+        }
         $this->_nodes = $this->query->all();
         $this->initOptions();
         $this->registerAssets();
@@ -980,7 +983,6 @@ HTML;
             if (!$this->isAdmin && (!$node->isVisible() || (!$this->showInactive && !$node->isActive()))) {
                 continue;
             }
-            $nodeTree = $node->$treeAttribute;
             $nodeDepth = $node->$depthAttribute;
             $nodeLeft = $node->$leftAttribute;
             $nodeRight = $node->$rightAttribute;
@@ -1154,7 +1156,8 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
-            'multiple' => $this->multiple
+            'multiple' => $this->multiple,
+            'allowNewRoots' => $this->allowNewRoots
         ];
         $this->registerPlugin('treeview');
     }

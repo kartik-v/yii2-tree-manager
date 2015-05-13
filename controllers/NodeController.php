@@ -21,7 +21,7 @@ class NodeController extends \yii\web\Controller
     /**
      * @var array the list of keys in $_POST which must be cast as boolean
      */
-    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'showIDAttribute', 'multiple', 'treeNodeModify'];
+    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'showIDAttribute', 'multiple', 'treeNodeModify', 'allowNewRoots'];
     
     /**
      * Gets the data from $_POST after parsing boolean values
@@ -208,7 +208,7 @@ class NodeController extends \yii\web\Controller
                 } elseif ($dir == 'd') {
                     $nodeFrom->insertAfter($nodeTo);
                 } elseif ($dir == 'l') {
-                    if ($nodeTo->isRoot() && $nodeTo->treeAttribute !== false) {
+                    if ($nodeTo->isRoot() && $allowNewRoots) {
                         $nodeFrom->makeRoot();
                     } else {
                         $nodeFrom->insertAfter($nodeTo);

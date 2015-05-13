@@ -405,7 +405,13 @@
             $.ajax({
                 type: 'post',
                 dataType: 'json',
-                data: {'idFrom': keyFrom, 'idTo': keyTo, 'class': self.modelClass, 'dir': dir},
+                data: {
+                    'idFrom': keyFrom, 
+                    'idTo': keyTo, 
+                    'class': self.modelClass, 
+                    'dir': dir,
+                    'allowNewRoots': self.allowNewRoots
+                },
                 url: self.actions.move,
                 beforeSend: function (jqXHR) {
                     self.raise('treeview.beforemove', [dir, keyFrom, keyTo, jqXHR]);
