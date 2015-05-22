@@ -37,7 +37,7 @@ An enhanced tree management module from Krajee with tree node selection and mani
 - **removable:** whether a tree node is removable - will not be removed if children exist. If soft delete is enabled, then the node will be inactivated - else removed from database.
 - **removable_all:** whether a tree node is removable with children. If soft delete is enabled, then the node and its children will be inactivated - else removed from database.
  
-Key classes available with the module:
+The following important PHP classes are available with this module:
 
 1. **kartik\tree\Module:** _Module_, allows you to configure the module. You must setup a module named `treemanager`. Refer documentation for details. 
 2. **kartik\tree\TreeView:** _Widget_, allows you to manage the tree in admin mode or normal user mode with actions and toolbar to add, edit, reorder, or delete tree nodes.

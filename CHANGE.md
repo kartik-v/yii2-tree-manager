@@ -4,6 +4,7 @@ version 1.0.2
 
 - (enh #34): Better ability to disable `treeAttribute` by setting it to `false`.
 - (enh #35): Initialize variables prior to extraction.
+- (enh #36): Add German translations.
 
 version 1.0.1
 =============
