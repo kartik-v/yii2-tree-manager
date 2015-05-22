@@ -1,8 +1,9 @@
 version 1.0.2
 =============
-**Date:** 13-May-2015
+**Date:** 22-May-2015
 
 - (enh #34): Better ability to disable `treeAttribute` by setting it to `false`.
+- (enh #35): Initialize variables prior to extraction.
 
 version 1.0.1
 =============

@@ -21,10 +21,19 @@ class NodeController extends \yii\web\Controller
     /**
      * @var array the list of keys in $_POST which must be cast as boolean
      */
-    public static $boolKeys = ['isAdmin', 'softDelete', 'showFormButtons', 'showIDAttribute', 'multiple', 'treeNodeModify', 'allowNewRoots'];
-    
+    public static $boolKeys = [
+        'isAdmin',
+        'softDelete',
+        'showFormButtons',
+        'showIDAttribute',
+        'multiple',
+        'treeNodeModify',
+        'allowNewRoots'
+    ];
+
     /**
      * Gets the data from $_POST after parsing boolean values
+     *
      * @return array
      */
     protected static function getPostData()
@@ -38,7 +47,7 @@ class NodeController extends \yii\web\Controller
         }
         return $out;
     }
-    
+
     /**
      * Checks if request is valid and throws exception if invalid condition is true
      *
@@ -68,6 +77,17 @@ class NodeController extends \yii\web\Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $parentKey = null;
+        $action = null;
+        $formOptions = [];
+        $modelClass = '\kartik\tree\models\Tree';
+        $currUrl = '';
+        $isAdmin = false;
+        $iconsList = [];
+        $softDelete = false;
+        $showFormButtons = false;
+        $showIDAttribute = false;
+        $nodeView = '';
+        $nodeAddlViews = [];
         extract(static::getPostData());
         if (!isset($id) || empty($id)) {
             $node = new $modelClass;
@@ -110,6 +130,9 @@ class NodeController extends \yii\web\Controller
     public function actionSave()
     {
         static::checkValidRequest(!isset($_POST['treeNodeModify']));
+        $treeNodeModify = null;
+        $parentKey = null;
+        $modelClass = '\kartik\tree\models\Tree';
         extract(static::getPostData());
         $module = TreeView::module();
         /**
@@ -173,6 +196,9 @@ class NodeController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
+        $id = null;
+        $class = '\kartik\tree\models\Tree';
+        $softDelete = false;
         extract(static::getPostData());
         $node = $class::findOne($id);
         $success = $node->removeNode($softDelete);
@@ -196,6 +222,11 @@ class NodeController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
+        $dir = null;
+        $idFrom = null;
+        $idTo = null;
+        $class = '\kartik\tree\models\Tree';
+        $allowNewRoots = false;
         extract(static::getPostData());
         $nodeFrom = $class::findOne($idFrom);
         $nodeTo = $class::findOne($idTo);
