@@ -78,7 +78,7 @@ class NodeController extends \yii\web\Controller
         static::checkValidRequest();
         $parentKey = null;
         $action = null;
-        $formOptions = [];
+        $formOptions = '{}';
         $modelClass = '\kartik\tree\models\Tree';
         $currUrl = '';
         $isAdmin = false;
