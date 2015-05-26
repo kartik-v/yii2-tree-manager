@@ -78,7 +78,7 @@ class NodeController extends \yii\web\Controller
         static::checkValidRequest();
         $parentKey = null;
         $action = null;
-        $formOptions = '{}';
+        $formOptions = '';
         $modelClass = '\kartik\tree\models\Tree';
         $currUrl = '';
         $isAdmin = false;
@@ -100,7 +100,7 @@ class NodeController extends \yii\web\Controller
                 'node' => $node,
                 'parentKey' => $parentKey,
                 'action' => $formAction,
-                'formOptions' => Json::decode($formOptions),
+                'formOptions' => empty($formOptions) ? [] : Json::decode($formOptions),
                 'modelClass' => $modelClass,
                 'currUrl' => $currUrl,
                 'isAdmin' => $isAdmin,
