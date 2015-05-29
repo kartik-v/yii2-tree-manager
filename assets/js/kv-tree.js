@@ -189,8 +189,8 @@
                 },
                 url: vUrl,
                 cache: true,
-                beforeSend: function (jqXHR) {
-                    self.raise('treeview.beforeselect', [key, jqXHR]);
+                beforeSend: function (jqXHR, settings) {
+                    self.raise('treeview.beforeselect', [key, jqXHR, settings]);
                     if ($form.length) {
                         $form.off().yiiActiveForm('destroy').remove();
                     }
@@ -314,8 +314,8 @@
                         'softDelete': self.softDelete
                     },
                     url: self.actions.remove,
-                    beforeSend: function (jqXHR) {
-                        self.raise('treeview.beforeremove', [key, jqXHR]);
+                    beforeSend: function (jqXHR, settings) {
+                        self.raise('treeview.beforeremove', [key, jqXHR, settings]);
                         $form.hide();
                         self.removeAlert();
                         addCss($detail, 'kv-loading');
@@ -413,8 +413,8 @@
                     'allowNewRoots': self.allowNewRoots
                 },
                 url: self.actions.move,
-                beforeSend: function (jqXHR) {
-                    self.raise('treeview.beforemove', [dir, keyFrom, keyTo, jqXHR]);
+                beforeSend: function (jqXHR, settings) {
+                    self.raise('treeview.beforemove', [dir, keyFrom, keyTo, jqXHR, settings]);
                     addCss(self.$treeContainer, 'kv-loading-search');
                 },
                 success: function (data, textStatus, jqXHR) {
