@@ -1,3 +1,10 @@
+version 1.0.3
+=============
+**Date:** 29-May-2015
+
+- (enh #38): Validate `formOptions` correctly for new root creation.
+- (enh #39): Expose ajax settings from `beforeSend` ajax request in events.
+
 version 1.0.2
 =============
 **Date:** 22-May-2015
@@ -5,8 +12,6 @@ version 1.0.2
 - (enh #34): Better ability to disable `treeAttribute` by setting it to `false`.
 - (enh #35): Initialize variables prior to extraction.
 - (enh #36): Add German translations.
-- (enh #38): Validate `formOptions` correctly for new root creation.
-- (enh #39): Expose ajax settings from `beforeSend` ajax request in events.
 
 version 1.0.1
 =============
