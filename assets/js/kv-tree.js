@@ -282,9 +282,6 @@
             if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || !window.confirm(msg.removeNode) || $node.hasClass('kv-disabled')) {
                 return;
             }
-            resetParent = function() {
-               
-            };
             clearNode = function (isEmpty) {
                 var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved,
                     $parent = $node.closest('li.kv-parent');

@@ -5,6 +5,7 @@ version 1.0.3
 - (enh #38): Validate `formOptions` correctly for new root creation.
 - (enh #39): Expose ajax settings from `beforeSend` ajax request in events.
 - (enh #40): Better dynamic styling of parent node when all children nodes are removed.
+- (bug #41): Cleanup unused variables.
 
 version 1.0.2
 =============
