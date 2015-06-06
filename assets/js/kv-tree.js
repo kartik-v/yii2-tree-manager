@@ -815,9 +815,8 @@
                 addCss($node, 'kv-selected');
                 self.check($node);
             }
-        },
-    }
-    ;
+        }
+    };
 
     $.fn.treeview = function (option) {
         var args = Array.apply(null, arguments), $this, data, options;
