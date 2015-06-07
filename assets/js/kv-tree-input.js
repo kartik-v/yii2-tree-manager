@@ -70,7 +70,7 @@
             });
             self.$element.on('treeview.change', function (event, keys, desc) {
                 self.setInput(desc.split(','));
-                self.$input.parent('div').removeClass('open');
+                self.$input.closest('.kv-tree-dropdown-container').removeClass('open');
             });
         }
     };
