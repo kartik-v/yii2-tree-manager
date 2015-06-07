@@ -11,6 +11,7 @@
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
+    "use strict";
     var isEmpty = function (value, trim) {
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
@@ -25,9 +26,9 @@
         constructor: TreeInput,
         init: function (options) {
             var self = this, i, $node, desc, key, keys, list = [];
-            for (key in options) {
-                self[key] = options[key];
-            }
+            $.each(options, function (key, data) {
+                self[key] = data;
+            });
             self.$tree = $('#' + self.treeId);
             self.$input = $('#' + self.inputId);
             self.$dropdown = $('#' + self.dropdownId);
@@ -52,7 +53,7 @@
             if (isEmpty(list) || isEmpty(list[0])) {
                 out = self.placeholder;
             } else {
-                if (list.length == 1) {
+                if (list.length === 1) {
                     out = list[0];
                 } else {
                     out = '<ul class="kv-tree-input-values"><li>' + list.join('</li><li>') + '</li></ul><div class="clearfix"></div>';

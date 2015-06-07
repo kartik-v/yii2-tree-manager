@@ -1,11 +1,13 @@
 version 1.0.3
 =============
-**Date:** 02-Jun-2015
+**Date:** 07-Jun-2015
 
 - (enh #38): Validate `formOptions` correctly for new root creation.
 - (enh #39): Expose ajax settings from `beforeSend` ajax request in events.
 - (enh #40): Better dynamic styling of parent node when all children nodes are removed.
 - (bug #41): Cleanup unused variables.
+- (enh #42): Close tree input widget after you've selected a node.
+- (enh #43): Code style and format fixes.
 
 version 1.0.2
 =============

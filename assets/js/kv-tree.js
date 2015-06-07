@@ -153,7 +153,7 @@
             $alert.removeClass('hide').hide().find('div').remove();
             $alert.append('<div>' + msg + '</div>').fadeIn(self.alertFadeDuration, function () {
                 self.trigAlert($alert, callback);
-            })
+            });
         },
         removeAlert: function () {
             var self = this;
@@ -161,8 +161,7 @@
         },
         renderForm: function (key, par, mesg) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
-                params = hashString(key + self.modelClass + self.isAdmin + parent),
-                $form = $detail.find('form'), formdata = $form.clone().data('yiiActiveForm'),
+                params = hashString(key + self.modelClass + self.isAdmin + parent), $form = $detail.find('form'),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
             vUrl += encodeURI(sep + QUERY_PARAM + '=' + params);
             self.formViewBegin = true;
@@ -313,8 +312,8 @@
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        'id': key, 
-                        'class': self.modelClass, 
+                        'id': key,
+                        'class': self.modelClass,
                         'softDelete': self.softDelete
                     },
                     url: self.actions.remove,
@@ -362,8 +361,8 @@
         move: function (dir) {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $nodeFrom = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
-                $form = $detail.find('form'), $nodeTo = null, keyFrom, keyTo, parentIcon, childIcon,
-                outMsg, isRoot = false, $parent;
+                $nodeTo = null, keyFrom, keyTo, outMsg, isRoot = false, $parent, fnMove = function () {
+                };
             if ($nodeText.length === 0 || $nodeFrom.hasClass('kv-disabled')) {
                 return;
             }
@@ -371,38 +370,63 @@
                 window.alert(msg.nodeNewMove);
                 return;
             }
-            if (dir === 'u') {
-                $nodeTo = $nodeFrom.prev();
-                if ($nodeTo.length === 0) {
-                    window.alert(msg.nodeTop);
-                    return;
-                }
-            }
-            if (dir === 'd') {
-                $nodeTo = $nodeFrom.next();
-                if ($nodeTo.length === 0) {
-                    window.alert(msg.nodeBottom);
-                    return;
-                }
-            }
-            if (dir === 'l') {
-                $nodeTo = $nodeFrom.parent('ul').closest('li.kv-parent');
-                if ($nodeTo.length === 0) {
-                    window.alert(msg.nodeLeft);
-                    return;
-                }
-                $parent = $nodeTo.parent('ul');
-                isRoot = $parent.hasClass('kv-tree');
-                if (isRoot) {
-                    $nodeTo = $parent.children('li:last-child');
-                }
-            }
-            if (dir === 'r') {
-                $nodeTo = $nodeFrom.prev();
-                if ($nodeTo.length === 0) {
-                    window.alert(msg.nodeRight);
-                    return;
-                }
+            switch (dir) {
+                case 'u':
+                    $nodeTo = $nodeFrom.prev();
+                    if ($nodeTo.length === 0) {
+                        window.alert(msg.nodeTop);
+                        return;
+                    }
+                    fnMove = function () {
+                        $nodeTo.before($nodeFrom);
+                    };
+                    break;
+                case 'd':
+                    $nodeTo = $nodeFrom.next();
+                    if ($nodeTo.length === 0) {
+                        window.alert(msg.nodeBottom);
+                        return;
+                    }
+                    fnMove = function () {
+                        $nodeTo.after($nodeFrom);
+                    };
+                    break;
+                case 'l':
+                    $nodeTo = $nodeFrom.parent('ul').closest('li.kv-parent');
+                    if ($nodeTo.length === 0) {
+                        window.alert(msg.nodeLeft);
+                        return;
+                    }
+                    $parent = $nodeTo.parent('ul');
+                    isRoot = $parent.hasClass('kv-tree');
+                    if (isRoot) {
+                        $nodeTo = $parent.children('li:last-child');
+                    }
+                    fnMove = function () {
+                        $nodeTo.after($nodeFrom);
+                        if ($nodeTo.find('li').length === 0) {
+                            $nodeTo.removeClass('kv-parent');
+                            $nodeTo.find('ul').remove();
+                        }
+                    };
+                    break;
+                case 'r':
+                    $nodeTo = $nodeFrom.prev();
+                    if ($nodeTo.length === 0) {
+                        window.alert(msg.nodeRight);
+                        return;
+                    }
+                    fnMove = function () {
+                        if ($nodeTo.find('li').length > 0) {
+                            $nodeTo.children('ul').append($nodeFrom);
+                        } else {
+                            addCss($nodeTo, 'kv-parent');
+                            $(document.createElement('ul')).appendTo($nodeTo).append($nodeFrom);
+                        }
+                    };
+                    break;
+                default:
+                    throw "Invalid move direction '" + dir + "'";
             }
             keyFrom = $nodeFrom.data('key');
             keyTo = $nodeTo.data('key');
@@ -410,9 +434,9 @@
                 type: 'post',
                 dataType: 'json',
                 data: {
-                    'idFrom': keyFrom, 
-                    'idTo': keyTo, 
-                    'class': self.modelClass, 
+                    'idFrom': keyFrom,
+                    'idTo': keyTo,
+                    'class': self.modelClass,
                     'dir': dir,
                     'allowNewRoots': self.allowNewRoots
                 },
@@ -426,31 +450,7 @@
                         self.removeAlert();
                     }
                     if (data.status === 'success') {
-                        switch (dir) {
-                            case 'u':
-                                $nodeTo.before($nodeFrom);
-                                break;
-                            case 'd':
-                                $nodeTo.after($nodeFrom);
-                                break;
-                            case 'l':
-                                $nodeTo.after($nodeFrom);
-                                if ($nodeTo.find('li').length === 0) {
-                                    $nodeTo.removeClass('kv-parent');
-                                    $nodeTo.find('ul').remove();
-                                }
-                                break;
-                            case 'r':
-                                if ($nodeTo.find('li').length > 0) {
-                                    $nodeTo.children('ul').append($nodeFrom);
-                                } else {
-                                    addCss($nodeTo, 'kv-parent');
-                                    $(document.createElement('ul')).appendTo($nodeTo).append($nodeFrom);
-                                }
-                                break;
-                            default:
-                                throw "Invalid move direction '" + dir + "'";
-                        }
+                        fnMove();
                         if (dir === 'l' || dir === 'r') {
                             kvTreeCache.timeout = 0;
                             if ($detail.length > 0) {
@@ -652,7 +652,7 @@
             if (!self.enableCache) {
                 return false;
             }
-            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            $.ajaxPrefilter(function (options, originalOptions) {
                 if (options.cache) {
                     var beforeSend = originalOptions.beforeSend || $.noop,
                         success = originalOptions.success || $.noop,
@@ -698,7 +698,6 @@
             });
             // node checkbox all actions
             self.$treeContainer.find('.kv-root-node-checkbox').on('click', function () {
-                var $node = $(this), $root = $node.closest('.kv-tree-container');
                 self.check(true);
             });
             // search
