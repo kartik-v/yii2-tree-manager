@@ -313,3 +313,9 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
 .kv-parent > .kv-tree-list > .kv-node-indicators > .kv-node-toggle {
     display: inline;
 }
+
+@media (max-width: 768px) {
+    .kv-tree-wrapper, .kv-detail-container {
+        margin-top: 20px;
+    }
+}

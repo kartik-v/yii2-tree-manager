@@ -8,6 +8,7 @@ version 1.0.3
 - (bug #41): Cleanup unused variables.
 - (enh #42): Close tree input widget after you've selected a node.
 - (enh #43): Code style and format fixes.
+- (enh #44): Enhancing tree container styles for smaller device screen sizes.
 - (enh #45): Refactor code for extensibility - implement `Tree` model to use a `TreeTrait`.
 
 version 1.0.2
