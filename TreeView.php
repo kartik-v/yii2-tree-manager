@@ -515,10 +515,45 @@ HTML;
         if (empty($class) || !is_subclass_of($class, ActiveRecord::classname())) {
             throw new InvalidConfigException("The 'query' must be implemented using 'ActiveRecord::find()' method.");
         }
-        $validClass = Tree::classname();
-        if (!is_subclass_of($class, $validClass)) {
-            throw new InvalidConfigException("The model class '{$class}' for the 'query' must extend from '{$validClass}'.");
+        $trait = 'kartik\tree\models\TreeTrait';
+        if (!self::usesTrait($class, $trait)) {
+            throw new InvalidConfigException("The model class '{$class}' for the 'query' must use the trait '{$trait}' or extend from 'kartik\models\tree\Tree'.");
         }
+    }
+    
+    /**
+     * Check if the trait is used by a specific class or recursively by
+     * any of the parent classes or parent traits
+     * @param string $class the class name to check
+     * @param string $trait the trait class name
+     * @param bool $autoload whether to autoload the class
+     * @return bool whether the class has used the trait
+     */
+    protected static function usesTrait($class, $trait, $autoload = false)
+    {
+        $traits = [];
+        do {
+            $traits = array_merge(class_uses($class, $autoload), $traits);
+            if (in_array($trait, $traits)) {
+                return true;
+            }
+        } while ($class = get_parent_class($class));
+        $traitsToSearch = $traits;
+        while (!empty($traitsToSearch)) {
+            $newTraits = class_uses(array_pop($traitsToSearch), $autoload);
+            $traits = array_merge($newTraits, $traits);
+            if (in_array($trait, $traits)) {
+                return true;
+            }
+            $traitsToSearch = array_merge($newTraits, $traitsToSearch);
+        };
+        foreach ($traits as $t => $str) {
+            $traits = array_merge(class_uses($t, $autoload), $traits);
+            if (in_array($trait, $traits)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -5,7 +5,7 @@
  * @package yii2-tree-manager
  * @version 1.0.3
  */
- 
+
 namespace kartik\tree\models;
 
 use creocoder\nestedsets\NestedSetsQueryBehavior;

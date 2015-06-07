@@ -75,7 +75,9 @@ to the ```require``` section of your `composer.json` file.
 Create your database table to store the tree structure. Copy and modify the `schema/tree.sql` file (a MySQL example), to create the table `tbl_tree` (or for any table name you need). You can add columns you need to this table, but you cannot skip/drop any of the columns mentioned in the script. You can choose to rename the `id`, `root`, `lft`, `rgt`, `lvl`, `name`, `icon`, `icon_type` columns if you choose to - but these must be accordingly setup in the module.
 
 ### Step 2: Setup Model
-Create your model for storing the tree structure extending `kartik\tree\models\Tree` class. You must provide the table name in the model. Optionally you can add rules, or edit the various methods like `isVisible`, `isDisabled` etc. to identify allowed flags for nodes.
+Create your model for storing the tree structure extending `kartik\tree\models\Tree` class. You can alternatively build your own model extending from `yii\db\ActiveRecord` but modify it to use the `kartik\tree\models\TreeTrait`. You must provide the table name in the model. Optionally you can add rules, or edit the various methods like `isVisible`, `isDisabled` etc. to identify allowed flags for nodes.
+
+So when extending from the `\kartik\tree\models\Tree`, you can set it like below:
 
 ```php
 namespace frontend\models;
@@ -84,6 +86,27 @@ use Yii;
 
 class Tree extends \kartik\tree\models\Tree
 {
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'tbl_tree';
+    }    
+}
+```
+
+Alternatively, you can configure your model to not extend from `kartik\tree\models\Tree` and instead implement and use the `kartik\tree\models\TreeTrait`:
+
+```php
+namespace frontend\models;
+
+use Yii;
+
+class Tree extends \yii\db\ActiveRecord
+{
+    use kartik\tree\models\TreeTrait.
+
     /**
      * @inheritdoc
      */

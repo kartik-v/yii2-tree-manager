@@ -23,7 +23,6 @@
             "homepage": "http://www.krajee.com/"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "kartik-v/yii2-krajee-base": "*",
         "kartik-v/yii2-widget-activeform": "*",
