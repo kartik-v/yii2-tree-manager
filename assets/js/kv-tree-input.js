@@ -69,6 +69,7 @@
             });
             self.$element.on('treeview.change', function (event, keys, desc) {
                 self.setInput(desc.split(','));
+                self.$input.parent('div').removeClass('open');
             });
         }
     };
