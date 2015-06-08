@@ -75,7 +75,6 @@
             self.init(options);
             self.listen();
         };
-
     TreeView.prototype = {
         constructor: TreeView,
         init: function (options) {
@@ -610,13 +609,14 @@
         check: function ($chk) {
             var self = this, isRoot = ($chk === true),
                 $node = isRoot ? self.$tree : $chk.closest('li'),
-                nodeKey = isRoot ? '' : $node.data('key');
-            if ($node.hasClass('kv-disabled') || (isRoot && !self.multiple)) {
+                nodeKey = isRoot ? '' : $node.data('key'),
+                isMultiple = self.multiple && self.multiple != 0;
+            if ($node.hasClass('kv-disabled') || (isRoot && !isMultiple)) {
                 return;
             }
             if ($node.hasClass('kv-selected')) {
                 $node.removeClass('kv-selected');
-                if (!self.multiple) {
+                if (!isMultiple) {
                     self.$tree.find('li:not(.kv-disabled)').removeClass('kv-selected');
                     self.$element.val('');
                     self.raise('treeview.change', ['', '']);
@@ -626,7 +626,7 @@
                 }
                 self.raise('treeview.unchecked', [nodeKey]);
             } else {
-                if (!self.multiple) {
+                if (!isMultiple) {
                     self.$tree.find('li:not(.kv-disabled)').removeClass('kv-selected');
                     self.$element.val(nodeKey);
                     var desc = $node.find('>.kv-tree-list .kv-node-label').text();
@@ -638,7 +638,7 @@
                 addCss($node, 'kv-selected');
                 self.raise('treeview.checked', [nodeKey]);
             }
-            if (self.multiple) {
+            if (isMultiple) {
                 self.setSelected();
             }
         },
@@ -820,7 +820,6 @@
             }
         }
     };
-
     $.fn.treeview = function (option) {
         var args = Array.apply(null, arguments), $this, data, options;
         args.shift();
@@ -828,21 +827,15 @@
             $this = $(this);
             data = $this.data('treeview');
             options = typeof option === 'object' && option;
-
             if (!data) {
                 data = new TreeView(this, $.extend({}, $.fn.treeview.defaults, options, $(this).data()));
                 $this.data('treeview', data);
             }
-
             if (typeof option === 'string') {
                 data[option].apply(data, args);
             }
         });
     };
-
     $.fn.treeview.defaults = {btns: {}};
-
     $.fn.treeview.Constructor = TreeView;
-
-})
-(window.jQuery);
+})(window.jQuery);
