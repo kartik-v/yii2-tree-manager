@@ -315,7 +315,7 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
 }
 
 @media (max-width: 768px) {
-    .kv-tree-wrapper, .kv-detail-container {
+    .kv-detail-container {
         margin-top: 20px;
     }
 }
