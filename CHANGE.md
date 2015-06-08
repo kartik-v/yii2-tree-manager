@@ -10,6 +10,7 @@ version 1.0.3
 - (enh #43): Code style and format fixes.
 - (enh #44): Enhancing tree container styles for smaller device screen sizes.
 - (enh #45): Refactor code for extensibility - implement `Tree` model to use a `TreeTrait`.
+- (enh #46): Better styling and alignment of tree hierarchy lines across browsers.
 
 version 1.0.2
 =============

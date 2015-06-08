@@ -137,7 +137,7 @@ ul.kv-tree, .kv-tree ul, .kv-tree li {
 }
 
 ul.kv-tree, .kv-tree ul {
-    padding-left: 0.75em;
+    padding-left: 0.73em;
 }
 
 .kv-tree li {
@@ -150,12 +150,12 @@ ul.kv-tree, .kv-tree ul {
 .kv-tree li ul {
     border-top: 1px dotted #333;
     margin-left: -0.75em;
-    padding-left: 1.5em;
+    padding-left: 1.4em;
 }
 
 .kv-tree > li:last-child > ul,
 .kv-parent ul li:last-child > ul {
-    box-shadow: -1px 0px 0px white;
+    box-shadow: -5px 0px 0px white;
 }
 
 .kv-tree > li:last-child ul,
