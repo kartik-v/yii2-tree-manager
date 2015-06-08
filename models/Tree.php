@@ -40,5 +40,22 @@ use creocoder\nestedsets\NestedSetsBehavior;
  */
 class Tree extends \yii\db\ActiveRecord
 {
-    use TreeTrait;
+    use TreeTrait {
+        rules as parentRules;
+        behaviors as parentBehaviors;
+        transactions as parentTransactions;
+        attributeLabels as parentAttributeLabels;
+        initDefaults as parentInitDefaults;
+        isActive as parentIsActive;
+        isSelected as parentIsSelected;
+        isVisible as parentIsVisible;
+        isReadonly as parentIsReadonly;
+        isDisabled as parentIsDisabled;
+        isCollapsed as parentIsCollapsed;
+        isMovable as parentIsMovable;
+        isRemovable as parentIsRemovable;
+        isRemovableAll as parentIsRemovableAll;
+        activateNode as parentActivateNode;
+        removeNode as parentRemoveNode;
+    };
 }
