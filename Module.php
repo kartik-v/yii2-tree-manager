@@ -2,8 +2,8 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @package yii2-tree
- * @version 1.0.3
+ * @package   yii2-tree
+ * @version   1.0.3
  */
 
 namespace kartik\tree;
@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * The tree management module for Yii Framework 2.0.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class Module extends \kartik\base\Module
 {
@@ -26,13 +26,13 @@ class Module extends \kartik\base\Module
     const NODE_REMOVE = 'remove';
     const NODE_MOVE = 'move';
     const NODE_SAVE = 'save';
-    
+
     const VIEW_PART_1 = 1;
     const VIEW_PART_2 = 2;
     const VIEW_PART_3 = 3;
     const VIEW_PART_4 = 4;
     const VIEW_PART_5 = 5;
-    
+
     /**
      * @var array the configuration of nested set attributes structure
      */
@@ -49,7 +49,7 @@ class Module extends \kartik\base\Module
      */
     public $treeViewSettings = [
         'nodeView' => '@kvtree/views/_form',
-        'nodeAddlViews' => [        
+        'nodeAddlViews' => [
             self::VIEW_PART_1 => '',
             self::VIEW_PART_2 => '',
             self::VIEW_PART_3 => '',
@@ -68,7 +68,7 @@ class Module extends \kartik\base\Module
         'yii\widgets\ActiveFormAsset',
         'yii\validators\ValidationAsset'
     ];
-    
+
     /**
      * @inherit doc
      */

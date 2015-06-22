@@ -2,8 +2,8 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @package yii2-tree-manager
- * @version 1.0.3
+ * @package   yii2-tree-manager
+ * @version   1.0.3
  */
 
 namespace kartik\tree;
@@ -14,7 +14,7 @@ use Yii;
  * Asset bundle for TreeView widget.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class TreeViewAsset extends \kartik\base\AssetBundle
 {

@@ -2,8 +2,8 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @package yii2-tree-manager
- * @version 1.0.3
+ * @package   yii2-tree-manager
+ * @version   1.0.3
  */
 
 namespace kartik\tree\models;
@@ -19,6 +19,35 @@ use creocoder\nestedsets\NestedSetsBehavior;
  */
 trait TreeTrait
 {
+    /**
+     * @var array the list of boolean value attributes
+     */
+    public static $boolAttribs = [
+        'active',
+        'selected',
+        'disabled',
+        'readonly',
+        'visible',
+        'collapsed',
+        'movable_u',
+        'movable_d',
+        'movable_r',
+        'movable_l',
+        'removable',
+        'removable_all'
+    ];
+
+    /**
+     * @var array the default list of boolean attributes with initial value = `false`
+     */
+    public static $falseAttribs = [
+        'selected',
+        'disabled',
+        'readonly',
+        'collapsed',
+        'removable_all'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -71,6 +100,7 @@ trait TreeTrait
     public function rules()
     {
         $module = TreeView::module();
+        $nameAttribute = $iconAttribute = $iconTypeAttribute = null;
         extract($module->dataStructure);
         $attribs = array_merge([$nameAttribute, $iconAttribute, $iconTypeAttribute], static::$boolAttribs);
         $rules = [
@@ -104,6 +134,7 @@ trait TreeTrait
     public function initDefaults()
     {
         $module = TreeView::module();
+        $iconTypeAttribute = null;
         extract($module->dataStructure);
         $this->setDefault($iconTypeAttribute, TreeView::ICON_CSS);
         foreach (static::$boolAttribs as $attr) {
@@ -116,7 +147,7 @@ trait TreeTrait
      * Sets default value of a model attribute
      *
      * @param string $attr the attribute name
-     * @param mixed  $val the default value
+     * @param mixed  $val  the default value
      */
     protected function setDefault($attr, $val)
     {
@@ -128,7 +159,7 @@ trait TreeTrait
     /**
      * Parses an attribute value if set - else returns the default
      *
-     * @param string $attr the attribute name
+     * @param string $attr    the attribute name
      * @param mixed  $default the attribute default value
      *
      * @return mixed
@@ -274,7 +305,7 @@ trait TreeTrait
      * Removes a node
      *
      * @param bool $softDelete whether to soft delete or hard delete
-     * @param bool $currNode whether to update the current node value also
+     * @param bool $currNode   whether to update the current node value also
      *
      * @return bool status of activation/inactivation
      */
@@ -321,6 +352,8 @@ trait TreeTrait
     public function attributeLabels()
     {
         $module = TreeView::module();
+        $keyAttribute = $nameAttribute = $leftAttribute = $rightAttribute = $depthAttribute = null;
+        $treeAttribute = $iconAttribute = $iconTypeAttribute = null;
         extract($module->treeStructure + $module->dataStructure);
         $labels = [
             $keyAttribute => Yii::t('kvtree', 'ID'),

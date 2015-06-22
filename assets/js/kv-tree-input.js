@@ -82,12 +82,10 @@
             $this = $(this);
             data = $this.data('treeinput');
             options = typeof option === 'object' && option;
-
             if (!data) {
                 data = new TreeInput(this, $.extend({}, $.fn.treeinput.defaults, options, $(this).data()));
                 $this.data('treeinput', data);
             }
-
             if (typeof option === 'string') {
                 data[option].apply(data, args);
             }

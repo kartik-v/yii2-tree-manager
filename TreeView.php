@@ -2,8 +2,8 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @package yii2-tree-manager
- * @version 1.0.3
+ * @package   yii2-tree-manager
+ * @version   1.0.3
  */
 
 namespace kartik\tree;
@@ -24,7 +24,7 @@ use kartik\base\Widget;
  * management and manipulation of hierarchical data using nested sets.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class TreeView extends Widget
 {
@@ -94,7 +94,7 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the node detail form.
      */
-    public $nodeFormOptions = [];    
+    public $nodeFormOptions = [];
 
     /**
      * @var string the comma separated initial value (keys) to be
@@ -103,7 +103,7 @@ class TreeView extends Widget
     public $value = '';
 
     /**
-     * @var string message shown on tree initialization when either the entire 
+     * @var string message shown on tree initialization when either the entire
      * tree is empty or no node is found for the selected `displayValue`.
      */
     public $emptyNodeMsg;
@@ -154,7 +154,7 @@ class TreeView extends Widget
     public $multiple = true;
 
     /**
-     * @var int animation duration (ms) for fading in and out alerts that are 
+     * @var int animation duration (ms) for fading in and out alerts that are
      * displayed during manipulation of nodes.
      */
     public $alertFadeDuration = 1000;
@@ -468,7 +468,8 @@ HTML;
         $this->_module = Config::initModule(Module::classname());
         $this->initSelectedNode();
         if (empty($this->emptyNodeMsg)) {
-             $this->emptyNodeMsg =  Yii::t('kvtree', 'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.');
+            $this->emptyNodeMsg = Yii::t('kvtree',
+                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.');
         }
         parent::init();
     }
@@ -520,13 +521,15 @@ HTML;
             throw new InvalidConfigException("The model class '{$class}' for the 'query' must use the trait '{$trait}' or extend from 'kartik\models\tree\Tree'.");
         }
     }
-    
+
     /**
      * Check if the trait is used by a specific class or recursively by
      * any of the parent classes or parent traits
-     * @param string $class the class name to check
-     * @param string $trait the trait class name
-     * @param bool $autoload whether to autoload the class
+     *
+     * @param string $class    the class name to check
+     * @param string $trait    the trait class name
+     * @param bool   $autoload whether to autoload the class
+     *
      * @return bool whether the class has used the trait
      */
     protected static function usesTrait($class, $trait, $autoload = false)
@@ -751,11 +754,11 @@ HTML;
     /**
      * Render the default node icon markup
      *
-     * @param string $icon the current node's icon
+     * @param string $icon     the current node's icon
      * @param int    $iconType the current node's icon type, must be one of:
-     * - `TreeView::ICON_CSS` or `1`: if the icon css class suffix name is stored in $icon.
-     * - `TreeView::ICON_RAW` or `2`: if the raw icon markup is stored in $icon.
-     * @param bool   $action whether child or parent
+     *                         - `TreeView::ICON_CSS` or `1`: if the icon css class suffix name is stored in $icon.
+     *                         - `TreeView::ICON_RAW` or `2`: if the raw icon markup is stored in $icon.
+     * @param bool   $action   whether child or parent
      *
      * @return string
      */
@@ -763,11 +766,13 @@ HTML;
     {
         if (!empty($icon)) {
             $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $this->_iconPrefix . $icon]) : $icon;
+            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '',
+                ['class' => $this->_iconPrefix . $icon]) : $icon;
             return Html::tag('span', $icon, $options);
         }
-        return Html::tag('span', $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) .
-               Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
+        return Html::tag('span', $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon,
+            $this->parentNodeIconOptions) .
+        Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
     }
 
     /**
@@ -858,7 +863,7 @@ HTML;
     /**
      * Renders a generic icon using icon suffix
      *
-     * @param string $icon the icon suffix name
+     * @param string $icon    the icon suffix name
      * @param array  $options the HTML attributes for the icon container
      *
      * @return string
@@ -1010,9 +1015,7 @@ HTML;
     {
         $struct = $this->_module->treeStructure + $this->_module->dataStructure;
         extract($struct);
-        $nodeDepth = 0;
-        $currDepth = 0;
-        $counter = 0;
+        $nodeDepth = $currDepth = $counter = 0;
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
         foreach ($this->_nodes as $node) {
             if (!$this->isAdmin && (!$node->isVisible() || (!$this->showInactive && !$node->isActive()))) {
@@ -1151,8 +1154,8 @@ HTML;
         }
         $newSettings = [
             '' => '<em>' . Yii::t('kvtree', 'Default') . '</em> ( ' .
-                Html::tag('span', $this->defaultParentNodeIcon, $this->parentNodeIconOptions) . ' / ' . 
-                Html::tag('span', $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) . ' / ' . 
+                Html::tag('span', $this->defaultParentNodeIcon, $this->parentNodeIconOptions) . ' / ' .
+                Html::tag('span', $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) . ' / ' .
                 Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions) . ')'
         ];
         foreach ($settings as $suffix => $label) {

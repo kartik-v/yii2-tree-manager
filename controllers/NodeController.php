@@ -2,8 +2,8 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @package yii2-tree-manager
- * @version 1.0.3
+ * @package   yii2-tree-manager
+ * @version   1.0.3
  */
 
 namespace kartik\tree\controllers;
@@ -68,70 +68,13 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
-     * View, create, or update a tree node via ajax
-     *
-     * @return string json encoded response
-     */
-    public function actionManage()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        static::checkValidRequest();
-        $parentKey = null;
-        $action = null;
-        $formOptions = '';
-        $modelClass = '\kartik\tree\models\Tree';
-        $currUrl = '';
-        $isAdmin = false;
-        $iconsList = [];
-        $softDelete = false;
-        $showFormButtons = false;
-        $showIDAttribute = false;
-        $nodeView = '';
-        $nodeAddlViews = [];
-        extract(static::getPostData());
-        if (!isset($id) || empty($id)) {
-            $node = new $modelClass;
-            $node->initDefaults();
-        } else {
-            $node = $modelClass::findOne($id);
-        }
-        $module = TreeView::module();
-        $params = $module->treeStructure + $module->dataStructure + [
-                'node' => $node,
-                'parentKey' => $parentKey,
-                'action' => $formAction,
-                'formOptions' => empty($formOptions) ? [] : Json::decode($formOptions),
-                'modelClass' => $modelClass,
-                'currUrl' => $currUrl,
-                'isAdmin' => $isAdmin,
-                'iconsList' => $iconsList,
-                'softDelete' => $softDelete,
-                'showFormButtons' => $showFormButtons,
-                'showIDAttribute' => $showIDAttribute,
-                'nodeView' => $nodeView,
-                'nodeAddlViews' => $nodeAddlViews
-            ];
-        if (!empty($module->unsetAjaxBundles)) {
-            Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
-                foreach ($module->unsetAjaxBundles as $bundle) {
-                    unset($e->sender->assetBundles[$bundle]);
-                }
-            });
-        }
-        return [
-            'out' => $this->renderAjax($nodeView, ['params' => $params]),
-            'status' => 'success'
-        ];
-    }
-
-    /**
      * Saves a node once form is submitted
      */
     public function actionSave()
     {
         static::checkValidRequest(!isset($_POST['treeNodeModify']));
-        $treeNodeModify = null;
-        $parentKey = null;
+        $treeNodeModify = $parentKey = $currUrl = null;
+        $softDelete = true;
         $modelClass = '\kartik\tree\models\Tree';
         extract(static::getPostData());
         $module = TreeView::module();
@@ -141,7 +84,7 @@ class NodeController extends \yii\web\Controller
         if ($treeNodeModify) {
             $node = new $modelClass;
             $successMsg = Yii::t('kvtree', 'The node was successfully created.');
-            $errorMsg = Yii::t('kvtree', 'Error while creating the node. Try again later.');
+            $errorMsg = Yii::t('kvtree', 'Error while creating the node. Please try again later.');
         } else {
             $idAttr = $module->dataStructure['keyAttribute'];
             $tag = explode("\\", $modelClass);
@@ -149,7 +92,7 @@ class NodeController extends \yii\web\Controller
             $id = $_POST[$tag][$idAttr];
             $node = $modelClass::findOne($id);
             $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
-            $errorMsg = Yii::t('kvtree', 'Error while saving the node. Try again later.');
+            $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
         }
         $node->load($_POST);
         if ($treeNodeModify) {
@@ -190,6 +133,60 @@ class NodeController extends \yii\web\Controller
     }
 
     /**
+     * View, create, or update a tree node via ajax
+     *
+     * @return string json encoded response
+     */
+    public function actionManage()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        static::checkValidRequest();
+        $parentKey = $action = null;
+        $modelClass = '\kartik\tree\models\Tree';
+        $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
+        $currUrl = $nodeView = $formOptions = $formAction = '';
+        $iconsList = $nodeAddlViews = [];
+        extract(static::getPostData());
+        if (!isset($id) || empty($id)) {
+            $node = new $modelClass;
+            $node->initDefaults();
+        } else {
+            $node = $modelClass::findOne($id);
+        }
+        $module = TreeView::module();
+        $params = $module->treeStructure + $module->dataStructure + [
+                'node' => $node,
+                'parentKey' => $parentKey,
+                'action' => $formAction,
+                'formOptions' => empty($formOptions) ? [] : Json::decode($formOptions),
+                'modelClass' => $modelClass,
+                'currUrl' => $currUrl,
+                'isAdmin' => $isAdmin,
+                'iconsList' => $iconsList,
+                'softDelete' => $softDelete,
+                'showFormButtons' => $showFormButtons,
+                'showIDAttribute' => $showIDAttribute,
+                'nodeView' => $nodeView,
+                'nodeAddlViews' => $nodeAddlViews
+            ];
+        if (!empty($module->unsetAjaxBundles)) {
+            Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
+                foreach ($module->unsetAjaxBundles as $bundle) {
+                    unset($e->sender->assetBundles[$bundle]);
+                }
+            });
+        }
+        $callback = function () use ($nodeView, $params) {
+            return $this->renderAjax($nodeView, ['params' => $params]);
+        };
+        return self::process(
+            $callback,
+            Yii::t('kvtree', 'Error while viewing the node. Please try again later.'),
+            null
+        );
+    }
+
+    /**
      * Remove a tree node
      */
     public function actionRemove()
@@ -201,18 +198,14 @@ class NodeController extends \yii\web\Controller
         $softDelete = false;
         extract(static::getPostData());
         $node = $class::findOne($id);
-        $success = $node->removeNode($softDelete);
-        if ($success) {
-            return [
-                'out' => Yii::t('kvtree', 'The node was removed successfully.'),
-                'status' => 'success'
-            ];
-        } else {
-            return [
-                'out' => Yii::t('kvtree', 'Error while removing the node. Please try again later.'),
-                'status' => 'error'
-            ];
-        }
+        $callback = function () use ($node, $softDelete) {
+            return $node->removeNode($softDelete);
+        };
+        return self::process(
+            $callback,
+            Yii::t('kvtree', 'Error removing the node. Please try again later.'),
+            Yii::t('kvtree', 'The node was removed successfully.')
+        );
     }
 
     /**
@@ -230,9 +223,7 @@ class NodeController extends \yii\web\Controller
         extract(static::getPostData());
         $nodeFrom = $class::findOne($idFrom);
         $nodeTo = $class::findOne($idTo);
-        $success = false;
-        $error = Yii::t('kvtree', 'Error moving the node. Please try again later.');
-        try {
+        $callback = function () use ($dir, $nodeFrom, $nodeTo, $allowNewRoots) {
             if (!empty($nodeFrom) && !empty($nodeTo)) {
                 if ($dir == 'u') {
                     $nodeFrom->insertBefore($nodeTo);
@@ -247,17 +238,49 @@ class NodeController extends \yii\web\Controller
                 } elseif ($dir == 'r') {
                     $nodeFrom->appendTo($nodeTo);
                 }
-                $success = $nodeFrom->save();
+                return $nodeFrom->save();
             }
-        } catch (yii\db\Exception $e) {
+            return true;
+        };
+        return self::process(
+            $callback,
+            Yii::t('kvtree', 'Error while moving the node. Please try again later.'),
+            Yii::t('kvtree', 'The node was moved successfully.')
+        );
+    }
+
+    /**
+     * Processes a code block and catches exceptions
+     *
+     * @param Closure $callback   the function to execute (this returns a valid `$success`)
+     * @param string  $msgError   the default error message to return
+     * @param string  $msgSuccess the default success error message to return
+     *
+     * @return array outcome of the code consisting of following keys:
+     * - 'out': string, the output content
+     * - 'status': string, success or error
+     */
+    public static function process($callback, $msgError, $msgSuccess)
+    {
+        $error = $msgError;
+        $success = false;
+        try {
+            $success = call_user_func($callback);
+            $error = null;
+        } catch (\yii\db\Exception $e) {
             $error = $e->getMessage();
-        } catch (yii\base\NotSupportedException $e) {
+        } catch (\yii\base\NotSupportedException $e) {
             $error = $e->getMessage();
-        } catch (Exception $e) {
+        } catch (\yii\base\InvalidParamException $e) {
+            $error = $e->getMessage();
+        } catch (\yii\base\InvalidConfigException $e) {
+            $error = $e->getMessage();
+        } catch (\Exception $e) {
             $error = $e->getMessage();
         }
-        if ($success) {
-            return ['out' => Yii::t('kvtree', 'The node was moved successfully.'), 'status' => 'success'];
+        if ($success !== false) {
+            $out = $msgSuccess === null ? $success : $msgSuccess;
+            return ['out' => $out, 'status' => 'success'];
         } else {
             return ['out' => $error, 'status' => 'error'];
         }

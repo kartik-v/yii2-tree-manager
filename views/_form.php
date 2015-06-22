@@ -1,8 +1,8 @@
 <?php
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @package yii2-tree-manager
- * @version 1.0.3
+ * @package   yii2-tree-manager
+ * @version   1.0.3
  */
 
 use kartik\form\ActiveForm;
@@ -50,7 +50,7 @@ $formOptions['id'] = 'kv-' . uniqid();
 $form = ActiveForm::begin([   // the active form instance
     'action' => $action,
     'options' => $formOptions
-]); 
+]);
 // the primary key input field
 if ($showIDAttribute) {
     $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
@@ -162,14 +162,14 @@ echo $renderContent(Module::VIEW_PART_1);
 ?>
 <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
     <?php if ($showIDAttribute): ?>
-    <div class="row">
-        <div class="col-sm-4">
-            <?= $keyField ?>
+        <div class="row">
+            <div class="col-sm-4">
+                <?= $keyField ?>
+            </div>
+            <div class="col-sm-8">
+                <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
+            </div>
         </div>
-        <div class="col-sm-8">
-            <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
-        </div>
-    </div>
     <?php else: ?>
         <?= $keyField ?>
         <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>

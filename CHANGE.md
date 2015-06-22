@@ -13,6 +13,7 @@ version 1.0.3
 - (enh #46): Better styling and alignment of tree hierarchy lines across browsers.
 - (bug #47): Ensure single select for TreeViewInput when `multiple` is `false`.
 - (enh #51): Move properties from `TreeTrait` to `Tree` model.
+- (enh #52): Better exception handling and translations.
 
 version 1.0.2
 =============
