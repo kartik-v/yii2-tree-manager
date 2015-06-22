@@ -41,4 +41,60 @@ use creocoder\nestedsets\NestedSetsBehavior;
 class Tree extends \yii\db\ActiveRecord
 {
     use TreeTrait;
+    
+    /**
+     * @var string the classname for the TreeQuery that implements the NestedSetQueryBehavior.
+     * If not set this will default to `kartik\tree\models\TreeQuery`.
+     */
+    public static $treeQueryClass;
+
+    /**
+     * @var array the list of boolean value attributes
+     */
+    public static $boolAttribs = [
+        'active',
+        'selected',
+        'disabled',
+        'readonly',
+        'visible',
+        'collapsed',
+        'movable_u',
+        'movable_d',
+        'movable_r',
+        'movable_l',
+        'removable',
+        'removable_all'
+    ];
+
+    /**
+     * @var array the default list of boolean attributes with initial value = `false`
+     */
+    public static $falseAttribs = [
+        'selected',
+        'disabled',
+        'readonly',
+        'collapsed',
+        'removable_all'
+    ];
+
+    /**
+     * @var bool whether to HTML encode the tree node names. Defaults to `true`.
+     */
+    public $encodeNodeNames = true;
+
+    /**
+     * @var bool whether to HTML purify the tree node icon content before saving.
+     * Defaults to `true`.
+     */
+    public $purifyNodeIcons = true;
+
+    /**
+     * @var array activation errors for the node
+     */
+    public $nodeActivationErrors = [];
+
+    /**
+     * @var array node removal errors
+     */
+    public $nodeRemovalErrors = [];
 }

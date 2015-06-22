@@ -20,67 +20,49 @@ use creocoder\nestedsets\NestedSetsBehavior;
 trait TreeTrait
 {
     /**
-     * @var string the classname for the TreeQuery that implements the NestedSetQueryBehavior.
-     * If not set this will default to `kartik\tree\models\TreeQuery`.
-     */
-    public static $treeQueryClass;
-
-    /**
-     * @var bool whether to HTML encode the tree node names. Defaults to `true`.
-     */
-    public $encodeNodeNames = true;
-
-    /**
-     * @var bool whether to HTML purify the tree node icon content before saving.
-     * Defaults to `true`.
-     */
-    public $purifyNodeIcons = true;
-
-    /**
-     * @var array the list of boolean value attributes
-     */
-    public static $boolAttribs = [
-        'active',
-        'selected',
-        'disabled',
-        'readonly',
-        'visible',
-        'collapsed',
-        'movable_u',
-        'movable_d',
-        'movable_r',
-        'movable_l',
-        'removable',
-        'removable_all'
-    ];
-
-    /**
-     * @var array the default list of boolean attributes with initial value = `false`
-     */
-    public static $falseAttribs = [
-        'selected',
-        'disabled',
-        'readonly',
-        'collapsed',
-        'removable_all'
-    ];
-
-    /**
-     * @var array activation errors for the node
-     */
-    public $nodeActivationErrors = [];
-
-    /**
-     * @var array node removal errors
-     */
-    public $nodeRemovalErrors = [];
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return ''; // ensure you return a valid table name in your extended class
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function find()
+    {
+        $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
+        return new $treeQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function createQuery()
+    {
+        $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
+        return new $treeQuery(['modelClass' => get_called_class()]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        $module = TreeView::module();
+        $settings = ['class' => NestedSetsBehavior::className()] + $module->treeStructure;
+        return [$settings];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_ALL,
+        ];
     }
 
     /**
@@ -331,44 +313,6 @@ trait TreeTrait
             return $this->removable_all || $this->isRoot() && $this->children()->count() == 0 ?
                 $this->deleteWithChildren() : $this->delete();
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        $module = TreeView::module();
-        $settings = ['class' => NestedSetsBehavior::className()] + $module->treeStructure;
-        return [$settings];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function transactions()
-    {
-        return [
-            self::SCENARIO_DEFAULT => self::OP_ALL,
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function find()
-    {
-        $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
-        return new $treeQuery(get_called_class());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function createQuery()
-    {
-        $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
-        return new $treeQuery(['modelClass' => get_called_class()]);
     }
 
     /**
