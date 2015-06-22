@@ -3,7 +3,7 @@
  * @package yii2-tree-manager
  * @version 1.0.3
  */
-
+ 
 DROP TABLE IF EXISTS tbl_tree;
 
 CREATE TABLE tbl_tree (

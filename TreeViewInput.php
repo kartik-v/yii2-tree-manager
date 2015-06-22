@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
  * @version   1.0.3
  */
@@ -26,6 +26,9 @@ use kartik\tree\models\Tree;
  */
 class TreeViewInput extends TreeView
 {
+    /**
+     * Caret rendered for the dropdown toggle
+     */
     const CARET = '<div class="kv-carets"><span class="caret kv-dn"></span><span class="caret kv-up"></span></div>';
 
     /**

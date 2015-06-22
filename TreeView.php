@@ -468,8 +468,10 @@ HTML;
         $this->_module = Config::initModule(Module::classname());
         $this->initSelectedNode();
         if (empty($this->emptyNodeMsg)) {
-            $this->emptyNodeMsg = Yii::t('kvtree',
-                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.');
+            $this->emptyNodeMsg = Yii::t(
+                'kvtree',
+                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.'
+            );
         }
         parent::init();
     }
@@ -766,13 +768,11 @@ HTML;
     {
         if (!empty($icon)) {
             $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '',
-                ['class' => $this->_iconPrefix . $icon]) : $icon;
+            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $this->_iconPrefix . $icon]) : $icon;
             return Html::tag('span', $icon, $options);
         }
-        return Html::tag('span', $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon,
-            $this->parentNodeIconOptions) .
-        Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
+        return Html::tag('span', $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) .
+            Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
     }
 
     /**

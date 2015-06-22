@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
  * @version   1.0.3
  */
@@ -18,10 +18,16 @@ use Yii;
  */
 class TreeViewAsset extends \kartik\base\AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $depends = [
         'yii\widgets\ActiveFormAsset'
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->setSourcePath(__DIR__ . '/assets');

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
  * @version   1.0.3
  */
@@ -266,7 +266,6 @@ class NodeController extends \yii\web\Controller
         $success = false;
         try {
             $success = call_user_func($callback);
-            $error = null;
         } catch (\yii\db\Exception $e) {
             $error = $e->getMessage();
         } catch (\yii\base\NotSupportedException $e) {

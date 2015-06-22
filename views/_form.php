@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
  * @version   1.0.3
  */
@@ -53,7 +53,11 @@ $form = ActiveForm::begin([   // the active form instance
 ]);
 // the primary key input field
 if ($showIDAttribute) {
-    $keyField = $form->field($node, $keyAttribute)->textInput(['readonly' => true]);
+    $options = ['disabled' => true];
+    if ($node->isNewRecord) {
+        $options['value'] = Yii::t('kvtree', '(new)');
+    }
+    $keyField = $form->field($node, $keyAttribute)->textInput($options);
 } else {
     $keyField = Html::activeHiddenInput($node, $keyAttribute);
 }
@@ -80,6 +84,7 @@ $showAlert = function ($type, $body = '', $hide = true) {
     }
     return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
 };
+
 // render additional view content helper
 $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
     if (empty($nodeAddlViews[$part])) {
@@ -98,14 +103,12 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
  * inputs as defined below.
  */
 ?>
-<?php
-echo Html::hiddenInput('treeNodeModify', $node->isNewRecord);
-echo Html::hiddenInput('parentKey', $parentKey);
-echo Html::hiddenInput('currUrl', $currUrl);
-echo Html::hiddenInput('modelClass', $modelClass);
-echo Html::hiddenInput('softDelete', $softDelete);
-echo Html::hiddenInput('formOptions', Json::encode($formOptions));
-?>
+<?= Html::hiddenInput('treeNodeModify', $node->isNewRecord) ?>
+<?= Html::hiddenInput('parentKey', $parentKey) ?>
+<?= Html::hiddenInput('currUrl', $currUrl) ?>
+<?= Html::hiddenInput('modelClass', $modelClass) ?>
+<?= Html::hiddenInput('softDelete', $softDelete) ?>
+<?= Html::hiddenInput('formOptions', Json::encode($formOptions)) ?>
 
 <?php
 /**
@@ -114,10 +117,12 @@ echo Html::hiddenInput('formOptions', Json::encode($formOptions));
 ?>
 <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
     <div class="pull-right">
-        <?= Html::resetButton('<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvtree', 'Reset'),
-            ['class' => 'btn btn-default']) ?>
-        <?= Html::submitButton('<i class="glyphicon glyphicon-floppy-disk"></i> ' . Yii::t('kvtree', 'Save'),
-            ['class' => 'btn btn-primary']) ?>
+        <button type="reset" class="btn btn-default">
+            <i class="glyphicon glyphicon-repeat"></i> <?= Yii::t('kvtree', 'Reset') ?>
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="glyphicon glyphicon-floppy-disk"></i> <?= Yii::t('kvtree', 'Save') ?>
+        </button>
     </div>
 <?php endif; ?>
     <h3><?= $parentName . $name ?></h3>
@@ -269,7 +274,6 @@ echo $renderContent(Module::VIEW_PART_1);
      */
     ?>
     <?= $renderContent(Module::VIEW_PART_4) ?>
-
 <?php endif; ?>
 <?php ActiveForm::end() ?>
 

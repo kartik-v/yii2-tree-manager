@@ -1,6 +1,6 @@
 version 1.0.3
 =============
-**Date:** 07-Jun-2015
+**Date:** 22-Jun-2015
 
 - (enh #38): Validate `formOptions` correctly for new root creation.
 - (enh #39): Expose ajax settings from `beforeSend` ajax request in events.
