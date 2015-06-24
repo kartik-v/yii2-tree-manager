@@ -53,7 +53,7 @@ $form = ActiveForm::begin([   // the active form instance
 ]);
 // the primary key input field
 if ($showIDAttribute) {
-    $options = ['disabled' => true];
+    $options = ['readonly' => true];
     if ($node->isNewRecord) {
         $options['value'] = Yii::t('kvtree', '(new)');
     }
