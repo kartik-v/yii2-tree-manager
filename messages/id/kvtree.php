@@ -63,7 +63,7 @@ return [
     'Right' => 'Kanan',
     'Root' => '',
     'Save' => 'Simpan',
-    'Saved the node details successfully.' => '',
+    'Saved the node details successfully.' => 'Berhasil menyimpan detail node',
     'Search...' => 'Cari...',
     'Select a node by clicking on one of the tree items.' => 'Pilih node dengan meng-klik salah satu tree items.',
     'Select...' => '',
