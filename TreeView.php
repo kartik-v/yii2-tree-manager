@@ -497,10 +497,11 @@ HTML;
      */
     protected function initSelectedNode()
     {
-        $nodeSelected = Yii::$app->session->get('kvNodeId', '');
+        $session = Yii::$app->session;
+        $nodeSelected = $session->get('kvNodeId', '');
         if (!empty($nodeSelected)) {
             $this->displayValue = $nodeSelected;
-            Yii::$app->session->set('kvNodeId', '');
+            $session->set('kvNodeId', '');
         }
     }
 

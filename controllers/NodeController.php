@@ -78,6 +78,8 @@ class NodeController extends \yii\web\Controller
         $modelClass = '\kartik\tree\models\Tree';
         extract(static::getPostData());
         $module = TreeView::module();
+        $keyAttr = $module->dataStructure['keyAttribute'];
+        $session = Yii::$app->session;
         /**
          * @var \kartik\tree\models\Tree $node
          */
@@ -86,10 +88,9 @@ class NodeController extends \yii\web\Controller
             $successMsg = Yii::t('kvtree', 'The node was successfully created.');
             $errorMsg = Yii::t('kvtree', 'Error while creating the node. Please try again later.');
         } else {
-            $idAttr = $module->dataStructure['keyAttribute'];
             $tag = explode("\\", $modelClass);
             $tag = array_pop($tag);
-            $id = $_POST[$tag][$idAttr];
+            $id = $_POST[$tag][$keyAttr];
             $node = $modelClass::findOne($id);
             $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
             $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
@@ -123,11 +124,11 @@ class NodeController extends \yii\web\Controller
         } else {
             $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
-        Yii::$app->session->set('kvNodeId', $node->id);
+        $session->set('kvNodeId', $node->$keyAttr);
         if ($success) {
-            Yii::$app->session->setFlash('success', $successMsg);
+            $session->setFlash('success', $successMsg);
         } else {
-            Yii::$app->session->setFlash('error', $errorMsg);
+            $session->setFlash('error', $errorMsg);
         }
         return $this->redirect($currUrl);
     }

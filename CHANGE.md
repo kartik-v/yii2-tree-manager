@@ -1,5 +1,12 @@
-version 1.0.3
-=============
+Change Log: `yii2-tree-manager`
+===============================
+
+## Version 1.0.4
+
+- (bug #59): Maintain consistency by using `keyAttribute` to parse node key.
+
+## Version 1.0.3
+
 **Date:** 22-Jun-2015
 
 - (enh #38): Validate `formOptions` correctly for new root creation.
@@ -15,16 +22,16 @@ version 1.0.3
 - (enh #51): Move properties from `TreeTrait` to `Tree` model.
 - (enh #52): Better exception handling and translations.
 
-version 1.0.2
-=============
+## Version 1.0.2
+
 **Date:** 22-May-2015
 
 - (enh #34): Better ability to disable `treeAttribute` by setting it to `false`.
 - (enh #35): Initialize variables prior to extraction.
 - (enh #36): Add German translations.
 
-version 1.0.1
-=============
+## Version 1.0.1
+
 **Date:** 11-May-2015
 
 - (enh #18): Add new plugin events and enhance plugin event parameters.
@@ -41,8 +48,8 @@ version 1.0.1
 - (enh #32): Better styling for inactive and invisible nodes.
 - (bug #33): Fix minor bug in jquery plugin's button actions code.
 
-version 1.0.0
-=============
+## Version 1.0.0
+
 **Date:** 21-Apr-2015
 
 - Initial release

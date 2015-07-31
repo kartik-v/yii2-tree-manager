@@ -136,13 +136,14 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
 ?>
     <div class="kv-treeview-alerts">
         <?php
-        if (Yii::$app->session->hasFlash('success')) {
-            echo $showAlert('success', Yii::$app->session->getFlash('success'), false);
+        $session = Yii::$app->session;
+        if ($session->hasFlash('success')) {
+            echo $showAlert('success', $session->getFlash('success'), false);
         } else {
             echo $showAlert('success');
         }
-        if (Yii::$app->session->hasFlash('error')) {
-            echo $showAlert('danger', Yii::$app->session->getFlash('error'), false);
+        if ($session->hasFlash('error')) {
+            echo $showAlert('danger', $session->getFlash('error'), false);
         } else {
             echo $showAlert('danger');
         }
