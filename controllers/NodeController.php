@@ -95,6 +95,7 @@ class NodeController extends \yii\web\Controller
             $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
             $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
         }
+        $isNewRecord = $node->isNewRecord;
         $node->load($_POST);
         if ($treeNodeModify) {
             if ($parentKey == 'root') {
@@ -104,14 +105,18 @@ class NodeController extends \yii\web\Controller
                 $node->appendTo($parent);
             }
         }
-        $success = false;
+        $errors = $success = false;
         if ($node->save()) {
-            if ($node->active) {
-                $success = $node->activateNode(false);
-                $errors = $node->nodeActivationErrors;
+            if (!$isNewRecord) {
+                if ($node->active) {
+                    $success = $node->activateNode(false);
+                    $errors = $node->nodeActivationErrors;
+                } else {
+                    $success = $node->removeNode($softDelete, false);
+                    $errors = $node->nodeRemovalErrors;
+                }
             } else {
-                $success = $node->removeNode($softDelete, false);
-                $errors = $node->nodeRemovalErrors;
+                $success = true;
             }
             if (!empty($errors)) {
                 $success = false;
