@@ -74,7 +74,6 @@ class NodeController extends \yii\web\Controller
     {
         static::checkValidRequest(!isset($_POST['treeNodeModify']));
         $treeNodeModify = $parentKey = $currUrl = null;
-        $softDelete = true;
         $modelClass = '\kartik\tree\models\Tree';
         extract(static::getPostData());
         $module = TreeView::module();
@@ -95,6 +94,7 @@ class NodeController extends \yii\web\Controller
             $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
             $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
         }
+        $node->activeOrig = $node->active;
         $isNewRecord = $node->isNewRecord;
         $node->load($_POST);
         if ($treeNodeModify) {
@@ -107,12 +107,13 @@ class NodeController extends \yii\web\Controller
         }
         $errors = $success = false;
         if ($node->save()) {
-            if (!$isNewRecord) {
+            // check if active status was changed
+            if (!$isNewRecord && $node->activeOrig != $node->active) {
                 if ($node->active) {
                     $success = $node->activateNode(false);
                     $errors = $node->nodeActivationErrors;
                 } else {
-                    $success = $node->removeNode($softDelete, false);
+                    $success = $node->removeNode(true, false); // only deactivate the node(s)
                     $errors = $node->nodeRemovalErrors;
                 }
             } else {

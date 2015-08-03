@@ -3,11 +3,12 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.4
 
-**Date:** 31-Jul-2015
+**Date:** 03-Aug-2015
 
 - (enh #57): Add Indonesian translations.
 - (enh #58): Add Polish translations.
 - (bug #59): Maintain consistency by using `keyAttribute` to parse node key.
+- (enh #63): Cache active state before save.
 
 ## Version 1.0.3
 

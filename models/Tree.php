@@ -68,4 +68,9 @@ class Tree extends \yii\db\ActiveRecord
      * @var array node removal errors
      */
     public $nodeRemovalErrors = [];
+
+    /**
+     * @var bool attribute to cache the `active` state before a model update. Defaults to `true`.
+     */
+    public $activeOrig = true;
 }
