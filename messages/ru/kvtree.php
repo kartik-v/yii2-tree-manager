@@ -66,7 +66,7 @@ return [
     'Saved the node details successfully.' => 'Данные элемента успешно сохранены',
     'Search...' => 'Поиск...',
     'Select a node by clicking on one of the tree items.' => 'Выберите элемент, нажав на один из дерева.',
-    'Select...' => 'Вырбать...',
+    'Select...' => 'Выбрать...',
     'Selected' => 'Выбираемый',
     'The node was moved successfully.' => 'Элемент успешно перемещен.',
     'The node was removed successfully.' => 'Элемент успешно удален.',
