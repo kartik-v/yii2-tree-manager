@@ -118,6 +118,16 @@ class TreeView extends Widget
      * details form/view.
      */
     public $showIDAttribute = true;
+    
+    /**
+     * @var int breadcrumbs depth showing in the node details form/view.
+     */
+    public $breadcrumbsDepth = 1;
+
+    /**
+     * @var null|string glue for breadcrumbs showing in the node details form/view.
+     */
+    public $breadcrumbsGlue = null;
 
     /**
      * @var bool whether to show the form action buttons in the node
@@ -1131,7 +1141,9 @@ HTML;
                 'showFormButtons' => $this->showFormButtons,
                 'showIDAttribute' => $this->showIDAttribute,
                 'nodeView' => $this->nodeView,
-                'nodeAddlViews' => $this->nodeAddlViews
+                'nodeAddlViews' => $this->nodeAddlViews,
+                'breadcrumbsDepth' => $this->breadcrumbsDepth,
+                'breadcrumbsGlue' => $this->breadcrumbsGlue,
             ];
         $content = $this->render($this->nodeView, ['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);
