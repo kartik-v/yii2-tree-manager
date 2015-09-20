@@ -152,6 +152,8 @@ class NodeController extends \yii\web\Controller
         $modelClass = '\kartik\tree\models\Tree';
         $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
         $currUrl = $nodeView = $formOptions = $formAction = '';
+        $breadcrumbsDepth = 1;
+        $breadcrumbsGlue = '';
         $iconsList = $nodeAddlViews = [];
         extract(static::getPostData());
         if (!isset($id) || empty($id)) {
@@ -174,7 +176,9 @@ class NodeController extends \yii\web\Controller
                 'showFormButtons' => $showFormButtons,
                 'showIDAttribute' => $showIDAttribute,
                 'nodeView' => $nodeView,
-                'nodeAddlViews' => $nodeAddlViews
+                'nodeAddlViews' => $nodeAddlViews,
+                'breadcrumbsDepth' => $breadcrumbsDepth,
+                'breadcrumbsGlue' => $breadcrumbsGlue,
             ];
         if (!empty($module->unsetAjaxBundles)) {
             Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {

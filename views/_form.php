@@ -33,16 +33,46 @@ $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
 $inputOpts = [];                                      // readonly/disabled input options for node
 $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
 
-// parse parent info
-if (empty($parentKey)) {
-    $parent = $node->parents(1)->one();
-    $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
-} elseif ($parentKey == 'root') {
+
+
+
+if (!empty($parentKey) and ($parentKey == 'root')) {
     $parent = '';
-} else {
-    $parent = $modelClass::findOne($parentKey);
+    $parentName = '';
 }
-$parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
+else {
+    if (!isset($breadcrumbsDepth) or ($breadcrumbsDepth === '')) $breadcrumbsDepth = null;
+    else $breadcrumbsDepth = intval($breadcrumbsDepth);
+
+    $parents = [];
+    if (!empty($parentKey)) {
+        $parent = $modelClass::findOne($parentKey);
+        if (!empty($parent)) {
+            if (!isset($breadcrumbsDepth)) $parents = array_merge($parent->parents()->all(), [$parent]);
+            elseif ($breadcrumbsDepth < 1) $parents = [];
+            elseif ($breadcrumbsDepth === 1) $parents = [$parent];
+            else $parents = array_merge($parent->parents($breadcrumbsDepth - 1)->all(), [$parent]);
+        }
+    }
+    if (empty($parents)) {
+        if (isset($breadcrumbsDepth) and ($breadcrumbsDepth < 1)) $parents = [];
+        else $parents = $node->parents($breadcrumbsDepth)->all();
+    }
+
+    $parent = null;
+    $parentName = [];
+    foreach ($parents as $parent) {
+        $parentName[] = $parent->$nameAttribute;
+    }
+    if (!empty($parentName)) $parentName[] = '';
+    $breadcrumbsGlue = empty($breadcrumbsGlue) ? ' &raquo; ' : strval($breadcrumbsDepth);
+    $parentName = implode($breadcrumbsGlue, $parentName);
+
+    if (empty($parentKey)) $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
+}
+
+
+
 
 // get module and setup form
 $module = TreeView::module(); // the treemanager module
