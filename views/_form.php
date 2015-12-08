@@ -28,7 +28,6 @@ use yii\web\View;
  * @var array      $nodeAddlViews
  * @var mixed      $currUrl
  * @var bool       $showIDAttribute
- * @var bool       $softDelete
  * @var bool       $showFormButtons
  */
 ?>
@@ -127,7 +126,6 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
 <?= Html::hiddenInput('parentKey', $parentKey) ?>
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
-<?= Html::hiddenInput('softDelete', $softDelete) ?>
 
 <?php
 /**

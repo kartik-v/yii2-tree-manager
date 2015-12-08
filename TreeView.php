@@ -1093,13 +1093,13 @@ HTML;
                 'data-lft' => $nodeLeft,
                 'data-rgt' => $nodeRight,
                 'data-lvl' => $nodeDepth,
-                'data-readonly' => $node->isReadonly() ? 1 : 0,
-                'data-movable-u' => $node->isMovable('u') ? 1 : 0,
-                'data-movable-d' => $node->isMovable('d') ? 1 : 0,
-                'data-movable-l' => $node->isMovable('l') ? 1 : 0,
-                'data-movable-r' => $node->isMovable('r') ? 1 : 0,
-                'data-removable' => $node->isRemovable() ? 1 : 0,
-                'data-removable-all' => $node->isRemovableAll() ? 1 : 0,
+                'data-readonly' => (int)$node->isReadonly(),
+                'data-movable-u' => (int)$node->isMovable('u'),
+                'data-movable-d' => (int)$node->isMovable('d'),
+                'data-movable-l' => (int)$node->isMovable('l'),
+                'data-movable-r' => (int)$node->isMovable('r'),
+                'data-removable' => (int)$node->isRemovable(),
+                'data-removable-all' => (int)$node->isRemovableAll(),
             ];
             if (!$isChild) {
                 $css = ' kv-parent ';

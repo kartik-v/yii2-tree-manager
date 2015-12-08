@@ -15,7 +15,6 @@ use yii\db\Exception as DbException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\base\InvalidCallException;

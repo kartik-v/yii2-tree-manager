@@ -420,7 +420,7 @@ trait TreeTrait
      *
      * @return string the parsed breadcrumbs
      */
-    public function getBreadcrumbs($depth = 1, $glue = ' &raquo; ', $currNodeCss = 'kv-crumb-curr', $untitled = 'New')
+    public function getBreadcrumbs($depth = 1, $glue = ' &raquo; ', $currNodeCss = 'kv-crumb-curr', $untitled = 'Untitled')
     {
         /**
          * @var Tree $this

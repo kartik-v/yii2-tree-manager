@@ -14,6 +14,7 @@ Change Log: `yii2-tree-manager`
 - (enh #71): Add Russian translations.
 - (enh #80): Enhance boolean variable parsing in HTML5 data attributes.
 - (enh #83): Breadcrumbs functionality and styling enhancements.
+- (enh #85): Cleanup redundant code and optimize code.
 
 ## Version 1.0.3
 
