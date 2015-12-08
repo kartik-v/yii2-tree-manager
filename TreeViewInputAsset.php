@@ -8,7 +8,7 @@
 
 namespace kartik\tree;
 
-use Yii;
+use kartik\base\AssetBundle;
 
 /**
  * Asset bundle for TreeViewInput widget.
@@ -16,7 +16,7 @@ use Yii;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
-class TreeViewInputAsset extends \kartik\base\AssetBundle
+class TreeViewInputAsset extends AssetBundle
 {
     /**
      * @inheritdoc

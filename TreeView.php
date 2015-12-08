@@ -9,19 +9,19 @@
 namespace kartik\tree;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
-use yii\base\InvalidConfigException;
+use yii\bootstrap\BootstrapPluginAsset;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use kartik\tree\models\Tree;
 use kartik\base\Config;
 use kartik\base\Widget;
+use kartik\tree\models\Tree;
 
 /**
- * An enhanced tree view widget for Yii Framework 2 that allows
- * management and manipulation of hierarchical data using nested sets.
+ * An enhanced tree view widget for Yii Framework 2 that allows management and manipulation of hierarchical data using
+ * nested sets.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
@@ -56,14 +56,16 @@ class TreeView extends Widget
     const MOVE_RIGHT = 'r';
 
     /**
-     * @var array the actions for managing, deleting, and moving the tree nodes.
-     * The keys must be one of 'manage', 'save', 'remove', and 'move'. Defaults to:
+     * @var array the actions for managing, deleting, and moving the tree nodes. The keys must be one of 'manage',
+     *     'save', 'remove', and 'move'. Defaults to:
+     * ```
      *     [
      *         'save' => Url::to(['/treemanager/node/save']),
      *         'manage' => Url::to(['/treemanager/node/manage']),
      *         'remove' => Url::to(['/treemanager/node/remove']),
      *         'move' => Url::to(['/treemanager/node/move']),
      *     ]
+     * ```
      */
     public $nodeActions = [];
 
@@ -73,21 +75,19 @@ class TreeView extends Widget
     public $nodeView;
 
     /**
-     * @var array the list of additional view files that will be used
-     * to append content at various sections in the `nodeView` form.
+     * @var array the list of additional view files that will be used to append content at various sections in the
+     *     `nodeView` form.
      */
     public $nodeAddlViews = [];
 
     /**
-     * @var ActiveQuery the query that will be used
-     * as the data source for the TreeView. For example:
+     * @var ActiveQuery the query that will be used as the data source for the TreeView. For example:
      * `Tree::find()->addOrderBy('root, lft')`
      */
     public $query;
 
     /**
-     * @var int the initial value (key) to be selected in the tree
-     * and displayed in the detail form. Defaults to 1.
+     * @var int the initial value (key) to be selected in the tree and displayed in the detail form. Defaults to 1.
      */
     public $displayValue = 1;
 
@@ -97,14 +97,13 @@ class TreeView extends Widget
     public $nodeFormOptions = [];
 
     /**
-     * @var string the comma separated initial value (keys) to be
-     * checked and selected in the tree
+     * @var string the comma separated initial value (keys) to be checked and selected in the tree
      */
     public $value = '';
 
     /**
-     * @var string message shown on tree initialization when either the entire
-     * tree is empty or no node is found for the selected `displayValue`.
+     * @var string message shown on tree initialization when either the entire tree is empty or no node is found for
+     *     the selected `displayValue`.
      */
     public $emptyNodeMsg;
 
@@ -114,58 +113,50 @@ class TreeView extends Widget
     public $emptyNodeMsgOptions = ['class' => 'kv-node-message'];
 
     /**
-     * @var bool whether to show the key attribute (ID) in the node
-     * details form/view.
+     * @var bool whether to show the key attribute (ID) in the node details form/view.
      */
     public $showIDAttribute = true;
 
     /**
-     * @var bool whether to show the form action buttons in the node
-     * details form/view.
+     * @var bool whether to show the form action buttons in the node details form/view.
      */
     public $showFormButtons = true;
 
     /**
-     * @var bool whether the tree is to be allowed for editing in admin mode.
-     * This will display all nodes and will allow to modify internal tree node
-     * flags. Defaults to `false`.
+     * @var bool whether the tree is to be allowed for editing in admin mode. This will display all nodes and will
+     *     allow to modify internal tree node flags. Defaults to `false`.
      */
     public $isAdmin = false;
 
     /**
-     * @var bool whether the record will be soft deleted, when remove button
-     * is clicked. Defaults to `true`. The following actions are possible:
+     * @var bool whether the record will be soft deleted, when remove button is clicked. Defaults to `true`. The
+     *     following actions are possible:
      * - If `true`, this will just set the `active` property of node to `false`.
      * - If `false`, it will attempt to hard delete the whole record.
      */
     public $softDelete = true;
 
     /**
-     * @var bool whether to show a checkbox before each tree node label
-     * to allow multiple node selection.
+     * @var bool whether to show a checkbox before each tree node label to allow multiple node selection.
      */
     public $showCheckbox = false;
 
     /**
-     * @var bool whether to allow multiple selection of checkboxes. Defaults to `true`.
-     * If set to `false` will not show a checkbox and allow only single selection of
-     * tree nodes.
+     * @var bool whether to allow multiple selection of checkboxes. Defaults to `true`. If set to `false` will not show
+     *     a checkbox and allow only single selection of tree nodes.
      */
     public $multiple = true;
 
     /**
-     * @var int animation duration (ms) for fading in and out alerts that are
-     * displayed during manipulation of nodes.
+     * @var int animation duration (ms) for fading in and out alerts that are displayed during manipulation of nodes.
      */
     public $alertFadeDuration = 1000;
 
     /**
-     * @var array cache settings for displaying the detail form content
-     * for each tree node via ajax. The following options are supported:
-     * `enableCache`: bool, defaults to true.
-     * `cacheTimeout`: int, the cache timeout in milliseconds. Defaults to
-     *  300000 (or 5 minutes).
-     * flags). Defaults to `false`.
+     * @var array cache settings for displaying the detail form content for each tree node via ajax. The following
+     *     options are supported:
+     * - `enableCache`: bool, defaults to `true`.
+     * - `cacheTimeout`: int, the cache timeout in milliseconds. Defaults to `300000` (or `5 minutes`).
      */
     public $cacheSettings = [];
 
@@ -181,31 +172,33 @@ class TreeView extends Widget
 
     /**
      * @var array settings to edit the icon. The following settings are recognized:
-     * - show: string, whether to display the icons selection as a list. If set to
-     *   'text', the icon will be shown as a plain text input along with icon type. If
-     *   set to 'list', a list will be shown. If set to 'none', then no icon settings
-     *   will be shown for editing.
-     * - type: string, the iconTypeAttribute value, defaults to TreeView::ICON_CSS. Should
-     *   be one of TreeView::ICON_CSS or TreeView::ICON_RAW.
-     * - listData: array, the configuration of the icon list data to be shown for selection.
-     *   This is mandatory if you set `show` to 'list'. You must set the data as `$key => $value`
-     *   format. The list will be parsed to display the icon list and will depend on the `type`.
-     *
-     *   - If type = TreeView::ICON_CSS: `$key` will be the icon suffix name and `$value` will be the
-     *     description for the icon. The icon markup will be automatically parsed then based on
-     *     whether its a glyphicon or font-awesome when `fontAwesome` property is `true`. For example
+     * - show: string, whether to display the icons selection as a list. If set to 'text', the icon will be shown as a
+     *     plain text input along with icon type. If set to 'list', a list will be shown. If set to 'none', then no
+     *     icon settings will be shown for editing.
+     * - type: string, the iconTypeAttribute value, defaults to TreeView::ICON_CSS. Should be one of TreeView::ICON_CSS
+     *     or TreeView::ICON_RAW.
+     * - listData: array, the configuration of the icon list data to be shown for selection. This is mandatory if you
+     *     set `show` to 'list'. You must set the data as `$key => $value` format. The list will be parsed to display
+     *     the icon list and will depend on the `type`.
+     *   - If type = TreeView::ICON_CSS: `$key` will be the icon suffix name and `$value` will be the description for
+     *     the icon. The icon markup will be automatically parsed then based on whether its a glyphicon or font-awesome
+     *     when `fontAwesome` property is `true`. For example:
+     *     ```
      *          [
      *              'folder-close' => 'Folder',
      *              'file' => 'File',
      *              'tag' => 'Tag'
      *          ]
-     *   - If type = TreeView::ICON_RAW:  `$key` is the icon markup to be stored and `$value` is the output
-     *     markup to be displayed as a selection in the list. For example:
+     *      ```
+     *   - If type = TreeView::ICON_RAW:  `$key` is the icon markup to be stored and `$value` is the output markup to
+     *     be displayed as a selection in the list. For example:
+     *     ```
      *          [
      *              '<img src="images/folder.jpg">' => 'Folder',
      *              '<img src="images/file.jpg">' => 'File',
      *              '<img src="images/tag.jpg">' => 'Tag',
      *          ]
+     *     ```
      */
     public $iconEditSettings = [
         'show' => 'text',
@@ -224,41 +217,38 @@ class TreeView extends Widget
     public $toolbarOptions = [];
 
     /**
-     * @var array the HTML attributes for the button groups
-     * within the toolbar.
+     * @var array the HTML attributes for the button groups within the toolbar.
      */
     public $buttonGroupOptions = ['class' => 'btn-group-sm'];
 
     /**
-     * @var string the default HTML attributes for the toolbar buttons
+     * @var array the default HTML attributes for the toolbar buttons
      */
     public $buttonOptions = ['class' => 'btn btn-default'];
 
     /**
-     * @var string the default HTML attributes for the toolbar button icons
+     * @var array the default HTML attributes for the toolbar button icons
      */
     public $buttonIconOptions = [];
 
     /**
-     * @var bool show toolbar button tooltips (using bootstrap tooltip plugin)
+     * @var bool show toolbar button tooltips (using bootstrap tooltip plugin). The `BootstrapPluginAsset` will
+     *     automatically be loaded if this is set to `true`.
      */
     public $showTooltips = true;
 
     /**
-     * @var string the icon markup for the child node if no icon was setup
-     * in the database.
+     * @var string the icon markup for the child node if no icon was setup in the database.
      */
     public $defaultChildNodeIcon;
 
     /**
-     * @var string the icon markup for the collapsed parent node if no icon was setup
-     * in the database.
+     * @var string the icon markup for the collapsed parent node if no icon was setup in the database.
      */
     public $defaultParentNodeIcon;
 
     /**
-     * @var string the icon markup for the opened parent node if no icon was setup
-     * in the database.
+     * @var string the icon markup for the opened parent node if no icon was setup in the database.
      */
     public $defaultParentNodeOpenIcon;
 
@@ -283,10 +273,10 @@ class TreeView extends Widget
     public $clientMessages = [];
 
     /**
-     * @var array the HTML attributes for the topmost root node container. The following
-     * special options are recognized:
-     * - label: string, the label for the topmost root node (this is not HTML encoded).
-     *   Defaults to 'Root'. Set this to empty to not display a label.
+     * @var array the HTML attributes for the topmost root node container. The following special options are
+     *     recognized:
+     * - label: string, the label for the topmost root node (this is not HTML encoded). Defaults to 'Root'. Set this to
+     *     empty to not display a label.
      */
     public $rootOptions = ['class' => 'text-primary'];
 
@@ -311,8 +301,8 @@ class TreeView extends Widget
     public $nodeCheckboxOptions = ['class' => 'text-success'];
 
     /**
-     * @var string the HTML attributes for the indicator for expanding a node. The following special
-     * options are recognized:
+     * @var array the HTML attributes for the indicator for expanding a node. The following special options are
+     *     recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-plus-square-o"></span>` if `fontAwesome` is true
      *    - `<span class="glyphicon glyphicon-expand"></span>` if `fontAwesome` is false
@@ -320,7 +310,8 @@ class TreeView extends Widget
     public $expandNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the indicator for collapsing a node.
+     * @var array the HTML attributes for the indicator for collapsing a node. The following special options are
+     *     recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-minus-square-o"></span>` if `fontAwesome` is true
      *    - `<span class="glyphicon glyphicon-collapse-down"></span>` if `fontAwesome` is false
@@ -328,8 +319,8 @@ class TreeView extends Widget
     public $collapseNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the indicator which will represent a checked checkbox. The
-     * following special options are recognized:
+     * @var array the HTML attributes for the indicator which will represent a checked checkbox. The following special
+     *     options are recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-check-square-o"></span>` if `fontAwesome` is true
      *    - `<span class="glyphicon glyphicon-checked"></span>` if `fontAwesome` is false
@@ -337,7 +328,7 @@ class TreeView extends Widget
     public $checkedNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the indicator which will represent an unchecked checkbox. The
+     * @var array the HTML attributes for the indicator which will represent an unchecked checkbox. The
      * following special options are recognized:
      * - 'label': string, the label for the indicator. If not set will default to:
      *    - `<span class="fa fa-square-o"></span>` if `fontAwesome` is true
@@ -346,14 +337,12 @@ class TreeView extends Widget
     public $uncheckedNodeOptions = [];
 
     /**
-     * @var string the HTML attributes for the wrapper container
-     * for the tree header, body, and footer.
+     * @var array the HTML attributes for the wrapper container for the tree header, body, and footer.
      */
     public $treeWrapperOptions = ['class' => 'kv-tree-wrapper form-control'];
 
     /**
-     * @var string the HTML attributes for the heading. The following additional
-     * option is recognized:
+     * @var array the HTML attributes for the heading. The following additional option is recognized:
      * `label`: the label to display for the heading
      */
     public $headingOptions = ['class' => 'kv-tree-heading'];
@@ -364,17 +353,17 @@ class TreeView extends Widget
     public $headerOptions = [];
 
     /**
-     * @var string the HTML attributes for the search container
+     * @var array the HTML attributes for the search container
      */
     public $searchContainerOptions = ['class' => 'kv-search-sm'];
 
     /**
-     * @var string the HTML attributes for the search input
+     * @var array the HTML attributes for the search input
      */
     public $searchOptions = ['class' => 'input-sm'];
 
     /**
-     * @var string the HTML attributes for the search clear indicator
+     * @var array the HTML attributes for the search clear indicator
      */
     public $searchClearOptions = ['class' => 'close'];
 
@@ -389,20 +378,17 @@ class TreeView extends Widget
     public $treeOptions = ['style' => 'height:410px'];
 
     /**
-     * @var array the HTML attributes for the detail form container
-     * which will display the details of the selected node
+     * @var array the HTML attributes for the detail form container which will display the details of the selected node
      */
     public $detailOptions = [];
 
     /**
-     * @var array the HTML attributes for the input that will store the
-     * selected nodes for the widget
+     * @var array the HTML attributes for the input that will store the selected nodes for the widget
      */
     public $options = [];
 
     /**
-     * @var the main template for rendering the tree view navigation
-     * widget and the node detail view form.
+     * @var string the main template for rendering the tree view navigation widget and the node detail view form.
      */
     public $mainTemplate = <<< HTML
 <div class="row">
@@ -416,7 +402,7 @@ class TreeView extends Widget
 HTML;
 
     /**
-     * @var the wrapper template for rendering the tree view navigation widget
+     * @var string the wrapper template for rendering the tree view navigation widget
      */
     public $wrapperTemplate = "{header}\n{tree}{footer}";
 
@@ -460,24 +446,21 @@ HTML;
     protected $_nodes = [];
 
     /**
-     * @inherit doc
+     * @var bool whether to load the bootstrap plugin asset
+     */
+    protected $_hasBootstrap = false;
+
+    /**
+     * @inheritdoc
      */
     public function init()
     {
-        $this->validateSourceData();
-        $this->_module = Config::initModule(Module::classname());
-        $this->initSelectedNode();
-        if (empty($this->emptyNodeMsg)) {
-            $this->emptyNodeMsg = Yii::t(
-                'kvtree',
-                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.'
-            );
-        }
+        $this->initTreeView();
         parent::init();
     }
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function run()
     {
@@ -488,6 +471,25 @@ HTML;
         $this->initOptions();
         $this->registerAssets();
         echo $this->renderWidget();
+    }
+
+    /**
+     * Initializes and validates the tree view configurations
+     *
+     * @throws InvalidConfigException
+     */
+    protected function initTreeView()
+    {
+        $this->validateSourceData();
+        $this->_module = Config::initModule(Module::className());
+        $this->initSelectedNode();
+        if (empty($this->emptyNodeMsg)) {
+            $this->emptyNodeMsg = Yii::t(
+                'kvtree',
+                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.'
+            );
+        }
+        $this->_hasBootstrap = $this->showTooltips;
     }
 
     /**
@@ -513,15 +515,20 @@ HTML;
     protected function validateSourceData()
     {
         if (empty($this->query) || !$this->query instanceof ActiveQuery) {
-            throw new InvalidConfigException("The 'query' property must be defined and must be an instance of '\yii\db\ActiveQuery'.");
+            throw new InvalidConfigException(
+                "The 'query' property must be defined and must be an instance of '" . ActiveQuery::className() . "'."
+            );
         }
         $class = isset($this->query->modelClass) ? $this->query->modelClass : null;
-        if (empty($class) || !is_subclass_of($class, ActiveRecord::classname())) {
+        if (empty($class) || !is_subclass_of($class, ActiveRecord::className())) {
             throw new InvalidConfigException("The 'query' must be implemented using 'ActiveRecord::find()' method.");
         }
         $trait = 'kartik\tree\models\TreeTrait';
         if (!self::usesTrait($class, $trait)) {
-            throw new InvalidConfigException("The model class '{$class}' for the 'query' must use the trait '{$trait}' or extend from 'kartik\models\tree\Tree'.");
+            throw new InvalidConfigException(
+                "The model class '{$class}' for the 'query' must use the trait '{$trait}' or extend from '" .
+                Tree::className() . "''."
+            );
         }
     }
 
@@ -529,8 +536,8 @@ HTML;
      * Check if the trait is used by a specific class or recursively by
      * any of the parent classes or parent traits
      *
-     * @param string $class    the class name to check
-     * @param string $trait    the trait class name
+     * @param string $class the class name to check
+     * @param string $trait the trait class name
      * @param bool   $autoload whether to autoload the class
      *
      * @return bool whether the class has used the trait
@@ -591,7 +598,7 @@ HTML;
     }
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public static function begin($config = [])
     {
@@ -600,7 +607,7 @@ HTML;
     }
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public static function widget($config = [])
     {
@@ -757,11 +764,11 @@ HTML;
     /**
      * Render the default node icon markup
      *
-     * @param string $icon     the current node's icon
+     * @param string $icon the current node's icon
      * @param int    $iconType the current node's icon type, must be one of:
      *                         - `TreeView::ICON_CSS` or `1`: if the icon css class suffix name is stored in $icon.
      *                         - `TreeView::ICON_RAW` or `2`: if the raw icon markup is stored in $icon.
-     * @param bool   $action   whether child or parent
+     * @param bool   $child whether child or parent
      *
      * @return string
      */
@@ -769,11 +776,13 @@ HTML;
     {
         if (!empty($icon)) {
             $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $this->_iconPrefix . $icon]) : $icon;
+            $css = $this->_iconPrefix . $icon;
+            $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $css]) : $icon;
             return Html::tag('span', $icon, $options);
         }
-        return Html::tag('span', $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon, $this->parentNodeIconOptions) .
-            Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
+        $content = $this->defaultParentNodeIcon . $this->defaultParentNodeOpenIcon;
+        return Html::tag('span', $content, $this->parentNodeIconOptions) .
+        Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions);
     }
 
     /**
@@ -809,6 +818,7 @@ HTML;
     /**
      * Renders the toggle icon container
      *
+     * @param bool $root whether a root node
      * @return string
      */
     protected function renderToggleIconContainer($root = false)
@@ -852,6 +862,8 @@ HTML;
     /**
      * Renders the checkbox icon container
      *
+     * @param bool $root whether its a root node
+     *
      * @return string
      */
     protected function renderCheckboxIconContainer($root = false)
@@ -864,7 +876,7 @@ HTML;
     /**
      * Renders a generic icon using icon suffix
      *
-     * @param string $icon    the icon suffix name
+     * @param string $icon the icon suffix name
      * @param array  $options the HTML attributes for the icon container
      *
      * @return string
@@ -1007,8 +1019,7 @@ HTML;
     }
 
     /**
-     * Renders the markup for the tree hierarchy - uses a fast non-recursive
-     * mode of tree traversal.
+     * Renders the markup for the tree hierarchy - uses a fast non-recursive mode of tree traversal.
      *
      * @return string
      */
@@ -1019,15 +1030,25 @@ HTML;
         $nodeDepth = $currDepth = $counter = 0;
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
         foreach ($this->_nodes as $node) {
+            /**
+             * @var Tree $node
+             */
             if (!$this->isAdmin && (!$node->isVisible() || (!$this->showInactive && !$node->isActive()))) {
                 continue;
             }
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeDepth = $node->$depthAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeLeft = $node->$leftAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeRight = $node->$rightAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeKey = $node->$keyAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeName = $node->$nameAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeIcon = $node->$iconAttribute;
+            /** @noinspection PhpUndefinedVariableInspection */
             $nodeIconType = $node->$iconTypeAttribute;
 
             $isChild = ($nodeRight == $nodeLeft + 1);
@@ -1052,7 +1073,7 @@ HTML;
                 'data-key' => $nodeKey,
                 'data-lft' => $nodeLeft,
                 'data-rgt' => $nodeRight,
-                'data-lvl' => $nodeDepth,                
+                'data-lvl' => $nodeDepth,
                 'data-readonly' => $node->isReadonly() ? 1 : 0,
                 'data-movable-u' => $node->isMovable('u') ? 1 : 0,
                 'data-movable-d' => $node->isMovable('d') ? 1 : 0,
@@ -1109,6 +1130,9 @@ HTML;
      */
     public function renderDetail()
     {
+        /**
+         * @var Tree $modelClass
+         */
         $modelClass = $this->query->modelClass;
         $node = $modelClass::findOne($this->displayValue);
         if (empty($node)) {
@@ -1172,7 +1196,9 @@ HTML;
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
-
+        if ($this->_hasBootstrap) {
+            BootstrapPluginAsset::register($view);
+        }
         $this->pluginOptions += [
             'treeId' => $this->treeOptions['id'],
             'detailId' => $this->detailOptions['id'],

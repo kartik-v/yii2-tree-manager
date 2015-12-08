@@ -15,7 +15,6 @@ use yii\helpers\Json;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\web\View;
-use kartik\tree\models\Tree;
 
 /**
  * An input widget that extends kartik\tree\TreeView, and allows one to
@@ -52,8 +51,9 @@ class TreeViewInput extends TreeView
     public $value;
 
     /**
-     * @var bool whether to show the input as a dropdown select. If set to false,
-     * it will display directly the tree view selector widget.
+     * @var bool whether to show the input as a dropdown select. If set to `false`, it will display directly the tree
+     *     view selector widget. Defaults to `true`. The `BootstrapPluginAsset` will automatically be loaded if this is
+     *     set to `true`.
      */
     public $asDropdown = true;
 
@@ -94,7 +94,7 @@ class TreeViewInput extends TreeView
     /**
      * @inheritdoc
      */
-    public function init()
+    protected function initTreeView()
     {
         if (!$this->hasModel() && $this->name === null) {
             throw new InvalidConfigException("Either 'name', or 'model' and 'attribute' properties must be specified.");
@@ -105,14 +105,8 @@ class TreeViewInput extends TreeView
             $css .= ' kv-tree-nofooter';
         }
         Html::addCssClass($this->treeOptions, $css);
-        parent::init();
-        if ($this->hasModel()) {
-            $this->value = Html::getAttributeValue($this->model, $this->attribute);
-        }
-        $this->_disabled = ArrayHelper::getValue($this->options, 'disabled', false);
-        if ($this->asDropdown) {
-            $this->initDropdown();
-        }
+        parent::initTreeView();
+        $this->_hasBootstrap = $this->showTooltips || $this->asDropdown;
     }
 
     /**
@@ -120,6 +114,13 @@ class TreeViewInput extends TreeView
      */
     public function run()
     {
+        if ($this->hasModel()) {
+            $this->value = Html::getAttributeValue($this->model, $this->attribute);
+        }
+        $this->_disabled = ArrayHelper::getValue($this->options, 'disabled', false);
+        if ($this->asDropdown) {
+            $this->initDropdown();
+        }
         parent::run();
         $this->registerInputAssets();
     }
@@ -181,7 +182,6 @@ class TreeViewInput extends TreeView
         }
         return $content;
     }
-
 
     /**
      * Generates the dropdown tree menu

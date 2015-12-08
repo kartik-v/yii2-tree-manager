@@ -92,7 +92,12 @@
         });
     };
 
-    $.fn.treeinput.defaults = {};
+    $.fn.treeinput.defaults = {
+        treeId: '',
+        inputId: '',
+        dropdownId: '',
+        placeholder: ''
+    };
 
     $.fn.treeinput.Constructor = TreeInput;
 

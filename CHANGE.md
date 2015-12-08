@@ -12,7 +12,8 @@ Change Log: `yii2-tree-manager`
 - (enh #66): Add Ukranian translations.
 - (enh #69): Add Italian translations.
 - (enh #71): Add Russian translations.
-- (enh #80): Enhance boolean variable parsing in data attributes.
+- (enh #78): Better `BootstrapPluginAsset` dependency.
+- (enh #80): Enhance boolean variable parsing in HTML5 data attributes.
 
 ## Version 1.0.3
 

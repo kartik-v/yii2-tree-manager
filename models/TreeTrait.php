@@ -9,6 +9,7 @@
 namespace kartik\tree\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 use kartik\tree\TreeView;
@@ -16,6 +17,20 @@ use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
  * Trait that must be used by the Tree model
+ *
+ * @property bool  $active
+ * @property bool  $removable_all
+ * @property bool  $encodeNodeNames
+ * @property bool  $purifyNodeIcons
+ * @property array $nodeActivationErrors
+ * @property array $nodeRemovalErrors
+ *
+ * @method ActiveQuery children()
+ * @method bool save()
+ * @method array getFirstErrors()
+ * @method bool isRoot()
+ * @method bool delete()
+ * @method bool deleteWithChildren()
  */
 trait TreeTrait
 {
@@ -61,6 +76,7 @@ trait TreeTrait
      */
     public static function find()
     {
+        /** @noinspection PhpUndefinedFieldInspection */
         $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
         return new $treeQuery(get_called_class());
     }
@@ -70,6 +86,7 @@ trait TreeTrait
      */
     public static function createQuery()
     {
+        /** @noinspection PhpUndefinedFieldInspection */
         $treeQuery = isset(self::$treeQueryClass) ? self::$treeQueryClass : TreeQuery::classname();
         return new $treeQuery(['modelClass' => get_called_class()]);
     }
@@ -89,6 +106,7 @@ trait TreeTrait
      */
     public function transactions()
     {
+        /** @noinspection PhpUndefinedClassConstantInspection */
         return [
             self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
@@ -147,7 +165,7 @@ trait TreeTrait
      * Sets default value of a model attribute
      *
      * @param string $attr the attribute name
-     * @param mixed  $val  the default value
+     * @param mixed  $val the default value
      */
     protected function setDefault($attr, $val)
     {
@@ -159,7 +177,7 @@ trait TreeTrait
     /**
      * Parses an attribute value if set - else returns the default
      *
-     * @param string $attr    the attribute name
+     * @param string $attr the attribute name
      * @param mixed  $default the attribute default value
      *
      * @return mixed
@@ -277,8 +295,13 @@ trait TreeTrait
         if ($this->isRemovableAll()) {
             $children = $this->children()->all();
             foreach ($children as $child) {
+                /**
+                 * @var Tree $child
+                 */
                 $child->active = true;
                 if (!$child->save()) {
+                    /** @noinspection PhpUndefinedFieldInspection */
+                    /** @noinspection PhpUndefinedVariableInspection */
                     $this->nodeActivationErrors[] = [
                         'id' => $child->$idAttribute,
                         'name' => $child->$nameAttribute,
@@ -290,6 +313,8 @@ trait TreeTrait
         if ($currNode) {
             $this->active = true;
             if (!$this->save()) {
+                /** @noinspection PhpUndefinedFieldInspection */
+                /** @noinspection PhpUndefinedVariableInspection */
                 $this->nodeActivationErrors[] = [
                     'id' => $this->$idAttribute,
                     'name' => $this->$nameAttribute,
@@ -305,7 +330,7 @@ trait TreeTrait
      * Removes a node
      *
      * @param bool $softDelete whether to soft delete or hard delete
-     * @param bool $currNode   whether to update the current node value also
+     * @param bool $currNode whether to update the current node value also
      *
      * @return bool status of activation/inactivation
      */
@@ -318,8 +343,11 @@ trait TreeTrait
             if ($this->isRemovableAll()) {
                 $children = $this->children()->all();
                 foreach ($children as $child) {
+                    /** @var Tree $child */
                     $child->active = false;
                     if (!$child->save()) {
+                        /** @noinspection PhpUndefinedFieldInspection */
+                        /** @noinspection PhpUndefinedVariableInspection */
                         $this->nodeRemovalErrors[] = [
                             'id' => $child->$idAttribute,
                             'name' => $child->$nameAttribute,
@@ -331,6 +359,8 @@ trait TreeTrait
             if ($currNode) {
                 $this->active = false;
                 if (!$this->save()) {
+                    /** @noinspection PhpUndefinedFieldInspection */
+                    /** @noinspection PhpUndefinedVariableInspection */
                     $this->nodeRemovalErrors[] = [
                         'id' => $this->$idAttribute,
                         'name' => $this->$nameAttribute,

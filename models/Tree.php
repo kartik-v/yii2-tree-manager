@@ -8,11 +8,7 @@
 
 namespace kartik\tree\models;
 
-use Yii;
-use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
-use kartik\tree\TreeView;
-use creocoder\nestedsets\NestedSetsBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the base model class for the nested set tree structure
@@ -24,7 +20,7 @@ use creocoder\nestedsets\NestedSetsBehavior;
  * @property integer $lvl
  * @property string  $name
  * @property string  $icon
- * @property integer $icon_type
+ * @property int     $icon_type
  * @property bool    $active
  * @property bool    $selected
  * @property bool    $disabled
@@ -37,8 +33,14 @@ use creocoder\nestedsets\NestedSetsBehavior;
  * @property bool    $movable_r
  * @property bool    $removable
  * @property bool    $removable_all
+ *
+ * @method initDefaults()
+ * @method makeRoot()
+ * @method appendTo() appendTo(Tree $node)
+ * @method insertBefore() insertBefore(Tree $node)
+ * @method insertAfter() insertAfter(Tree $node)
  */
-class Tree extends \yii\db\ActiveRecord
+class Tree extends ActiveRecord
 {
     use TreeTrait;
 

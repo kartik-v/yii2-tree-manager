@@ -9,14 +9,22 @@
 namespace kartik\tree\controllers;
 
 use Yii;
+use Closure;
+use Exception;
+use yii\db\Exception as DbException;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\helpers\Json;
+use yii\web\Controller;
 use yii\web\Response;
 use yii\base\InvalidCallException;
 use yii\web\View;
 use yii\base\Event;
 use kartik\tree\TreeView;
+use kartik\tree\models\Tree;
 
-class NodeController extends \yii\web\Controller
+class NodeController extends Controller
 {
     /**
      * @var array the list of keys in $_POST which must be cast as boolean
@@ -80,7 +88,9 @@ class NodeController extends \yii\web\Controller
         $keyAttr = $module->dataStructure['keyAttribute'];
         $session = Yii::$app->session;
         /**
-         * @var \kartik\tree\models\Tree $node
+         * @var Tree $modelClass
+         * @var Tree $node
+         * @var Tree $parent
          */
         if ($treeNodeModify) {
             $node = new $modelClass;
@@ -154,6 +164,10 @@ class NodeController extends \yii\web\Controller
         $currUrl = $nodeView = $formOptions = $formAction = '';
         $iconsList = $nodeAddlViews = [];
         extract(static::getPostData());
+        /**
+         * @var Tree $modelClass
+         * @var Tree $node
+         */
         if (!isset($id) || empty($id)) {
             $node = new $modelClass;
             $node->initDefaults();
@@ -198,6 +212,10 @@ class NodeController extends \yii\web\Controller
      */
     public function actionRemove()
     {
+        /**
+         * @var Tree $class
+         * @var Tree $node
+         */
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $id = null;
@@ -220,6 +238,11 @@ class NodeController extends \yii\web\Controller
      */
     public function actionMove()
     {
+        /**
+         * @var Tree $class
+         * @var Tree $nodeFrom
+         * @var Tree $nodeTo
+         */
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $dir = null;
@@ -273,15 +296,15 @@ class NodeController extends \yii\web\Controller
         $success = false;
         try {
             $success = call_user_func($callback);
-        } catch (\yii\db\Exception $e) {
+        } catch (DbException $e) {
             $error = $e->getMessage();
-        } catch (\yii\base\NotSupportedException $e) {
+        } catch (NotSupportedException $e) {
             $error = $e->getMessage();
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (InvalidParamException $e) {
             $error = $e->getMessage();
-        } catch (\yii\base\InvalidConfigException $e) {
+        } catch (InvalidConfigException $e) {
             $error = $e->getMessage();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error = $e->getMessage();
         }
         if ($success !== false) {

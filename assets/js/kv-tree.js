@@ -28,7 +28,7 @@
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
         escapeRegExp = function (str) {
-            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
         addCss = function ($el, css) {
             $el.removeClass(css).addClass(css);
@@ -241,7 +241,8 @@
             } else {
                 self.enableToolbar();
             }
-            if (!$selNode.data('removable') || $selNode.hasClass('kv-inactive') || (!$selNode.data('removableAll') && $selNode.hasClass('kv-parent'))) {
+            if (!$selNode.data('removable') || $selNode.hasClass('kv-inactive') || (!$selNode.data(
+                    'removableAll') && $selNode.hasClass('kv-parent'))) {
                 self.disable('trash');
             }
             if (!$selNode.data('movable-u')) {
@@ -277,7 +278,8 @@
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $node = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
                 $form = $detail.find('form'), $alert, clearNode;
-            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || !window.confirm(msg.removeNode) || $node.hasClass('kv-disabled')) {
+            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || !window.confirm(
+                    msg.removeNode) || $node.hasClass('kv-disabled')) {
                 return;
             }
             clearNode = function (isEmpty) {
@@ -294,7 +296,8 @@
                     $parent.removeClass('kv-parent');
                 }
                 self.showAlert(m, 'info', function () {
-                    $detail.append('<h4 class="alert text-center kv-select-node-msg" style="display:none;">' + msg.selectNode + '</h4>');
+                    $detail.append(
+                        '<h4 class="alert text-center kv-select-node-msg" style="display:none;">' + msg.selectNode + '</h4>');
                     setTimeout(function () {
                         if (!self.formViewBegin) {
                             $detail.find('.kv-select-node-msg').fadeIn(self.alertFadeDuration);
@@ -502,11 +505,11 @@
         getNewNode: function () {
             var self = this;
             return '<div class="kv-tree-list" tabindex="-1">\n' +
-            '   <div class="kv-node-indicators">&nbsp;</div>\n' +
-            '   <div class="kv-node-detail kv-focussed">\n' +
-            '       <span class="kv-node-label">' + self.messages.emptyNode + '</span>\n' +
-            '   </div>\n' +
-            '</div>';
+                '   <div class="kv-node-indicators">&nbsp;</div>\n' +
+                '   <div class="kv-node-detail kv-focussed">\n' +
+                '       <span class="kv-node-label">' + self.messages.emptyNode + '</span>\n' +
+                '   </div>\n' +
+                '</div>';
         },
         create: function () {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'), $n, key,
@@ -610,7 +613,7 @@
             var self = this, isRoot = ($chk === true),
                 $node = isRoot ? self.$tree : $chk.closest('li'),
                 nodeKey = isRoot ? '' : $node.data('key'),
-                isMultiple = self.multiple && self.multiple != 0;
+                isMultiple = self.multiple && self.multiple != 0; // jshint ignore:line
             if ($node.hasClass('kv-disabled') || (isRoot && !isMultiple)) {
                 return;
             }
@@ -836,6 +839,34 @@
             }
         });
     };
-    $.fn.treeview.defaults = {btns: {}};
+    $.fn.treeview.defaults = {
+        btns: {},
+        treeId: '',
+        detailId: '',
+        toolbarId: '',
+        wrapperId: '',
+        showTooltips: true,
+        alertFadeDuration: 1000,
+        cacheTimeout: 300000,
+        showInactive: false,
+        actions: {
+            manage: '',
+            move: '',
+            delete: ''
+        },
+        messages: {
+            emptyNode: '',
+            nodeDisabled: '',
+            invalidCreateNode: '',
+            removeNode: '',
+            nodeRemoved: '',
+            emptyNodeRemoved: '',
+            nodeNewMove: '',
+            nodeTop: '',
+            nodeBottom: '',
+            nodeLeft: '',
+            nodeRight: ''
+        }
+    };
     $.fn.treeview.Constructor = TreeView;
 })(window.jQuery);
