@@ -183,7 +183,9 @@
                     'showIDAttribute': self.showIDAttribute,
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
-                    'nodeAddlViews': self.nodeAddlViews
+                    'nodeAddlViews': self.nodeAddlViews,
+                    'breadcrumbsDepth': self.breadcrumbsDepth,
+                    'breadcrumbsGlue': self.breadcrumbsGlue
                 },
                 url: vUrl,
                 cache: true,
