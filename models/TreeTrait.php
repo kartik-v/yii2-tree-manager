@@ -9,7 +9,7 @@
 namespace kartik\tree\models;
 
 use Yii;
-use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 use kartik\tree\TreeView;
@@ -17,20 +17,6 @@ use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
  * Trait that must be used by the Tree model
- *
- * @property bool  $active
- * @property bool  $removable_all
- * @property bool  $encodeNodeNames
- * @property bool  $purifyNodeIcons
- * @property array $nodeActivationErrors
- * @property array $nodeRemovalErrors
- *
- * @method ActiveQuery children()
- * @method bool save()
- * @method array getFirstErrors()
- * @method bool isRoot()
- * @method bool delete()
- * @method bool deleteWithChildren()
  */
 trait TreeTrait
 {
@@ -117,6 +103,9 @@ trait TreeTrait
      */
     public function rules()
     {
+        /**
+         * @var Tree $this
+         */
         $module = TreeView::module();
         $nameAttribute = $iconAttribute = $iconTypeAttribute = null;
         extract($module->dataStructure);
@@ -151,6 +140,9 @@ trait TreeTrait
      */
     public function initDefaults()
     {
+        /**
+         * @var Tree $this
+         */
         $module = TreeView::module();
         $iconTypeAttribute = null;
         extract($module->dataStructure);
@@ -289,6 +281,9 @@ trait TreeTrait
      */
     public function activateNode($currNode = true)
     {
+        /**
+         * @var Tree $this
+         */
         $this->nodeActivationErrors = [];
         $module = TreeView::module();
         extract($module->treeStructure);
@@ -336,6 +331,10 @@ trait TreeTrait
      */
     public function removeNode($softDelete = true, $currNode = true)
     {
+        /**
+         * @var Tree $this
+         * @var Tree $child
+         */
         if ($softDelete == true) {
             $this->nodeRemovalErrors = [];
             $module = TreeView::module();
@@ -343,7 +342,6 @@ trait TreeTrait
             if ($this->isRemovableAll()) {
                 $children = $this->children()->all();
                 foreach ($children as $child) {
-                    /** @var Tree $child */
                     $child->active = false;
                     if (!$child->save()) {
                         /** @noinspection PhpUndefinedFieldInspection */
@@ -410,5 +408,42 @@ trait TreeTrait
             $labels[$treeAttribute] = Yii::t('kvtree', 'Root');
         }
         return $labels;
+    }
+
+    /**
+     * Generate and return the breadcrumbs for the node
+     *
+     * @param int    $depth the breadcrumbs parent depth
+     * @param string $glue the pattern to separate the breadcrumbs
+     * @param string $currNodeCss the CSS class to be set for current node
+     * @param string $untitled the name to be displayed for a new node
+     *
+     * @return string the parsed breadcrumbs
+     */
+    public function getBreadcrumbs($depth = 1, $glue = ' &raquo; ', $currNodeCss = 'kv-crumb-curr', $untitled = 'New')
+    {
+        /**
+         * @var Tree $this
+         */
+        if ($this->isNewRecord || empty($this)) {
+            return $currNodeCss ?  Html::tag('span', $untitled, ['class' => $currNodeCss]) : $untitled;
+        }
+        $depth = empty($depth) ? null : intval($depth);
+        $module = TreeView::module();
+        $nameAttribute = ArrayHelper::getValue($module->dataStructure, 'nameAttribute', 'name');
+        $crumbNodes = $depth === null ? $this->parents()->all() : $this->parents($depth - 1)->all();
+        $crumbNodes[] = $this;
+        $i = 1;
+        $len = count($crumbNodes);
+        $crumbs = [];
+        foreach ($crumbNodes as $node) {
+            $name = $node->$nameAttribute;
+            if ($i === $len && $currNodeCss) {
+                $name = Html::tag('span', $name, ['class' => $currNodeCss]);
+            }
+            $crumbs[] = $name;
+            $i++;
+        }
+        return implode($glue, $crumbs);
     }
 }

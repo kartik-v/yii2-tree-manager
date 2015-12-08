@@ -97,6 +97,18 @@ class TreeView extends Widget
     public $nodeFormOptions = [];
 
     /**
+     * @var array the breadcrumbs settings for displaying the current node title based on parent hierarchy in the node
+     *     details form/view (starting from the current node). The following settings are supported:
+     * - depth: int, the depth to dig into the parent nodes for fetching the breadcrumb titles.  If set to `null` or
+     *     `0` this will fetch breadcrumbs till infinite parent depth. Defaults to `null`.
+     * - glue: string, the separator to glue each node name within the breadcrumbs. Defaults to ` &raquo; `.
+     * - activeCss: string, the CSS class to be applied to the current node name in the breadcrumbs. Defaults to
+     *     `kv-crumb-curr`.
+     * - untitled: string, the title to be displayed if this is a new untitled node record. Defaults to `Untitled`.
+     */
+    public $breadcrumbs = [];
+
+    /**
      * @var string the comma separated initial value (keys) to be checked and selected in the tree
      */
     public $value = '';
@@ -490,6 +502,12 @@ HTML;
             );
         }
         $this->_hasBootstrap = $this->showTooltips;
+        $this->breadcrumbs += [
+            'depth' => null,
+            'glue' => ' &raquo; ',
+            'activeCss' => 'kv-crumb-curr',
+            'untitled' => Yii::t('kvtree', 'Untitled')
+        ];
     }
 
     /**
@@ -819,6 +837,7 @@ HTML;
      * Renders the toggle icon container
      *
      * @param bool $root whether a root node
+     *
      * @return string
      */
     protected function renderToggleIconContainer($root = false)
@@ -1155,7 +1174,8 @@ HTML;
                 'showFormButtons' => $this->showFormButtons,
                 'showIDAttribute' => $this->showIDAttribute,
                 'nodeView' => $this->nodeView,
-                'nodeAddlViews' => $this->nodeAddlViews
+                'nodeAddlViews' => $this->nodeAddlViews,
+                'breadcrumbs' => $this->breadcrumbs
             ];
         $content = $this->render($this->nodeView, ['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);
@@ -1207,6 +1227,7 @@ HTML;
             'actions' => $this->nodeActions,
             'modelClass' => $this->query->modelClass,
             'formAction' => $this->nodeActions[Module::NODE_SAVE],
+            'formOptions' => $this->nodeFormOptions,
             'currUrl' => Yii::$app->request->url,
             'messages' => $this->clientMessages,
             'alertFadeDuration' => $this->alertFadeDuration,
@@ -1221,6 +1242,7 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
+            'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
             'allowNewRoots' => $this->allowNewRoots
         ];

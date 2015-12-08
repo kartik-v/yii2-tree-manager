@@ -39,6 +39,12 @@ use yii\db\ActiveRecord;
  * @method appendTo() appendTo(Tree $node)
  * @method insertBefore() insertBefore(Tree $node)
  * @method insertAfter() insertAfter(Tree $node)
+ * @method TreeQuery parents() parents(int $depth = null)
+ * @method TreeQuery children()
+ * @method bool isRoot()
+ * @method bool isLeaf()
+ * @method bool delete()
+ * @method bool deleteWithChildren()
  */
 class Tree extends ActiveRecord
 {

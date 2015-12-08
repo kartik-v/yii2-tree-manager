@@ -8,17 +8,28 @@
 use kartik\form\ActiveForm;
 use kartik\tree\Module;
 use kartik\tree\TreeView;
-use yii\bootstrap\Alert;
+use kartik\tree\models\Tree;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use kartik\widgets\Select2;
+use yii\web\View;
 
 /**
- * @var yii\web\View            $this
- * @var kartik\tree\models\Tree $node
- * @var kartik\form\ActiveForm  $form
+ * @var View       $this
+ * @var Tree       $node
+ * @var ActiveForm $form
+ * @var string     $keyAttribute
+ * @var string     $nameAttribute
+ * @var string     $iconAttribute
+ * @var string     $iconTypeAttribute
+ * @var string     $iconsList
+ * @var string     $action
+ * @var array      $breadcrumbs
+ * @var array      $nodeAddlViews
+ * @var mixed      $currUrl
+ * @var bool       $showIDAttribute
+ * @var bool       $softDelete
+ * @var bool       $showFormButtons
  */
 ?>
 
@@ -33,16 +44,12 @@ $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
 $inputOpts = [];                                      // readonly/disabled input options for node
 $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
 
-// parse parent info
+
+// parse parent key
 if (empty($parentKey)) {
     $parent = $node->parents(1)->one();
     $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
-} elseif ($parentKey == 'root') {
-    $parent = '';
-} else {
-    $parent = $modelClass::findOne($parentKey);
 }
-$parentName = empty($parent) ? '' : $parent->$nameAttribute . ' &raquo; ';
 
 // get module and setup form
 $module = TreeView::module(); // the treemanager module
@@ -63,10 +70,23 @@ if ($showIDAttribute) {
 }
 
 // initialize for create or update
+$depth = ArrayHelper::getValue($breadcrumbs, 'depth');
+$glue = ArrayHelper::getValue($breadcrumbs, 'glue');
+$activeCss = ArrayHelper::getValue($breadcrumbs, 'activeCss');
+$untitled = ArrayHelper::getValue($breadcrumbs, 'untitled');
+$name = $node->getBreadcrumbs($depth, $glue, $activeCss, $untitled);
 if ($node->isNewRecord) {
-    $name = Yii::t('kvtree', 'Untitled');
-} else {
-    $name = $node->$nameAttribute;
+    if (!empty($parentKey) && $parentKey !== 'root') {
+        /**
+         * @var Tree $modelClass
+         * @var Tree $parent
+         */
+        $depth = empty($breadcrumbsDepth) ? null : intval($breadcrumbsDepth) - 1;
+        if ($depth === null || $depth > 0) {
+            $parent = $modelClass::findOne($parentKey);
+            $name = $parent->getBreadcrumbs($depth, $glue, null) . $glue . $name;
+        }
+    }
     if ($node->isReadonly()) {
         $inputOpts['readonly'] = true;
     }
@@ -108,13 +128,13 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('softDelete', $softDelete) ?>
-<?= Html::hiddenInput('formOptions', Json::encode($formOptions)) ?>
 
 <?php
 /**
  * SECTION 3: Setup form action buttons.
  */
 ?>
+<div class="kv-node-title-bar">
 <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
     <div class="pull-right">
         <button type="reset" class="btn btn-default">
@@ -125,32 +145,32 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
         </button>
     </div>
 <?php endif; ?>
-    <h3><?= $parentName . $name ?></h3>
-    <div class="clearfix"></div>
-    <hr style="margin: 10px 0;">
+<div class="kv-crumbs"><?= $name ?></div>
+<div class="clearfix"></div>
+</div>
 
 <?php
 /**
  * SECTION 4: Setup alert containers. Mandatory to set this up.
  */
 ?>
-    <div class="kv-treeview-alerts">
-        <?php
-        $session = Yii::$app->session;
-        if ($session->hasFlash('success')) {
-            echo $showAlert('success', $session->getFlash('success'), false);
-        } else {
-            echo $showAlert('success');
-        }
-        if ($session->hasFlash('error')) {
-            echo $showAlert('danger', $session->getFlash('error'), false);
-        } else {
-            echo $showAlert('danger');
-        }
-        echo $showAlert('warning');
-        echo $showAlert('info');
-        ?>
-    </div>
+<div class="kv-treeview-alerts">
+    <?php
+    $session = Yii::$app->session;
+    if ($session->hasFlash('success')) {
+        echo $showAlert('success', $session->getFlash('success'), false);
+    } else {
+        echo $showAlert('success');
+    }
+    if ($session->hasFlash('error')) {
+        echo $showAlert('danger', $session->getFlash('error'), false);
+    } else {
+        echo $showAlert('danger');
+    }
+    echo $showAlert('warning');
+    echo $showAlert('info');
+    ?>
+</div>
 
 <?php
 /**
@@ -201,7 +221,8 @@ echo $renderContent(Module::VIEW_PART_1);
             <?= $form->field($node, $nameAttribute)->textArea(['rows' => 3] + $inputOpts) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($node, $iconAttribute)->multiselect($iconsList, [
+            <?= /** @noinspection PhpUndefinedMethodInspection */
+            $form->field($node, $iconAttribute)->multiselect($iconsList, [
                 'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
                     if ($index == 0 && $value == '') {
                         $checked = true;

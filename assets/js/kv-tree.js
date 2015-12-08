@@ -92,7 +92,6 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             self.select(self.$element.data('key'), true);
-            self.formOptions = self.$detail.find('input[name="formOptions"]').val();
             if (self.showTooltips) {
                 self.$toolbar.find('.btn').tooltip();
             }
@@ -183,7 +182,8 @@
                     'showIDAttribute': self.showIDAttribute,
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
-                    'nodeAddlViews': self.nodeAddlViews
+                    'nodeAddlViews': self.nodeAddlViews,
+                    'breadcrumbs': self.breadcrumbs
                 },
                 url: vUrl,
                 cache: true,
@@ -866,7 +866,8 @@
             nodeBottom: '',
             nodeLeft: '',
             nodeRight: ''
-        }
+        },
+        breadcrumbs: {}
     };
     $.fn.treeview.Constructor = TreeView;
 })(window.jQuery);

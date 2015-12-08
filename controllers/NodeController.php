@@ -161,7 +161,7 @@ class NodeController extends Controller
         $parentKey = $action = null;
         $modelClass = '\kartik\tree\models\Tree';
         $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
-        $currUrl = $nodeView = $formOptions = $formAction = '';
+        $currUrl = $nodeView = $formOptions = $formAction = $breadCrumbs = '';
         $iconsList = $nodeAddlViews = [];
         extract(static::getPostData());
         /**
@@ -179,7 +179,7 @@ class NodeController extends Controller
                 'node' => $node,
                 'parentKey' => $parentKey,
                 'action' => $formAction,
-                'formOptions' => empty($formOptions) ? [] : Json::decode($formOptions),
+                'formOptions' => empty($formOptions) ? [] : $formOptions,
                 'modelClass' => $modelClass,
                 'currUrl' => $currUrl,
                 'isAdmin' => $isAdmin,
@@ -188,7 +188,8 @@ class NodeController extends Controller
                 'showFormButtons' => $showFormButtons,
                 'showIDAttribute' => $showIDAttribute,
                 'nodeView' => $nodeView,
-                'nodeAddlViews' => $nodeAddlViews
+                'nodeAddlViews' => $nodeAddlViews,
+                'breadcrumbs' => empty($breadcrumbs) ? [] :$breadcrumbs,
             ];
         if (!empty($module->unsetAjaxBundles)) {
             Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
