@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.4
 
-**Date:** 08-Dec-2015
+**Date:** 09-Dec-2015
 
 - (enh #57): Add Indonesian translations.
 - (enh #58): Add Polish translations.
@@ -15,6 +15,7 @@ Change Log: `yii2-tree-manager`
 - (enh #80): Enhance boolean variable parsing in HTML5 data attributes.
 - (enh #83): Breadcrumbs functionality and styling enhancements.
 - (enh #85): Cleanup redundant code and optimize code.
+- (enh #86): CSS Styling Enhancements.
 
 ## Version 1.0.3
 

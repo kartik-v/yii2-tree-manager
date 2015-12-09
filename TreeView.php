@@ -101,9 +101,9 @@ class TreeView extends Widget
      *     details form/view (starting from the current node). The following settings are supported:
      * - depth: int, the depth to dig into the parent nodes for fetching the breadcrumb titles.  If set to `null` or
      *     `0` this will fetch breadcrumbs till infinite parent depth. Defaults to `null`.
-     * - glue: string, the separator to glue each node name within the breadcrumbs. Defaults to ` &raquo; `.
+     * - glue: string, the separator to glue each node name within the breadcrumbs. Defaults to ` &rsaquo; `.
      * - activeCss: string, the CSS class to be applied to the current node name in the breadcrumbs. Defaults to
-     *     `kv-crumb-curr`.
+     *     `kv-crumb-active`.
      * - untitled: string, the title to be displayed if this is a new untitled node record. Defaults to `Untitled`.
      */
     public $breadcrumbs = [];
@@ -505,7 +505,7 @@ HTML;
         $this->breadcrumbs += [
             'depth' => null,
             'glue' => ' &raquo; ',
-            'activeCss' => 'kv-crumb-curr',
+            'activeCss' => 'kv-crumb-active',
             'untitled' => Yii::t('kvtree', 'Untitled')
         ];
     }

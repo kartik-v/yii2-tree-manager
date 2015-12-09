@@ -132,18 +132,18 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
  * SECTION 3: Setup form action buttons.
  */
 ?>
-<div class="kv-node-title-bar">
+<div class="kv-detail-heading">
 <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
     <div class="pull-right">
-        <button type="reset" class="btn btn-default">
-            <i class="glyphicon glyphicon-repeat"></i> <?= Yii::t('kvtree', 'Reset') ?>
+        <button type="reset" class="btn btn-default" title="<?= Yii::t('kvtree', 'Reset') ?>">
+            <i class="glyphicon glyphicon-repeat"></i>
         </button>
-        <button type="submit" class="btn btn-primary">
-            <i class="glyphicon glyphicon-floppy-disk"></i> <?= Yii::t('kvtree', 'Save') ?>
+        <button type="submit" class="btn btn-primary" title="<?= Yii::t('kvtree', 'Save') ?>">
+            <i class="glyphicon glyphicon-floppy-disk"></i>
         </button>
     </div>
 <?php endif; ?>
-<div class="kv-crumbs"><?= $name ?></div>
+<div class="kv-detail-crumbs"><?= $name ?></div>
 <div class="clearfix"></div>
 </div>
 

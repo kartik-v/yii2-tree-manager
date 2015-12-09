@@ -92,11 +92,16 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             self.select(self.$element.data('key'), true);
-            if (self.showTooltips) {
-                self.$toolbar.find('.btn').tooltip();
-            }
             kvTreeCache.timeout = self.cacheTimeout;
             self.selectNodes();
+            self.validateTooltips();
+        },
+        validateTooltips: function() {
+            var self = this;
+            if (self.showTooltips) {
+                self.$toolbar.find('.btn').tooltip();
+                self.$detail.find('.btn').tooltip();
+            }     
         },
         trigAlert: function ($alert, callback) {
             var dur = this.alertFadeDuration;
@@ -211,7 +216,11 @@
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     self.raise('treeview.selectajaxerror', [key, jqXHR, textStatus, errorThrown]);
-                }
+                },
+                complete: function (jqXHR) {
+                    self.raise('treeview.selectajaxcomplete', [key, jqXHR]);
+                    self.validateTooltips();
+                },                    
             });
         },
         select: function (key, init, mesg) {

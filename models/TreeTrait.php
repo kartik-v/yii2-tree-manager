@@ -413,20 +413,24 @@ trait TreeTrait
     /**
      * Generate and return the breadcrumbs for the node
      *
-     * @param int    $depth the breadcrumbs parent depth
+     * @param int $depth the breadcrumbs parent depth
      * @param string $glue the pattern to separate the breadcrumbs
      * @param string $currNodeCss the CSS class to be set for current node
      * @param string $untitled the name to be displayed for a new node
      *
      * @return string the parsed breadcrumbs
      */
-    public function getBreadcrumbs($depth = 1, $glue = ' &raquo; ', $currNodeCss = 'kv-crumb-curr', $untitled = 'Untitled')
-    {
+    public function getBreadcrumbs(
+        $depth = 1,
+        $glue = ' &raquo; ',
+        $currNodeCss = 'kv-crumb-active',
+        $untitled = 'Untitled'
+    ) {
         /**
          * @var Tree $this
          */
         if ($this->isNewRecord || empty($this)) {
-            return $currNodeCss ?  Html::tag('span', $untitled, ['class' => $currNodeCss]) : $untitled;
+            return $currNodeCss ? Html::tag('span', $untitled, ['class' => $currNodeCss]) : $untitled;
         }
         $depth = empty($depth) ? null : intval($depth);
         $module = TreeView::module();
