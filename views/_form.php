@@ -10,7 +10,6 @@ use kartik\tree\Module;
 use kartik\tree\TreeView;
 use kartik\tree\models\Tree;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\web\View;
 

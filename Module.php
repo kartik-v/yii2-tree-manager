@@ -45,6 +45,12 @@ class Module extends \kartik\base\Module
     public $dataStructure = [];
 
     /**
+     * @var string the name to identify the nested set behavior name in the
+     * Tree model. Defaults to `tree`.
+     */
+    public $treeBehaviorName = 'tree';
+
+    /**
      * @var array the default configuration settings for the tree view widget
      */
     public $treeViewSettings = [

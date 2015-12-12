@@ -84,7 +84,7 @@ trait TreeTrait
     {
         $module = TreeView::module();
         $settings = ['class' => NestedSetsBehavior::className()] + $module->treeStructure;
-        return [$settings];
+        return empty($module->treeBehaviorName) ? [$settings] : [$module->treeBehaviorName => $settings];
     }
 
     /**
