@@ -16,6 +16,7 @@ Change Log: `yii2-tree-manager`
 - (enh #83): Breadcrumbs functionality and styling enhancements.
 - (enh #85): Cleanup redundant code and optimize code.
 - (enh #86): CSS Styling Enhancements.
+- (enh #88): Correct validation for readonly and disabled nodes.
 
 ## Version 1.0.3
 

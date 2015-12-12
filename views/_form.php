@@ -74,26 +74,20 @@ $glue = ArrayHelper::getValue($breadcrumbs, 'glue');
 $activeCss = ArrayHelper::getValue($breadcrumbs, 'activeCss');
 $untitled = ArrayHelper::getValue($breadcrumbs, 'untitled');
 $name = $node->getBreadcrumbs($depth, $glue, $activeCss, $untitled);
-if ($node->isNewRecord) {
-    if (!empty($parentKey) && $parentKey !== 'root') {
-        /**
-         * @var Tree $modelClass
-         * @var Tree $parent
-         */
-        $depth = empty($breadcrumbsDepth) ? null : intval($breadcrumbsDepth) - 1;
-        if ($depth === null || $depth > 0) {
-            $parent = $modelClass::findOne($parentKey);
-            $name = $parent->getBreadcrumbs($depth, $glue, null) . $glue . $name;
-        }
+if ($node->isNewRecord && !empty($parentKey) && $parentKey !== 'root') {
+    /**
+     * @var Tree $modelClass
+     * @var Tree $parent
+     */
+    $depth = empty($breadcrumbsDepth) ? null : intval($breadcrumbsDepth) - 1;
+    if ($depth === null || $depth > 0) {
+        $parent = $modelClass::findOne($parentKey);
+        $name = $parent->getBreadcrumbs($depth, $glue, null) . $glue . $name;
     }
-    if ($node->isReadonly()) {
-        $inputOpts['readonly'] = true;
-    }
-    if ($node->isDisabled()) {
-        $inputOpts['disabled'] = true;
-    }
-    $flagOptions['disabled'] = $node->isLeaf();
 }
+$inputOpts['readonly'] = $node->isReadonly();
+$inputOpts['disabled'] = $node->isDisabled();
+$flagOptions['disabled'] = $node->isLeaf();
 
 // show alert helper
 $showAlert = function ($type, $body = '', $hide = true) {
@@ -133,18 +127,18 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
  */
 ?>
 <div class="kv-detail-heading">
-<?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
-    <div class="pull-right">
-        <button type="reset" class="btn btn-default" title="<?= Yii::t('kvtree', 'Reset') ?>">
-            <i class="glyphicon glyphicon-repeat"></i>
-        </button>
-        <button type="submit" class="btn btn-primary" title="<?= Yii::t('kvtree', 'Save') ?>">
-            <i class="glyphicon glyphicon-floppy-disk"></i>
-        </button>
-    </div>
-<?php endif; ?>
-<div class="kv-detail-crumbs"><?= $name ?></div>
-<div class="clearfix"></div>
+    <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
+        <div class="pull-right">
+            <button type="reset" class="btn btn-default" title="<?= Yii::t('kvtree', 'Reset') ?>">
+                <i class="glyphicon glyphicon-repeat"></i>
+            </button>
+            <button type="submit" class="btn btn-primary" title="<?= Yii::t('kvtree', 'Save') ?>">
+                <i class="glyphicon glyphicon-floppy-disk"></i>
+            </button>
+        </div>
+    <?php endif; ?>
+    <div class="kv-detail-crumbs"><?= $name ?></div>
+    <div class="clearfix"></div>
 </div>
 
 <?php
