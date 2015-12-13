@@ -96,12 +96,12 @@
             self.selectNodes();
             self.validateTooltips();
         },
-        validateTooltips: function() {
+        validateTooltips: function () {
             var self = this;
             if (self.showTooltips) {
                 self.$toolbar.find('.btn').tooltip();
                 self.$detail.find('.btn').tooltip();
-            }     
+            }
         },
         trigAlert: function ($alert, callback) {
             var dur = this.alertFadeDuration;
@@ -220,14 +220,14 @@
                 complete: function (jqXHR) {
                     self.raise('treeview.selectajaxcomplete', [key, jqXHR]);
                     self.validateTooltips();
-                },                    
+                }
             });
         },
         select: function (key, init, mesg) {
             if (isEmpty(key)) {
                 return;
             }
-            var self = this, $selNode, isInit = init || false, msg = mesg || false,
+            var self = this, $sel, isInit = init || false, msg = mesg || false,
                 $currNode = self.$tree.find('li[data-key="' + key + '"]>.kv-tree-list .kv-node-detail');
             if ($currNode.length === 0) {
                 return;
@@ -244,26 +244,26 @@
             } else {
                 self.renderForm(key, null, msg);
             }
-            $selNode = $currNode.closest('li');
-            if ($selNode.hasClass('kv-disabled')) {
+            $sel = $currNode.closest('li');
+            if ($sel.hasClass('kv-disabled')) {
                 self.disableToolbar();
             } else {
                 self.enableToolbar();
             }
-            if (!$selNode.data('removable') || $selNode.hasClass('kv-inactive') || (!$selNode.data(
-                    'removableAll') && $selNode.hasClass('kv-parent'))) {
+            if (!$sel.data('removable') || ($sel.hasClass('kv-inactive') && self.softDelete) ||
+                (!$sel.data('removableAll') && $sel.hasClass('kv-parent'))) {
                 self.disable('trash');
             }
-            if (!$selNode.data('movable-u')) {
+            if (!$sel.data('movable-u')) {
                 self.disable('movable-u');
             }
-            if (!$selNode.data('movable-d')) {
+            if (!$sel.data('movable-d')) {
                 self.disable('movable-d');
             }
-            if (!$selNode.data('movable-l')) {
+            if (!$sel.data('movable-l')) {
                 self.disable('movable-l');
             }
-            if (!$selNode.data('movable-r')) {
+            if (!$sel.data('movable-r')) {
                 self.disable('movable-r');
             }
             self.parseParentFlag(key);

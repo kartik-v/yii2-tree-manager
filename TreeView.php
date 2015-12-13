@@ -1052,7 +1052,7 @@ HTML;
             /**
              * @var Tree $node
              */
-            if (!$this->isAdmin && (!$node->isVisible() || (!$this->showInactive && !$node->isActive()))) {
+            if (!$this->isAdmin && !$node->isVisible() || !$this->showInactive && !$node->isActive()) {
                 continue;
             }
             /** @noinspection PhpUndefinedVariableInspection */
