@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.4
 
-**Date:** 09-Dec-2015
+**Date:** 13-Dec-2015
 
 - (enh #57): Add Indonesian translations.
 - (enh #58): Add Polish translations.
