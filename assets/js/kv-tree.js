@@ -287,8 +287,8 @@
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $node = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
                 $form = $detail.find('form'), $alert, clearNode;
-            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || $node.hasClass('kv-disabled') ||
-                !window.confirm(msg.removeNode)) {
+            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || $node.hasClass(
+                    'kv-disabled') || !window.confirm(msg.removeNode)) {
                 return;
             }
             clearNode = function (isEmpty) {
@@ -320,54 +320,55 @@
             }
             var key = $node.data('key');
             $.ajax({
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        'id': key,
-                        'class': self.modelClass,
-                        'softDelete': self.softDelete
-                    },
-                    url: self.actions.remove,
-                    beforeSend: function (jqXHR, settings) {
-                        self.raise('treeview.beforeremove', [key, jqXHR, settings]);
-                        $form.hide();
-                        self.removeAlert();
-                        addCss($detail, 'kv-loading');
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        if (data.status === 'success') {
-                            if ((self.isAdmin || self.showInactive) && self.softDelete) {
-                                self.showAlert(data.out, 'info');
-                                $form.show();
-                                var fld = self.modelClass.split('\\').pop(),
-                                    $cbx = $form.find('input[name="' + fld + '[active]"]');
-                                $cbx.val(false);
-                                $cbx.prop('checked', false);
-                                addCss($node, 'kv-inactive');
-                                if ($node.data('removableAll')) {
-                                    addCss($node.find('li'), 'kv-inactive');
-                                }
-                                addCss($node, 'kv-inactive');
-                            } else {
-                                clearNode();
-                            }
-                            if (!self.softDelete) {
-                                self.disableToolbar();
-                            }
-                            self.raise('treeview.remove', [key, data, textStatus, jqXHR]);
-                        } else {
-                            self.showAlert(data.out, 'danger');
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    'id': key,
+                    'class': self.modelClass,
+                    'softDelete': self.softDelete
+                },
+                url: self.actions.remove,
+                beforeSend: function (jqXHR, settings) {
+                    self.raise('treeview.beforeremove', [key, jqXHR, settings]);
+                    $form.hide();
+                    self.removeAlert();
+                    addCss($detail, 'kv-loading');
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status === 'success') {
+                        if ((self.isAdmin || self.showInactive) && self.softDelete) {
+                            self.showAlert(data.out, 'info');
                             $form.show();
-                            self.raise('treeview.removeerror', [key, data, textStatus, jqXHR]);
+                            var fld = self.modelClass.split('\\').pop(),
+                                $cbx = $form.find('input[name="' + fld + '[active]"]');
+                            $cbx.val(false);
+                            $cbx.prop('checked', false);
+                            addCss($node, 'kv-inactive');
+                            if ($node.data('removableAll')) {
+                                addCss($node.find('li'), 'kv-inactive');
+                            }
+                            addCss($node, 'kv-inactive');
+                        } else {
+                            clearNode();
                         }
-                        $detail.removeClass('kv-loading');
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        self.raise('treeview.removeajaxerror', [key, jqXHR, textStatus, errorThrown]);
+                        if (!self.softDelete) {
+                            self.disableToolbar();
+                        }
+                        self.raise('treeview.remove', [key, data, textStatus, jqXHR]);
+                    } else {
+                        self.showAlert(data.out, 'danger');
+                        $form.show();
+                        self.raise('treeview.removeerror', [key, data, textStatus, jqXHR]);
                     }
+                    $detail.removeClass('kv-loading');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    self.raise('treeview.removeajaxerror', [key, jqXHR, textStatus, errorThrown]);
+                },
+                complete: function (jqXHR) {
+                    self.raise('treeview.removeajaxcomplete', [jqXHR]);
                 }
-            )
-            ;
+            });
         },
         move: function (dir) {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
@@ -497,6 +498,9 @@
                     }
                     self.$treeContainer.removeClass('kv-loading-search');
                     self.raise('treeview.moveajaxerror', [dir, keyFrom, keyTo, jqXHR, textStatus, errorThrown]);
+                },
+                complete: function (jqXHR) {
+                    self.raise('treeview.moveajaxcomplete', [jqXHR]);
                 }
             });
         },

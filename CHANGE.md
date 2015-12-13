@@ -19,6 +19,7 @@ Change Log: `yii2-tree-manager`
 - (enh #86): CSS Styling Enhancements.
 - (enh #88): Correct validation for readonly and disabled nodes.
 - (enh #89): Enhance ability to display and delete inactive nodes for non admin.
+- (enh #90): New ajax completion jQuery events for `move`, `remove`, and `select`.
 
 ## Version 1.0.3
 

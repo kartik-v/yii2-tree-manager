@@ -84,9 +84,15 @@ if ($node->isNewRecord && !empty($parentKey) && $parentKey !== 'root') {
         $name = $parent->getBreadcrumbs($depth, $glue, null) . $glue . $name;
     }
 }
-$inputOpts['readonly'] = $node->isReadonly();
-$inputOpts['disabled'] = $node->isDisabled();
-$flagOptions['disabled'] = $node->isLeaf();
+if ($node->isReadonly()) {
+    $inputOpts['readonly'] = true;
+}
+if ($node->isDisabled()) {
+    $inputOpts['disabled'] = true;
+}
+if ($node->isLeaf()) {
+    $flagOptions['disabled'] = true;
+}
 
 // show alert helper
 $showAlert = function ($type, $body = '', $hide = true) {
