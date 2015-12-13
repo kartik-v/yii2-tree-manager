@@ -287,8 +287,8 @@
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $node = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
                 $form = $detail.find('form'), $alert, clearNode;
-            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || !window.confirm(
-                    msg.removeNode) || $node.hasClass('kv-disabled')) {
+            if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || $node.hasClass('kv-disabled') ||
+                !window.confirm(msg.removeNode)) {
                 return;
             }
             clearNode = function (isEmpty) {
