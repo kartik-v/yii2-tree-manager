@@ -1,6 +1,12 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.0.5
+
+**Date:** 15-Dec-2015
+
+- (enh #92): Ability to control auto loading of bootstrap plugin assets.
+
 ## Version 1.0.4
 
 **Date:** 13-Dec-2015

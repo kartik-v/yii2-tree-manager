@@ -250,6 +250,12 @@ class TreeView extends Widget
     public $showTooltips = true;
 
     /**
+     * @var bool whether to auto load the bootstrap plugin assets if `showTooltips` is `true` OR if 
+     * `TreeViewInput::asDropdown` is true. Defaults to `true`.
+     */
+    public $autoLoadBsPlugin = true;
+
+    /**
      * @var string the icon markup for the child node if no icon was setup in the database.
      */
     public $defaultChildNodeIcon;
@@ -1216,7 +1222,7 @@ HTML;
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
-        if ($this->_hasBootstrap) {
+        if ($this->_hasBootstrap && $this->autoLoadBsPlugin) {
             BootstrapPluginAsset::register($view);
         }
         $this->pluginOptions += [
