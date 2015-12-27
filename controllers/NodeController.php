@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
- * @version   1.0.4
+ * @version   1.0.5
  */
 
 namespace kartik\tree\controllers;
@@ -253,8 +253,14 @@ class NodeController extends Controller
         extract(static::getPostData());
         $nodeFrom = $class::findOne($idFrom);
         $nodeTo = $class::findOne($idTo);
-        $callback = function () use ($dir, $nodeFrom, $nodeTo, $allowNewRoots) {
+        $isMovable = $nodeFrom->isMovable($dir);
+        $errorMsg = $isMovable ? Yii::t('kvtree', 'Error while moving the node. Please try again later.') :
+            Yii::t('kvtree', 'The selected node cannot be moved.');
+        $callback = function () use ($dir, $nodeFrom, $nodeTo, $allowNewRoots, $isMovable) {
             if (!empty($nodeFrom) && !empty($nodeTo)) {
+                if (!$isMovable) {
+                    return false;
+                }
                 if ($dir == 'u') {
                     $nodeFrom->insertBefore($nodeTo);
                 } elseif ($dir == 'd') {
@@ -272,11 +278,7 @@ class NodeController extends Controller
             }
             return true;
         };
-        return self::process(
-            $callback,
-            Yii::t('kvtree', 'Error while moving the node. Please try again later.'),
-            Yii::t('kvtree', 'The node was moved successfully.')
-        );
+        return self::process($callback, $errorMsg, Yii::t('kvtree', 'The node was moved successfully.'));
     }
 
     /**

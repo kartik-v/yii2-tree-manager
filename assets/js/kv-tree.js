@@ -1,7 +1,7 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package yii2-tree-manager
- * @version 1.0.4
+ * @version 1.0.5
  * 
  * Tree View Validation Module.
  *
@@ -255,16 +255,16 @@
                 self.disable('trash');
             }
             if (!$sel.data('movable-u')) {
-                self.disable('movable-u');
+                self.disable('moveU');
             }
             if (!$sel.data('movable-d')) {
-                self.disable('movable-d');
+                self.disable('moveD');
             }
             if (!$sel.data('movable-l')) {
-                self.disable('movable-l');
+                self.disable('moveL');
             }
             if (!$sel.data('movable-r')) {
-                self.disable('movable-r');
+                self.disable('moveR');
             }
             self.parseParentFlag(key);
         },

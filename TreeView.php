@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
- * @version   1.0.4
+ * @version   1.0.5
  */
 
 namespace kartik\tree;
@@ -1099,13 +1099,13 @@ HTML;
                 'data-lft' => $nodeLeft,
                 'data-rgt' => $nodeRight,
                 'data-lvl' => $nodeDepth,
-                'data-readonly' => (int)$node->isReadonly(),
-                'data-movable-u' => (int)$node->isMovable('u'),
-                'data-movable-d' => (int)$node->isMovable('d'),
-                'data-movable-l' => (int)$node->isMovable('l'),
-                'data-movable-r' => (int)$node->isMovable('r'),
-                'data-removable' => (int)$node->isRemovable(),
-                'data-removable-all' => (int)$node->isRemovableAll(),
+                'data-readonly' => static::parseBool($node->isReadonly()),
+                'data-movable-u' => static::parseBool($node->isMovable('u')),
+                'data-movable-d' => static::parseBool($node->isMovable('d')),
+                'data-movable-l' => static::parseBool($node->isMovable('l')),
+                'data-movable-r' => static::parseBool($node->isMovable('r')),
+                'data-removable' => static::parseBool($node->isRemovable()),
+                'data-removable-all' => static::parseBool($node->isRemovableAll()),
             ];
             if (!$isChild) {
                 $css = ' kv-parent ';
@@ -1148,6 +1148,19 @@ HTML;
         return Html::tag('div', $this->renderRoot() . $out, $this->treeOptions);
     }
 
+    /**
+     * Parses a boolean variable and returns as integer
+     *
+     * @param bool $var the variable to parse
+     *
+     * @return int
+     */
+    protected static function parseBool($var)
+    {
+        return $var ? 1 : 0;
+    }
+
+    
     /**
      * Renders the markup for the detail form to edit/view the selected tree node
      *
