@@ -1,26 +1,30 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package yii2-tree-manager
- * @version 1.0.5
+ * @version 1.0.6
  *
- * Tree View Input Widget Validation Module.
+ * Tree View Input Widget Management Script
  *
  * Author: Kartik Visweswaran
- * Copyright: 2015, Kartik Visweswaran, Krajee.com
+ * Copyright: 2015 - 2016, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
     "use strict";
-    var isEmpty = function (value, trim) {
-            return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
-        },
-        TreeInput = function (element, options) {
-            var self = this;
-            self.$element = $(element);
-            self.init(options);
-            self.listen();
-        };
+
+    var isEmpty, TreeInput;
+
+    isEmpty = function (value, trim) {
+        return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
+    };
+
+    TreeInput = function (element, options) {
+        var self = this;
+        self.$element = $(element);
+        self.init(options);
+        self.listen();
+    };
 
     TreeInput.prototype = {
         constructor: TreeInput,
@@ -56,7 +60,8 @@
                 if (list.length === 1) {
                     out = list[0];
                 } else {
-                    out = '<ul class="kv-tree-input-values"><li>' + list.join('</li><li>') + '</li></ul><div class="clearfix"></div>';
+                    out = '<ul class="kv-tree-input-values"><li>' + list.join('</li><li>') +
+                        '</li></ul><div class="clearfix"></div>';
                     self.$input.addClass('has-multi');
                 }
             }
@@ -70,7 +75,9 @@
             });
             self.$element.on('treeview.change', function (event, keys, desc) {
                 self.setInput(desc.split(','));
-                self.$input.closest('.kv-tree-dropdown-container').removeClass('open');
+                if (self.autoCloseOnSelect) {
+                    self.$input.closest('.kv-tree-dropdown-container').removeClass('open');
+                }
             });
         }
     };
@@ -96,7 +103,10 @@
         treeId: '',
         inputId: '',
         dropdownId: '',
-        placeholder: ''
+        placeholder: '',
+        value: '',
+        caret: '',
+        autoCloseOnSelect: true
     };
 
     $.fn.treeinput.Constructor = TreeInput;

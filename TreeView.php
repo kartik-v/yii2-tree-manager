@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
- * @version   1.0.5
+ * @version   1.0.6
  */
 
 namespace kartik\tree;
@@ -29,7 +29,7 @@ use kartik\tree\models\Tree;
 class TreeView extends Widget
 {
     /**
-     * Toolbar buttons
+     * toolbar buttons
      */
     const BTN_CREATE_ROOT = 'create-root';
     const BTN_CREATE = 'create';

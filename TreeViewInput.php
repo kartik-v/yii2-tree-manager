@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package   yii2-tree-manager
- * @version   1.0.5
+ * @version   1.0.6
  */
 
 namespace kartik\tree;
@@ -53,12 +53,17 @@ class TreeViewInput extends TreeView
     /**
      * @var bool whether to show the input as a dropdown select. If set to `false`, it will display directly the tree
      *     view selector widget. Defaults to `true`. The `BootstrapPluginAsset` will automatically be loaded if this is
-     *     set to `true`.
+     *     set to `true`. Defaults to `true`.
      */
     public $asDropdown = true;
 
     /**
-     * @var bool whether to show the toolbar in the footer
+     * @var bool whether to autoclose the dropdown on input selection when `asDropdown` is true. Defaults to `true`.
+     */
+    public $autoCloseOnSelect = true;
+
+    /**
+     * @var bool whether to show the toolbar in the footer. Defaults to `false`.
      */
     public $showToolbar = false;
 
@@ -226,7 +231,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * @return boolean whether this widget is associated with a data model.
+     * @return bool whether this widget is associated with a data model.
      */
     protected function hasModel()
     {
@@ -251,7 +256,8 @@ class TreeViewInput extends TreeView
             'dropdownId' => $this->dropdownConfig['dropdown']['id'],
             'placeholder' => $this->_placeholder,
             'value' => empty($this->value) ? '' : $this->value,
-            'caret' => $this->dropdownConfig['caret']
+            'caret' => $this->dropdownConfig['caret'],
+            'autoCloseOnSelect' => $this->autoCloseOnSelect
         ]);
         $var = $name . '_' . hash('crc32', $opts);
         $this->options['data-krajee-' . $name] = $var;
