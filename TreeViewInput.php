@@ -126,8 +126,8 @@ class TreeViewInput extends TreeView
         if ($this->asDropdown) {
             $this->initDropdown();
         }
-        parent::run();
         $this->registerInputAssets();
+        parent::run();
     }
 
     /**
