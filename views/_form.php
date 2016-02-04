@@ -28,6 +28,7 @@ use yii\web\View;
  * @var mixed      $currUrl
  * @var bool       $showIDAttribute
  * @var bool       $showFormButtons
+ * @var string     $nodeSelected
  */
 ?>
 
@@ -116,15 +117,15 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
 
 <?php
 /**
- * SECTION 2: Initialize hidden attributes. In case you are extending this
- * and creating your own view, it is mandatory to set all these hidden
- * inputs as defined below.
+ * SECTION 2: Initialize hidden attributes. In case you are extending this and creating your own view, it is mandatory
+ * to set all these hidden inputs as defined below.
  */
 ?>
 <?= Html::hiddenInput('treeNodeModify', $node->isNewRecord) ?>
 <?= Html::hiddenInput('parentKey', $parentKey) ?>
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
+<?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
 
 <?php
 /**
@@ -254,8 +255,7 @@ echo $renderContent(Module::VIEW_PART_1);
 
     <?php
     /**
-     * SECTION 9: Additional views part 3 - within admin zone
-     * BEFORE mandatory attributes.
+     * SECTION 9: Additional views part 3 - within admin zone BEFORE mandatory attributes.
      */
     ?>
     <?= $renderContent(Module::VIEW_PART_3) ?>
@@ -288,8 +288,7 @@ echo $renderContent(Module::VIEW_PART_1);
 
     <?php
     /**
-     * SECTION 11: Additional views part 4 - within admin zone
-     * AFTER mandatory attributes.
+     * SECTION 11: Additional views part 4 - within admin zone AFTER mandatory attributes.
      */
     ?>
     <?= $renderContent(Module::VIEW_PART_4) ?>
@@ -298,8 +297,7 @@ echo $renderContent(Module::VIEW_PART_1);
 
 <?php
 /**
- * SECTION 12: Additional views part 5 accessible by all users
- * after admin zone.
+ * SECTION 12: Additional views part 5 accessible by all users after admin zone.
  */
 ?>
 <?= $renderContent(Module::VIEW_PART_5) ?>

@@ -188,6 +188,7 @@
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
                     'nodeAddlViews': self.nodeAddlViews,
+                    'nodeSelected': self.nodeSelected,
                     'breadcrumbs': self.breadcrumbs
                 },
                 url: vUrl,

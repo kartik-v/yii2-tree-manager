@@ -469,6 +469,11 @@ HTML;
     protected $_hasBootstrap = false;
 
     /**
+     * @var string session identifier for the selected node id
+     */
+    protected $_nodeSelected = null;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -520,10 +525,11 @@ HTML;
     protected function initSelectedNode()
     {
         $session = Yii::$app->session;
-        $nodeSelected = $session->get('kvNodeId', '');
+        $id = $this->_nodeSelected ? $this->_nodeSelected : 'kvNodeId';
+        $nodeSelected = $session->get($id, '');
         if (!empty($nodeSelected)) {
             $this->displayValue = $nodeSelected;
-            $session->set('kvNodeId', '');
+            $session->set($id, '');
         }
     }
 
@@ -645,6 +651,7 @@ HTML;
         }
         $this->_nodes = $this->query->all();
         $this->_iconPrefix = $this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-';
+        $this->_nodeSelected = $this->options['id'] . '-nodesel';
         if (empty($this->buttonIconOptions['class'])) {
             $this->buttonIconOptions['class'] = $this->fontAwesome ? 'kv-icon-10' : 'kv-icon-05';
         }
@@ -1194,6 +1201,7 @@ HTML;
                 'showIDAttribute' => $this->showIDAttribute,
                 'nodeView' => $this->nodeView,
                 'nodeAddlViews' => $this->nodeAddlViews,
+                'nodeSelected' => $this->_nodeSelected,
                 'breadcrumbs' => $this->breadcrumbs
             ];
         $content = $this->render($this->nodeView, ['params' => $params]);
@@ -1261,6 +1269,7 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
+            'nodeSelected' => $this->_nodeSelected,
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
             'allowNewRoots' => $this->allowNewRoots

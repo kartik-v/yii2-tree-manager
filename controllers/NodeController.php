@@ -15,6 +15,7 @@ use yii\db\Exception as DbException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\base\InvalidCallException;
@@ -79,7 +80,8 @@ class NodeController extends Controller
      */
     public function actionSave()
     {
-        static::checkValidRequest(!isset($_POST['treeNodeModify']));
+        $post = Yii::$app->request->post();
+        static::checkValidRequest(!isset($post['treeNodeModify']));
         $treeNodeModify = $parentKey = $currUrl = null;
         $modelClass = '\kartik\tree\models\Tree';
         extract(static::getPostData());
@@ -98,14 +100,14 @@ class NodeController extends Controller
         } else {
             $tag = explode("\\", $modelClass);
             $tag = array_pop($tag);
-            $id = $_POST[$tag][$keyAttr];
+            $id = $post[$tag][$keyAttr];
             $node = $modelClass::findOne($id);
             $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
             $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
         }
         $node->activeOrig = $node->active;
         $isNewRecord = $node->isNewRecord;
-        $node->load($_POST);
+        $node->load($post);
         if ($treeNodeModify) {
             if ($parentKey == 'root') {
                 $node->makeRoot();
@@ -139,7 +141,8 @@ class NodeController extends Controller
         } else {
             $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
-        $session->set('kvNodeId', $node->$keyAttr);
+
+        $session->set(ArrayHelper::getValue($post, 'nodeSelected', 'kvNodeId'), $node->$keyAttr);
         if ($success) {
             $session->setFlash('success', $successMsg);
         } else {
@@ -160,7 +163,7 @@ class NodeController extends Controller
         $parentKey = $action = null;
         $modelClass = '\kartik\tree\models\Tree';
         $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
-        $currUrl = $nodeView = $formOptions = $formAction = $breadCrumbs = '';
+        $currUrl = $nodeView = $formOptions = $formAction = $breadCrumbs = $nodeSelected = '';
         $iconsList = $nodeAddlViews = [];
         extract(static::getPostData());
         /**
@@ -188,6 +191,7 @@ class NodeController extends Controller
                 'showIDAttribute' => $showIDAttribute,
                 'nodeView' => $nodeView,
                 'nodeAddlViews' => $nodeAddlViews,
+                'nodeSelected' => $nodeSelected,
                 'breadcrumbs' => empty($breadcrumbs) ? [] :$breadcrumbs,
             ];
         if (!empty($module->unsetAjaxBundles)) {
