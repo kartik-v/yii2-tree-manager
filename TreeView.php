@@ -475,6 +475,8 @@ HTML;
     {
         $this->initTreeView();
         parent::init();
+        $this->initOptions();
+        $this->registerAssets();
     }
 
     /**
@@ -482,12 +484,6 @@ HTML;
      */
     public function run()
     {
-        if (!$this->_module->treeStructure['treeAttribute']) {
-            $this->allowNewRoots = false;
-        }
-        $this->_nodes = $this->query->all();
-        $this->initOptions();
-        $this->registerAssets();
         echo $this->renderWidget();
     }
 
@@ -644,6 +640,10 @@ HTML;
      */
     public function initOptions()
     {
+        if (!$this->_module->treeStructure['treeAttribute']) {
+            $this->allowNewRoots = false;
+        }
+        $this->_nodes = $this->query->all();
         $this->_iconPrefix = $this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-';
         if (empty($this->buttonIconOptions['class'])) {
             $this->buttonIconOptions['class'] = $this->fontAwesome ? 'kv-icon-10' : 'kv-icon-05';
