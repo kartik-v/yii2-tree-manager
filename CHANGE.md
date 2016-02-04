@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.6
 
-**Date:** 19-Jan-2016
+**Date:** 04-Feb-2016
 
 - (enh #98): Add new bool property `TreeViewInput::autoCloseOnSelect`.
 - (enh #99): Add Chinese Translations

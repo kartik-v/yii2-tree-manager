@@ -1,7 +1,8 @@
 yii2-tree-manager
 =================
 
-[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
+[![Unstable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/unstable)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
 [![License](https://poser.pugx.org/kartik-v/yii2-tree-manager/license)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/downloads)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-tree-manager/d/monthly)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
