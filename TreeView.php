@@ -70,7 +70,8 @@ class TreeView extends Widget
     public $nodeActions = [];
 
     /**
-     * @var array the value to customize a node's label. Value can be string or callable
+     * @var array the value to customize a node's label. Value can be string or callable.
+     * The expected key is 'value'
      */
     public $nodeLabel = [];
 
