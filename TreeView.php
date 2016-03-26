@@ -1089,7 +1089,7 @@ HTML;
             /** @noinspection PhpUndefinedVariableInspection */
             $nodeIconType = $node->$iconTypeAttribute;
 
-            if ($this->nodeLabel) {
+            if ($this->nodeLabel && isset($this->nodeLabel['value'])) {
                 $label = $this->nodeLabel['value'];
                 $nodeName = is_callable($label) ? $label($node) : $label;
             }
