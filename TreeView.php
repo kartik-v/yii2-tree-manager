@@ -760,7 +760,7 @@ HTML;
         $sortedToolbar = [];
         if(!empty($this->toolbarOrder)){
             foreach ($this->toolbarOrder as $k){ 
-                if (!array_key_exists($k, $this->toolbar) && !in_array($k, $this->toolbar)) { 
+                if (!array_key_exists($k, $this->toolbar) && !in_array($k, $this->toolbar, true)) { 
                     continue;
                 }
                 if(isset($this->toolbar[$k]))
