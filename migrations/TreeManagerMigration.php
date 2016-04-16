@@ -1,5 +1,7 @@
 <?php
 
+namespace kartik\tree\migrations;
+
 use yii\db\cubrid\Schema;
 use yii\db\Migration;
 
