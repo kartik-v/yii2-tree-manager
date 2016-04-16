@@ -1,16 +1,14 @@
 <?php
 
-namespace kartik\tree\migrations;
-
 use yii\db\cubrid\Schema;
 use yii\db\Migration;
 
-class TreeManagerMigration extends Migration
+class m160416_200116_tree extends Migration
 {
     public function tableName() {
         return '{{%tree}}';
     }
-    
+
     public function up()
     {
         $this->createTable($this->tableName(), [
