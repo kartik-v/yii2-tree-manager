@@ -75,7 +75,6 @@ to the ```require``` section of your `composer.json` file.
 Also you need configure your database schema
 ```
 $ php yii migrate/up --migrationPath=@vendor/kartik-v/yii2-tree-manager/migrations
-
 ```
 
 
