@@ -70,6 +70,14 @@ or add
 
 to the ```require``` section of your `composer.json` file.
 
+
+
+Also you need configure your database schema
+```
+$ php yii migrate/up --migrationPath=@vendor/kartik\tree/migrations
+```
+
+
 ## Usage
 
 ### Step 1: Prepare Database
