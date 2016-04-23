@@ -70,6 +70,12 @@ class TreeView extends Widget
     public $nodeActions = [];
 
     /**
+     * @var array the value to customize a node's label. Value can be string or callable.
+     * The expected key is 'value'
+     */
+    public $nodeLabel = [];
+
+    /**
      * @var string the view file that will render the form for editing the node.
      */
     public $nodeView;
@@ -1099,6 +1105,11 @@ HTML;
             $nodeIcon = $node->$iconAttribute;
             /** @noinspection PhpUndefinedVariableInspection */
             $nodeIconType = $node->$iconTypeAttribute;
+
+            if ($this->nodeLabel && isset($this->nodeLabel['value'])) {
+                $label = $this->nodeLabel['value'];
+                $nodeName = is_callable($label) ? $label($node) : $label;
+            }
 
             $isChild = ($nodeRight == $nodeLeft + 1);
             $indicators = '';
