@@ -8,16 +8,17 @@
 
 namespace kartik\tree;
 
-use Yii;
-use yii\base\InvalidConfigException;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap\BootstrapPluginAsset;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use Closure;
 use kartik\base\Config;
 use kartik\base\Widget;
 use kartik\tree\models\Tree;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\bootstrap\BootstrapPluginAsset;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * An enhanced tree view widget for Yii Framework 2 that allows management and manipulation of hierarchical data using
@@ -68,6 +69,17 @@ class TreeView extends Widget
      * ```
      */
     public $nodeActions = [];
+
+    /**
+     * @var array|Closure the value to customize a tree node's label.
+     * - if set as an array, the array key must be the node key value (i.e. `keyAttribute`) and array value will be the
+     *     new node label you want to assign.
+     * - if set as a Closure, the callback function must be of the signature `function($node){}`, where `$node` will
+     *     represent each tree node's model object instance.
+     * If a value is not traceable through above methods, the database tree node name will be displayed (as parsed via
+     *     `nameAttribute`).
+     */
+    public $nodeLabel;
 
     /**
      * @var string the view file that will render the form for editing the node.
@@ -222,13 +234,20 @@ class TreeView extends Widget
      * @var array the settings for the tree management toolbar
      */
     public $toolbar = [];
-    
-    public $toolbarOrder = [];
 
     /**
      * @var array the HTML attributes for the toolbar.
      */
     public $toolbarOptions = [];
+
+    /**
+     * @var array the sorting order of the buttons in the toolbar. Each item in this array should be one of the button
+     *     keys as set in the `toolbar` array keys (except for BTN_SEPARATOR which will be parsed as is). Note that,
+     *     if this is set, then only the button keys configured here will be displayed (irrespective of the toolbar
+     *     setup). Hence one must ensure that all the toolbar button keys are set here to display all the toolbar
+     *     buttons.
+     */
+    public $toolbarOrder = [];
 
     /**
      * @var array the HTML attributes for the button groups within the toolbar.
@@ -252,7 +271,7 @@ class TreeView extends Widget
     public $showTooltips = true;
 
     /**
-     * @var bool whether to auto load the bootstrap plugin assets if `showTooltips` is `true` OR if 
+     * @var bool whether to auto load the bootstrap plugin assets if `showTooltips` is `true` OR if
      * `TreeViewInput::asDropdown` is true. Defaults to `true`.
      */
     public $autoLoadBsPlugin = true;
@@ -756,21 +775,7 @@ HTML;
             unset($defaultToolbar[self::BTN_CREATE_ROOT]);
         }
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
-        
-        $sortedToolbar = [];
-        if(!empty($this->toolbarOrder)){
-            foreach ($this->toolbarOrder as $k){ 
-                if (!array_key_exists($k, $this->toolbar) && !in_array($k, $this->toolbar, true)) { 
-                    continue;
-                }
-                if(isset($this->toolbar[$k]))
-                    $sortedToolbar[$k] = $this->toolbar[$k];
-                else
-                    $sortedToolbar[] = $k;
-            }
-            $this->toolbar = $sortedToolbar;
-        }
-        
+        $this->sortToolbar();
         if ($this->defaultChildNodeIcon === null) {
             $this->defaultChildNodeIcon = $this->getNodeIcon(1);
         }
@@ -781,6 +786,25 @@ HTML;
             $this->defaultParentNodeOpenIcon = $this->getNodeIcon(3);
         }
         $this->_iconsList = $this->getIconsList();
+    }
+
+    /**
+     * Sorts the toolbar based on `toolbarOrder` configuration
+     */
+    protected function sortToolbar()
+    {
+        if (empty($this->toolbarOrder)) {
+            return;
+        }
+        $sortedToolbar = [];
+        foreach ($this->toolbarOrder as $btnKey) {
+            if ($btnKey === self::BTN_SEPARATOR) {
+                $sortedToolbar[] = $btnKey;
+            } elseif (isset($this->toolbar[$btnKey])) {
+                $sortedToolbar[$btnKey] = $this->toolbar[$btnKey];
+            }
+        }
+        $this->toolbar = $sortedToolbar;
     }
 
     /**
@@ -1104,6 +1128,11 @@ HTML;
             $indicators = '';
             $css = '';
 
+            if (isset($this->nodeLabel)) {
+                $label = $this->nodeLabel;
+                $nodeName = is_callable($label) ? $label($node) :
+                    (is_array($label) ? ArrayHelper::getValue($label, $nodeKey, $nodeName) : $nodeName);
+            }
             if ($nodeDepth == $currDepth) {
                 if ($counter > 0) {
                     $out .= "</li>\n";
@@ -1184,7 +1213,6 @@ HTML;
         return $var ? 1 : 0;
     }
 
-    
     /**
      * Renders the markup for the detail form to edit/view the selected tree node
      *

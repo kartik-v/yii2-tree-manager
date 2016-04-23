@@ -3,13 +3,19 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.6
 
-**Date:** 04-Feb-2016
+**Date:** 23-Apr-2016
 
 - (enh #98): Add new bool property `TreeViewInput::autoCloseOnSelect`.
-- (enh #99): Add Chinese Translations
+- (enh #99): Add Chinese translations
 - (enh #100): Add composer branch alias to allow getting latest `dev-master` updates.
 - (bug #103, #104): Correct init of options and registration of assets in TreeViewInput.
 - (enh #105): Generate unique `nodeSelected` session identifier for every TreeView widget instance.
+- (enh #112): Add French translations.
+- (enh #113): Option to change node label.
+- (enh #118): Allow configuring order of toolbar buttons.
+- (enh #119): Add db migrations functionality.
+- (enh #120): Add Persian translations.
+
 
 ## Version 1.0.5
 

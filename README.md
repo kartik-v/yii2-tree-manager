@@ -73,9 +73,25 @@ to the ```require``` section of your `composer.json` file.
 ## Usage
 
 ### Step 1: Prepare Database
-Create your database table to store the tree structure. Copy and modify the `schema/tree.sql` file (a MySQL example), to create the table `tbl_tree` (or for any table name you need). You can add columns you need to this table, but you cannot skip/drop any of the columns mentioned in the script. You can choose to rename the `id`, `root`, `lft`, `rgt`, `lvl`, `name`, `icon`, `icon_type` columns if you choose to - but these must be accordingly setup in the module.
+
+Create your database table to store the tree structure. You can do it in one of the following ways:
+
+#### Option 1: Run DB Migrations
+
+You can run the migrations script provided to create the database structure from your yii programming console:
+
+```
+php yii migrate/up --migrationPath=@vendor/kartik-v/yii2-tree-manager/migrations
+```
+
+#### Option 2: Executing SQL script
+
+Alternatively, you can execute the SQL script to generate your DB structure. Copy and modify the `migrations/tree.sql` file (a MySQL example), to create the table `tbl_tree` (or for any table name you need). 
+
+>NOTE: You can add columns you need to this table, but you cannot skip/drop any of the columns mentioned in the script. You can choose to rename the `id`, `root`, `lft`, `rgt`, `lvl`, `name`, `icon`, `icon_type` columns if you choose to - but these must be accordingly setup in the module.
 
 ### Step 2: Setup Model
+
 Create your model for storing the tree structure extending `kartik\tree\models\Tree` class. You can alternatively build your own model extending from `yii\db\ActiveRecord` but modify it to use the `kartik\tree\models\TreeTrait`. You must provide the table name in the model. Optionally you can add rules, or edit the various methods like `isVisible`, `isDisabled` etc. to identify allowed flags for nodes.
 
 So when extending from the `\kartik\tree\models\Tree`, you can set it like below:
@@ -119,6 +135,7 @@ class Tree extends \yii\db\ActiveRecord
 ```
 
 ### Step 3: Setup Module
+
 Configure the module named `treemanager` in the modules section of your Yii configuration file.
 
 ```php
@@ -131,6 +148,7 @@ Configure the module named `treemanager` in the modules section of your Yii conf
 ```
 
 ### Step 4: Using TreeView Widget
+
 In your view files, you can now use the tree view directly to manage tree data as shown below:
 
 ```php
@@ -147,6 +165,7 @@ echo TreeView::widget([
 ```
 
 ### Step 5: Using TreeViewInput Widget
+
 If you wish to use the tree input to select tree items, you can use the TreeViewInput widget as shown below. Normally you would use this as a dropdown with the `asDropdown` property set to `true`. If `asDropdown` is set to `false`, the treeview input widget will be rendered inline for selection.
 
 ```php
