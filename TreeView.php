@@ -222,6 +222,8 @@ class TreeView extends Widget
      * @var array the settings for the tree management toolbar
      */
     public $toolbar = [];
+    
+    public $toolbarOrder = [];
 
     /**
      * @var array the HTML attributes for the toolbar.
@@ -754,6 +756,21 @@ HTML;
             unset($defaultToolbar[self::BTN_CREATE_ROOT]);
         }
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
+        
+        $sortedToolbar = [];
+        if(!empty($this->toolbarOrder)){
+            foreach ($this->toolbarOrder as $k){ 
+                if (!array_key_exists($k, $this->toolbar) && !in_array($k, $this->toolbar, true)) { 
+                    continue;
+                }
+                if(isset($this->toolbar[$k]))
+                    $sortedToolbar[$k] = $this->toolbar[$k];
+                else
+                    $sortedToolbar[] = $k;
+            }
+            $this->toolbar = $sortedToolbar;
+        }
+        
         if ($this->defaultChildNodeIcon === null) {
             $this->defaultChildNodeIcon = $this->getNodeIcon(1);
         }
