@@ -21,15 +21,9 @@ class TreeViewAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $depends = [
-        'yii\widgets\ActiveFormAsset'
-    ];
-
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
+        $this->depends = array_merge($this->depends, ['yii\widgets\ActiveFormAsset']);
         $this->setSourcePath(__DIR__ . '/assets');
         $this->setupAssets('js', ['js/kv-tree']);
         $this->setupAssets('css', ['css/kv-tree']);
