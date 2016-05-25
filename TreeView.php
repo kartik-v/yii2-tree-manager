@@ -502,6 +502,7 @@ HTML;
         $this->initTreeView();
         parent::init();
         $this->initOptions();
+        $this->initSelectedNode();        
         $this->registerAssets();
     }
 
@@ -522,7 +523,6 @@ HTML;
     {
         $this->validateSourceData();
         $this->_module = Config::initModule(Module::className());
-        $this->initSelectedNode();
         if (empty($this->emptyNodeMsg)) {
             $this->emptyNodeMsg = Yii::t(
                 'kvtree',
