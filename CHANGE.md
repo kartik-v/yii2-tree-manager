@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.6
 
-**Date:** 23-Apr-2016
+**Date:** 12-Jul-2016
 
 - (enh #98): Add new bool property `TreeViewInput::autoCloseOnSelect`.
 - (enh #99): Add Chinese translations
@@ -15,7 +15,9 @@ Change Log: `yii2-tree-manager`
 - (enh #118): Allow configuring order of toolbar buttons.
 - (enh #119): Add db migrations functionality.
 - (enh #120): Add Persian translations.
-
+- (enh #122): Add Estonian translations.
+- (bug #127): Fix migration namespace.
+- (bug #128): Correct asset dependency.
 
 ## Version 1.0.5
 
