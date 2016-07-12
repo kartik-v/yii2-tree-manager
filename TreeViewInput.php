@@ -139,13 +139,13 @@ class TreeViewInput extends TreeView
         $input = ArrayHelper::getValue($config, 'input', []);
         $dropdown = ArrayHelper::getValue($config, 'dropdown', []);
         $options = ArrayHelper::getValue($config, 'options', []);
-        $css = 'form-control dropdown-toggle kv-tree-input';
+        $css = ['form-control', 'dropdown-toggle', 'kv-tree-input'];
         if ($this->_disabled) {
-            $css .= ' disabled';
+            $css[] = 'disabled';
         }
         Html::addCssClass($input, $css);
-        Html::addCssClass($dropdown, 'dropdown-menu kv-tree-dropdown');
-        Html::addCssClass($options, 'dropdown kv-tree-dropdown-container');
+        Html::addCssClass($dropdown, ['dropdown-menu', 'kv-tree-dropdown']);
+        Html::addCssClass($options, ['dropdown', 'kv-tree-dropdown-container']);
         $id = $this->options['id'] . '-tree-input';
         $this->_placeholder = ArrayHelper::remove($input, 'placeholder', Yii::t('kvtree', 'Select...'));
         $this->_placeholder = Html::tag('span', $this->_placeholder, ['class' => 'kv-placeholder']);

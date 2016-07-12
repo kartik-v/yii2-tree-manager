@@ -18,6 +18,7 @@ Change Log: `yii2-tree-manager`
 - (enh #122): Add Estonian translations.
 - (bug #127): Fix migration namespace.
 - (bug #128): Correct asset dependency.
+- (enh #129): More correct defaulting of CSS classes.
 
 ## Version 1.0.5
 

@@ -399,7 +399,7 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the search input
      */
-    public $searchOptions = ['class' => 'input-sm'];
+    public $searchOptions = ['class' => 'form-control input-sm'];
 
     /**
      * @var array the HTML attributes for the search clear indicator
@@ -699,7 +699,7 @@ HTML;
         Html::addCssClass($this->rootNodeCheckboxOptions, 'kv-root-node-checkbox');
         Html::addCssClass($this->detailOptions, 'kv-detail-container');
         Html::addCssClass($this->searchContainerOptions, 'kv-search-container');
-        Html::addCssClass($this->searchOptions, 'kv-search-input form-control');
+        Html::addCssClass($this->searchOptions, 'kv-search-input');
         Html::addCssClass($this->searchClearOptions, 'kv-search-clear');
         Html::addCssClass($this->expandNodeOptions, 'kv-node-expand');
         Html::addCssClass($this->collapseNodeOptions, 'kv-node-collapse');
