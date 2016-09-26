@@ -1108,7 +1108,7 @@ HTML;
         foreach($this->expandValues as $value)
         {
             $node = $modelClass::findOne($value);
-            $expandValuesLftRgt[] = ['lft' => $node->lft, 'rgt' => $ode->rgt];
+            $expandValuesLftRgt[] = ['lft' => $node->lft, 'rgt' => $node->rgt];
         }
 
         $struct = $this->_module->treeStructure + $this->_module->dataStructure;
@@ -1186,6 +1186,7 @@ HTML;
             foreach($expandValuesLftRgt as $v)
                 if($v['lft'] >= $node->lft && $v['rgt'] <= $node->rgt)
                     $node->collapsed = false;
+
             if ($node->isCollapsed()) {
                 $css .= ' kv-collapsed ';
             }
