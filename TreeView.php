@@ -1103,10 +1103,19 @@ HTML;
      */
     public function renderTree()
     {
+        $modelClass = $this->query->modelClass;
+        $expandValuesLftRgt = [];
+        foreach($this->expandValues as $value)
+        {
+            $node = $modelClass::findOne($value);
+            $expandValuesLftRgt[] = ['lft' => $node->lft, 'rgt' => $ode->rgt];
+        }
+
         $struct = $this->_module->treeStructure + $this->_module->dataStructure;
         extract($struct);
         $nodeDepth = $currDepth = $counter = 0;
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
+
         foreach ($this->_nodes as $node) {
             /**
              * @var Tree $node
@@ -1174,7 +1183,10 @@ HTML;
             if ($this->showCheckbox && $node->isSelected()) {
                 $css .= ' kv-selected ';
             }
-            if ($node->isCollapsed() && !in_array($node->id, $this->expandValues)) {
+            foreach($expandValuesLftRgt as $v)
+                if($v['lft'] >= $node->lft && $v['rgt'] <= $node->rgt)
+                    $node->collapsed = false;
+            if ($node->isCollapsed()) {
                 $css .= ' kv-collapsed ';
             }
             if ($node->isDisabled()) {
