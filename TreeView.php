@@ -126,6 +126,11 @@ class TreeView extends Widget
     public $value = '';
 
     /**
+     * @var array the initial value (keys) to be expanded in the tree
+     */
+    public $expandValues = [];
+
+    /**
      * @var string message shown on tree initialization when either the entire tree is empty or no node is found for
      *     the selected `displayValue`.
      */
@@ -1169,7 +1174,7 @@ HTML;
             if ($this->showCheckbox && $node->isSelected()) {
                 $css .= ' kv-selected ';
             }
-            if ($node->isCollapsed()) {
+            if ($node->isCollapsed() && !in_array($node->id, $this->expandValues)) {
                 $css .= ' kv-collapsed ';
             }
             if ($node->isDisabled()) {
