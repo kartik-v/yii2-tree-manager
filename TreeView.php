@@ -1105,6 +1105,8 @@ HTML;
      */
     public function renderTree()
     {
+        Yii::trace('start renderTree');
+
         $modelClass = $this->query->modelClass;
         $expandValuesLftRgt = [];
         foreach($this->expandValues as $value)
@@ -1118,7 +1120,10 @@ HTML;
         $nodeDepth = $currDepth = $counter = 0;
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
 
+        Yii::trace('start loop');
+
         foreach ($this->_nodes as $node) {
+
             /**
              * @var Tree $node
              */
@@ -1163,25 +1168,39 @@ HTML;
             if (trim($indicators) == null) {
                 $indicators = '&nbsp;';
             }
+//            $nodeOptions = [
+//                'data-key' => $nodeKey,
+//                'data-lft' => $nodeLeft,
+//                'data-rgt' => $nodeRight,
+//                'data-lvl' => $nodeDepth,
+//                'data-readonly' => static::parseBool($node->isReadonly()),
+//                'data-movable-u' => static::parseBool($node->isMovable('u')),
+//                'data-movable-d' => static::parseBool($node->isMovable('d')),
+//                'data-movable-l' => static::parseBool($node->isMovable('l')),
+//                'data-movable-r' => static::parseBool($node->isMovable('r')),
+//                'data-removable' => static::parseBool($node->isRemovable()),
+//                'data-removable-all' => static::parseBool($node->isRemovableAll()),
+//            ];
             $nodeOptions = [
                 'data-key' => $nodeKey,
                 'data-lft' => $nodeLeft,
                 'data-rgt' => $nodeRight,
                 'data-lvl' => $nodeDepth,
-                'data-readonly' => static::parseBool($node->isReadonly()),
-                'data-movable-u' => static::parseBool($node->isMovable('u')),
-                'data-movable-d' => static::parseBool($node->isMovable('d')),
-                'data-movable-l' => static::parseBool($node->isMovable('l')),
-                'data-movable-r' => static::parseBool($node->isMovable('r')),
-                'data-removable' => static::parseBool($node->isRemovable()),
-                'data-removable-all' => static::parseBool($node->isRemovableAll()),
+                'data-readonly' => 0,
+                'data-movable-u' => 0,
+                'data-movable-d' => 0,
+                'data-movable-l' => 0,
+                'data-movable-r' => 0,
+                'data-removable' => 0,
+                'data-removable-all' => 0,
             ];
+
             if (!$isChild) {
                 $css = ' kv-parent ';
             }
-            if (!$node->isVisible() && $this->isAdmin) {
-                $css .= ' kv-invisible';
-            }
+//            if (!$node->isVisible() && $this->isAdmin) {
+//                $css .= ' kv-invisible';
+//            }
             if ($this->showCheckbox && $node->isSelected()) {
                 $css .= ' kv-selected ';
             }
@@ -1192,12 +1211,12 @@ HTML;
             if ($node->isCollapsed()) {
                 $css .= ' kv-collapsed ';
             }
-            if ($node->isDisabled()) {
-                $css .= ' kv-disabled ';
-            }
-            if (!$node->isActive()) {
-                $css .= ' kv-inactive ';
-            }
+//            if ($node->isDisabled()) {
+//                $css .= ' kv-disabled ';
+//            }
+//            if (!$node->isActive()) {
+//                $css .= ' kv-inactive ';
+//            }
             $indicators .= $this->renderToggleIconContainer(false) . "\n";
             $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer(false) . "\n" : '';
             $css = trim($css);
@@ -1218,6 +1237,10 @@ HTML;
         }
         $out .= str_repeat("</li>\n</ul>", $nodeDepth) . "</li>\n";
         $out .= "</ul>\n";
+
+        Yii::trace('end renderTree');
+
+
         return Html::tag('div', $this->renderRoot() . $out, $this->treeOptions);
     }
 
