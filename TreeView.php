@@ -431,6 +431,8 @@ class TreeView extends Widget
      */
     public $options = [];
 
+    public $inputName = 'kv-node-selected';
+
     /**
      * @var string the main template for rendering the tree view navigation widget and the node detail view form.
      */
@@ -981,7 +983,7 @@ HTML;
             '{search}' => $this->renderSearch(),
             '{toolbar}' => $this->renderToolbar(),
         ]) . "\n" .
-        Html::textInput('kv-node-selected', $this->value, $this->options) . "\n";
+        Html::textInput($this->inputName, $this->value, $this->options) . "\n";
     }
 
     /**
