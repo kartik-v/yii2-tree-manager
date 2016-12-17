@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
  * @version   1.0.6
  */
@@ -16,6 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\base\InvalidCallException;
@@ -76,15 +77,79 @@ class NodeController extends Controller
     }
 
     /**
+     * Checks signature of posted data for ensuring security against data tampering.
+     *
+     * @param string $action the controller action for which post data signature will be verified
+     * @param array  $data   the posted data
+     *
+     * @throws InvalidCallException
+     */
+    protected static function checkSignature($action, $data = [])
+    {
+        $module = TreeView::module();
+        $security = Yii::$app->security;
+        $modelClass = '\kartik\tree\models\Tree';
+        $validate = function ($act, $oldHash, $newHashData) use ($module, $security) {
+            $salt = $module->treeEncryptSalt;
+            $newHash = $security->hashData($newHashData, $salt);
+            if ($security->validateData($oldHash, $salt) && $oldHash === $newHash) {
+                return;
+            }
+            //$messageParams = '<pre>OLD HASH:<br>' . $oldHash . '<br>NEW HASH:<br>' . $newHash . '</pre>';
+            $message = Yii::t(
+                'kvtree',
+                '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.',
+                ['action' => $act]
+            );
+            throw new InvalidCallException($message);
+        };
+        switch ($action) {
+            case 'save':
+                $treeNodeModify = $parentKey = $currUrl = $treeSaveHash = null;
+                extract($data);
+                $dataToHash = !!$treeNodeModify . $parentKey . $currUrl . $modelClass;
+                $validate($action, $treeSaveHash, $dataToHash);
+                break;
+            case 'manage':
+                $parentKey = $treeManageHash = null;
+                $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
+                $currUrl = $nodeView = $formAction = $nodeSelected = '';
+                $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
+                extract($data);
+                $dataToHash = $parentKey . $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
+                    !!$showIDAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
+                    Json::encode($nodeAddlViews) . Json::encode(array_values($iconsList)) . Json::encode($breadcrumbs);
+                $validate($action, $treeManageHash, $dataToHash);
+                break;
+            case 'remove':
+                $treeRemoveHash = null;
+                $softDelete = false;
+                extract($data);
+                $dataToHash = $modelClass . $softDelete;
+                $validate($action, $treeRemoveHash, $dataToHash);
+                break;
+            case 'move':
+                $treeMoveHash = $allowNewRoots = null;
+                extract($data);
+                $dataToHash = $modelClass . $allowNewRoots;
+                $validate($action, $treeMoveHash, $dataToHash);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
      * Saves a node once form is submitted
      */
     public function actionSave()
     {
         $post = Yii::$app->request->post();
         static::checkValidRequest(!isset($post['treeNodeModify']));
-        $treeNodeModify = $parentKey = $currUrl = null;
+        $treeNodeModify = $parentKey = $currUrl = $treeSaveHash = null;
         $modelClass = '\kartik\tree\models\Tree';
-        extract(static::getPostData());
+        $data = static::getPostData();
+        extract($data);
         $module = TreeView::module();
         $keyAttr = $module->dataStructure['keyAttribute'];
         $session = Yii::$app->session;
@@ -160,48 +225,51 @@ class NodeController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
-        $parentKey = $action = null;
-        $modelClass = '\kartik\tree\models\Tree';
-        $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
-        $currUrl = $nodeView = $formOptions = $formAction = $breadCrumbs = $nodeSelected = '';
-        $iconsList = $nodeAddlViews = [];
-        extract(static::getPostData());
-        /**
-         * @var Tree $modelClass
-         * @var Tree $node
-         */
-        if (!isset($id) || empty($id)) {
-            $node = new $modelClass;
-            $node->initDefaults();
-        } else {
-            $node = $modelClass::findOne($id);
-        }
-        $module = TreeView::module();
-        $params = $module->treeStructure + $module->dataStructure + [
-                'node' => $node,
-                'parentKey' => $parentKey,
-                'action' => $formAction,
-                'formOptions' => empty($formOptions) ? [] : $formOptions,
-                'modelClass' => $modelClass,
-                'currUrl' => $currUrl,
-                'isAdmin' => $isAdmin,
-                'iconsList' => $iconsList,
-                'softDelete' => $softDelete,
-                'showFormButtons' => $showFormButtons,
-                'showIDAttribute' => $showIDAttribute,
-                'nodeView' => $nodeView,
-                'nodeAddlViews' => $nodeAddlViews,
-                'nodeSelected' => $nodeSelected,
-                'breadcrumbs' => empty($breadcrumbs) ? [] :$breadcrumbs,
-            ];
-        if (!empty($module->unsetAjaxBundles)) {
-            Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
-                foreach ($module->unsetAjaxBundles as $bundle) {
-                    unset($e->sender->assetBundles[$bundle]);
-                }
-            });
-        }
-        $callback = function () use ($nodeView, $params) {
+        $callback = function () {
+            $parentKey = null;
+            $modelClass = '\kartik\tree\models\Tree';
+            $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = $allowNewRoots = false;
+            $currUrl = $nodeView = $formAction = $nodeSelected = '';
+            $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
+            $data = static::getPostData();
+            extract($data);
+            /**
+             * @var Tree $modelClass
+             * @var Tree $node
+             */
+            if (!isset($id) || empty($id)) {
+                $node = new $modelClass;
+                $node->initDefaults();
+            } else {
+                $node = $modelClass::findOne($id);
+            }
+            $module = TreeView::module();
+            $params = $module->treeStructure + $module->dataStructure + [
+                    'node' => $node,
+                    'parentKey' => $parentKey,
+                    'action' => $formAction,
+                    'formOptions' => empty($formOptions) ? [] : $formOptions,
+                    'modelClass' => $modelClass,
+                    'currUrl' => $currUrl,
+                    'isAdmin' => $isAdmin,
+                    'iconsList' => $iconsList,
+                    'softDelete' => $softDelete,
+                    'showFormButtons' => $showFormButtons,
+                    'showIDAttribute' => $showIDAttribute,
+                    'allowNewRoots' => $allowNewRoots,
+                    'nodeView' => $nodeView,
+                    'nodeAddlViews' => $nodeAddlViews,
+                    'nodeSelected' => $nodeSelected,
+                    'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
+                ];
+            if (!empty($module->unsetAjaxBundles)) {
+                Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
+                    foreach ($module->unsetAjaxBundles as $bundle) {
+                        unset($e->sender->assetBundles[$bundle]);
+                    }
+                });
+            }
+            static::checkSignature('manage', $data);
             return $this->renderAjax($nodeView, ['params' => $params]);
         };
         return self::process(
@@ -216,18 +284,20 @@ class NodeController extends Controller
      */
     public function actionRemove()
     {
-        /**
-         * @var Tree $class
-         * @var Tree $node
-         */
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
-        $id = null;
-        $class = '\kartik\tree\models\Tree';
-        $softDelete = false;
-        extract(static::getPostData());
-        $node = $class::findOne($id);
-        $callback = function () use ($node, $softDelete) {
+        $callback = function () {
+            /**
+             * @var Tree $modelClass
+             * @var Tree $node
+             */
+            $id = null;
+            $modelClass = '\kartik\tree\models\Tree';
+            $softDelete = false;
+            $data = static::getPostData();
+            static::checkSignature('remove', $data);
+            extract($data);
+            $node = $modelClass::findOne($id);
             return $node->removeNode($softDelete);
         };
         return self::process(
@@ -243,25 +313,25 @@ class NodeController extends Controller
     public function actionMove()
     {
         /**
-         * @var Tree $class
+         * @var Tree $modelClass
          * @var Tree $nodeFrom
          * @var Tree $nodeTo
          */
         Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
-        $dir = null;
-        $idFrom = null;
-        $idTo = null;
-        $class = '\kartik\tree\models\Tree';
+        $dir = $idFrom = $idTo = $treeMoveHash = null;
+        $modelClass = '\kartik\tree\models\Tree';
         $allowNewRoots = false;
-        extract(static::getPostData());
-        $nodeFrom = $class::findOne($idFrom);
-        $nodeTo = $class::findOne($idTo);
+        $data = static::getPostData();
+        extract($data);
+        $nodeFrom = $modelClass::findOne($idFrom);
+        $nodeTo = $modelClass::findOne($idTo);
         $isMovable = $nodeFrom->isMovable($dir);
         $errorMsg = $isMovable ? Yii::t('kvtree', 'Error while moving the node. Please try again later.') :
             Yii::t('kvtree', 'The selected node cannot be moved.');
-        $callback = function () use ($dir, $nodeFrom, $nodeTo, $allowNewRoots, $isMovable) {
+        $callback = function () use ($dir, $nodeFrom, $nodeTo, $allowNewRoots, $treeMoveHash, $isMovable, $data) {
             if (!empty($nodeFrom) && !empty($nodeTo)) {
+                static::checkSignature('move', $data);
                 if (!$isMovable) {
                     return false;
                 }
@@ -299,18 +369,25 @@ class NodeController extends Controller
     public static function process($callback, $msgError, $msgSuccess)
     {
         $error = $msgError;
-        $success = false;
         try {
             $success = call_user_func($callback);
         } catch (DbException $e) {
+            $success = false;
             $error = $e->getMessage();
         } catch (NotSupportedException $e) {
+            $success = false;
             $error = $e->getMessage();
         } catch (InvalidParamException $e) {
+            $success = false;
             $error = $e->getMessage();
         } catch (InvalidConfigException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (InvalidCallException $e) {
+            $success = false;
             $error = $e->getMessage();
         } catch (Exception $e) {
+            $success = false;
             $error = $e->getMessage();
         }
         if ($success !== false) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
  * @version   1.0.6
  */
@@ -51,38 +51,35 @@ class TreeViewInput extends TreeView
     public $value;
 
     /**
-     * @var bool whether to show the input as a dropdown select. If set to `false`, it will display directly the tree
+     * @var boolean whether to show the input as a dropdown select. If set to `false`, it will display directly the tree
      *     view selector widget. Defaults to `true`. The `BootstrapPluginAsset` will automatically be loaded if this is
      *     set to `true`. Defaults to `true`.
      */
     public $asDropdown = true;
 
     /**
-     * @var bool whether to autoclose the dropdown on input selection when `asDropdown` is true. Defaults to `true`.
+     * @var boolean whether to autoclose the dropdown on input selection when `asDropdown` is true. Defaults to `true`.
      */
     public $autoCloseOnSelect = true;
 
     /**
-     * @var bool whether to show the toolbar in the footer. Defaults to `false`.
+     * @var boolean whether to show the toolbar in the footer. Defaults to `false`.
      */
     public $showToolbar = false;
 
     /**
-     * @var array the configuration of the tree view dropdown. The following
-     * configuration options are available:
-     * - input: array the HTML attributes for the dropdown input container which displays
-     *   the selected tree items. The following special options are available:
-     *   - placeholder: string, defaults to `Select...`
-     * - dropdown: array, the HTML attributes for the dropdown tree view menu.
-     * - options: array, the HTML attributes for the wrapper container
-     * - caret: string, the markup for rendering the dropdown indicator for up and down.
-     *   Defaults to TreeViewInput::CARET.
+     * @var array the configuration of the tree view dropdown. The following configuration options are available:
+     * - `input`: _array_, the HTML attributes for the dropdown input container which displays the selected tree items.
+     *   The following special options are available:
+     *   - `placeholder`: string, defaults to `Select...`
+     * - `dropdown`: _array_, the HTML attributes for the dropdown tree view menu.
+     * - `options`: _array_, the HTML attributes for the wrapper container
+     * - `caret`: _string_, the markup for rendering the dropdown indicator for up and down. Defaults to [[CARET]].
      */
     public $dropdownConfig = [];
 
     /**
-     * @var array the HTML attributes for the input that will store the
-     * selected nodes for the widget
+     * @var array the HTML attributes for the input that will store the selected nodes for the widget
      */
     public $options = ['class' => 'form-control hide'];
 
@@ -92,7 +89,7 @@ class TreeViewInput extends TreeView
     private $_placeholder;
 
     /**
-     * @var bool whether the input is disabled
+     * @var boolean whether the input is disabled
      */
     private $_disabled;
 

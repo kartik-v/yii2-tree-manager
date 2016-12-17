@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.' => '',
     '(new)' => '(nieuw)',
     'Active' => 'Actief',
     'Add new' => 'Voeg nieuwe toe',

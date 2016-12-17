@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
  * @version   1.0.6
  */
@@ -20,19 +20,19 @@ use yii\db\ActiveRecord;
  * @property integer $lvl
  * @property string  $name
  * @property string  $icon
- * @property int     $icon_type
- * @property bool    $active
- * @property bool    $selected
- * @property bool    $disabled
- * @property bool    $readonly
- * @property bool    $visible
- * @property bool    $collapsed
- * @property bool    $movable_u
- * @property bool    $movable_d
- * @property bool    $movable_l
- * @property bool    $movable_r
- * @property bool    $removable
- * @property bool    $removable_all
+ * @property integer $icon_type
+ * @property boolean $active
+ * @property boolean $selected
+ * @property boolean $disabled
+ * @property boolean $readonly
+ * @property boolean $visible
+ * @property boolean $collapsed
+ * @property boolean $movable_u
+ * @property boolean $movable_d
+ * @property boolean $movable_l
+ * @property boolean $movable_r
+ * @property boolean $removable
+ * @property boolean $removable_all
  *
  * @method initDefaults()
  * @method makeRoot()
@@ -41,10 +41,10 @@ use yii\db\ActiveRecord;
  * @method insertAfter() insertAfter(Tree $node)
  * @method TreeQuery parents() parents(int $depth = null)
  * @method TreeQuery children()
- * @method bool isRoot()
- * @method bool isLeaf()
- * @method bool delete()
- * @method bool deleteWithChildren()
+ * @method boolean isRoot()
+ * @method boolean isLeaf()
+ * @method boolean delete()
+ * @method boolean deleteWithChildren()
  */
 class Tree extends ActiveRecord
 {
@@ -57,12 +57,12 @@ class Tree extends ActiveRecord
     public static $treeQueryClass;
 
     /**
-     * @var bool whether to HTML encode the tree node names. Defaults to `true`.
+     * @var boolean whether to HTML encode the tree node names. Defaults to `true`.
      */
     public $encodeNodeNames = true;
 
     /**
-     * @var bool whether to HTML purify the tree node icon content before saving.
+     * @var boolean whether to HTML purify the tree node icon content before saving.
      * Defaults to `true`.
      */
     public $purifyNodeIcons = true;
@@ -78,7 +78,7 @@ class Tree extends ActiveRecord
     public $nodeRemovalErrors = [];
 
     /**
-     * @var bool attribute to cache the `active` state before a model update. Defaults to `true`.
+     * @var boolean attribute to cache the `active` state before a model update. Defaults to `true`.
      */
     public $activeOrig = true;
 }

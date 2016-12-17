@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree
  * @version   1.0.6
  */
@@ -20,18 +20,50 @@ use yii\helpers\ArrayHelper;
  */
 class Module extends \kartik\base\Module
 {
+    /**
+     * The module name for Krajee treeview
+     */
     const MODULE = 'treemanager';
-
+    /**
+     * Manage node action
+     */
     const NODE_MANAGE = 'manage';
+    /**
+     * Remove node action
+     */
     const NODE_REMOVE = 'remove';
+    /**
+     * Move node action
+     */
     const NODE_MOVE = 'move';
+    /**
+     * Save node action
+     */
     const NODE_SAVE = 'save';
-
+    /**
+     * Tree details form view - Section Part 1
+     */
     const VIEW_PART_1 = 1;
+    /**
+     * Tree details form view - Section Part 2
+     */
     const VIEW_PART_2 = 2;
+    /**
+     * Tree details form view - Section Part 3
+     */
     const VIEW_PART_3 = 3;
+    /**
+     * Tree details form view - Section Part 4
+     */
     const VIEW_PART_4 = 4;
+    /**
+     * Tree details form view - Section Part 5
+     */
     const VIEW_PART_5 = 5;
+    /**
+     * Session key variable name for storing the tree configuration encryption salt.
+     */
+    const SALT_SESS_KEY = "krajeeTreeConfigSalt";
 
     /**
      * @var array the configuration of nested set attributes structure
@@ -76,12 +108,26 @@ class Module extends \kartik\base\Module
     ];
 
     /**
+     * @var string a random salt that will be used to generate a hash signature for tree configuration. If not set, this
+     * will be generated using [[\yii\base\Security::generateRandomKey()]] to generate a random key. The randomly
+     * generated salt will be stored in a session variable identified by [[SALT_SESS_KEY]].
+     */
+    public $treeEncryptSalt;
+
+    /**
      * @inherit doc
      */
     public function init()
     {
         $this->_msgCat = 'kvtree';
         parent::init();
+        if (!isset($this->treeEncryptSalt)) {
+            $session = Yii::$app->session;
+            if (!$session->get(self::SALT_SESS_KEY)) {
+                $session->set(self::SALT_SESS_KEY, Yii::$app->security->generateRandomKey());
+            }
+            $this->treeEncryptSalt = $session->get(self::SALT_SESS_KEY);
+        }
         $this->treeStructure += [
             'treeAttribute' => 'root',
             'leftAttribute' => 'lft',

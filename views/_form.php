@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
  * @version   1.0.6
  */
@@ -11,6 +11,7 @@ use kartik\tree\TreeView;
 use kartik\tree\models\Tree;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\web\View;
 
 /**
@@ -26,9 +27,14 @@ use yii\web\View;
  * @var array      $breadcrumbs
  * @var array      $nodeAddlViews
  * @var mixed      $currUrl
- * @var bool       $showIDAttribute
- * @var bool       $showFormButtons
+ * @var boolean    $showIDAttribute
+ * @var boolean    $showFormButtons
+ * @var boolean    $allowNewRoots
  * @var string     $nodeSelected
+ * @var array      $params
+ * @var string     $keyField
+ * @var string     $nodeView
+ * @var boolean    $softDelete
  */
 ?>
 
@@ -38,11 +44,11 @@ use yii\web\View;
  */
 ?>
 <?php
+/**  */
 extract($params);
 $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
 $inputOpts = [];                                      // readonly/disabled input options for node
 $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
-
 
 // parse parent key
 if (empty($parentKey)) {
@@ -126,6 +132,38 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
+
+<?php
+/**
+ * Hash signatures to prevent data tampering
+ * @var string $modelClass
+ */
+$security = Yii::$app->security;
+$id = $node->isNewRecord ? null : $node->$keyAttribute;
+
+// save signature
+$dataToHash = !!$node->isNewRecord . $parentKey . $currUrl . $modelClass;
+echo Html::hiddenInput('treeSaveHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
+
+// manage signature
+unset($formOptions['id']);
+
+if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
+    $breadcrumbs['depth'] = '';
+}
+$dataToHash = $modelClass . !!$isAdmin . !!$softDelete. !!$showFormButtons . !!$showIDAttribute .
+    $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
+    Json::encode($nodeAddlViews) . Json::encode(array_values($iconsList)) . Json::encode($breadcrumbs);
+echo Html::hiddenInput('treeManageHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
+
+// remove signature
+$dataToHash = $modelClass . $softDelete;
+echo Html::hiddenInput('treeRemoveHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
+
+// move signature
+$dataToHash = $modelClass . $allowNewRoots;
+echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
+?>
 
 <?php
 /**

@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.6
 
-**Date:** 12-Jul-2016
+**Date:** 16-Dec-2016
 
 - (enh #98): Add new bool property `TreeViewInput::autoCloseOnSelect`.
 - (enh #99): Add Chinese translations
@@ -19,6 +19,15 @@ Change Log: `yii2-tree-manager`
 - (bug #127): Fix migration namespace.
 - (bug #128): Correct asset dependency.
 - (enh #129): More correct defaulting of CSS classes.
+- (enh #137): Add Dutch translations.
+- (enh #138): Add Finnish translations.
+- (enh #142): Implement Krajee Dialog for all alerts and confirmation.
+- (enh #143): Enhance security for NodeController actions using a stateless signature to prevent data tampering:
+    - New property `Module::treeEncryptSalt` available to generate a stateless hashed signature.
+    - If `treeEncryptSalt` is not set, it will be randomly generated and stored in a session variable.
+    - Tree configuration settings will be signed and the same data via POST will be cross checked using `yii\base\Security::hashData` and `yii\base\Security::validateData`.
+- Add github contribution and issue/PR logging templates.
+- Update message config to include all default standard translation files.
 
 ## Version 1.0.5
 

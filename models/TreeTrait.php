@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2016
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
  * @version   1.0.6
  */
@@ -335,7 +335,7 @@ trait TreeTrait
          * @var Tree $this
          * @var Tree $child
          */
-        if ($softDelete == true) {
+        if ($softDelete) {
             $this->nodeRemovalErrors = [];
             $module = TreeView::module();
             extract($module->treeStructure);
