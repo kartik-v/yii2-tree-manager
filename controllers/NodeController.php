@@ -25,6 +25,11 @@ use yii\base\Event;
 use kartik\tree\TreeView;
 use kartik\tree\models\Tree;
 
+/**
+ * The `NodeController` class manages all the manipulation actions for each tree node. It includes security
+ * validations to ensure the actions are accessible only via `ajax` or `post` requests. In addition, it includes
+ * stateless signature token validation to cross check data is not tampered before the request is sent via POST.
+ */
 class NodeController extends Controller
 {
     /**
