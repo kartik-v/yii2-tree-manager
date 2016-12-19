@@ -121,7 +121,7 @@ class Module extends \kartik\base\Module
     {
         $this->_msgCat = 'kvtree';
         parent::init();
-        if (!isset($this->treeEncryptSalt)) {
+        if (Yii::$app->has('session') && !isset($this->treeEncryptSalt)) {
             $session = Yii::$app->session;
             if (!$session->get(self::SALT_SESS_KEY)) {
                 $session->set(self::SALT_SESS_KEY, Yii::$app->security->generateRandomKey());

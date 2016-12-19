@@ -594,6 +594,10 @@ HTML;
      */
     protected function initSelectedNode()
     {
+        if(!Yii::$app->has('session'))
+        {
+            return;
+        }
         $session = Yii::$app->session;
         $id = $this->_nodeSelected ? $this->_nodeSelected : 'kvNodeId';
         $nodeSelected = $session->get($id, '');
