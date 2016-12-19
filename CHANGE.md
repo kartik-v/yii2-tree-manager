@@ -1,6 +1,12 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.0.7 (_under development_)
+
+**Date:** 19-Dec-2016
+
+- (enh #144): Add dependency for `kartik-v/yii2-dialog` in composer.
+
 ## Version 1.0.6
 
 **Date:** 16-Dec-2016
