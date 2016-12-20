@@ -26,7 +26,7 @@
     "require": {
         "kartik-v/yii2-widget-activeform": "~1.4",
         "creocoder/yii2-nested-sets": "~0.9",
-        "kartik-v/yii2-dialog": ">=1.0"
+        "kartik-v/yii2-dialog": "~1.0"
     },
     "autoload": {
         "psr-4": {
