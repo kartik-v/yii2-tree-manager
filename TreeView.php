@@ -200,10 +200,15 @@ class TreeView extends Widget
     public $showCheckbox = false;
 
     /**
-     * @var boolean whether to allow multiple selection of checkboxes. Defaults to `true`. If set to `false` will not show
-     * a checkbox and allow only single selection of tree nodes.
+     * @var boolean whether to allow selection of multiple nodes via checkboxes.
      */
     public $multiple = true;
+
+    /**
+     * @var boolean whether to auto select all children when a parent node is selected. This property will be applied
+     * only if [[multiple]] property is set to `true`.
+     */
+    public $cascadeSelectChildren = true;
 
     /**
      * @var integer animation duration (ms) for fading in and out alerts that are displayed during manipulation of nodes.
@@ -737,12 +742,12 @@ HTML;
         Html::addCssClass($this->headingOptions, 'kv-heading-container');
         Html::addCssClass($this->toolbarOptions, 'kv-toolbar-container');
         Html::addCssClass($this->footerOptions, 'kv-footer-container');
-        $css = 'kv-tree-container';
+        $css = ['kv-tree-container'];
         if ($this->showCheckbox) {
-            $css .= ' kv-has-checkbox';
+            $css[] = 'kv-has-checkbox';
         }
         if (!$this->multiple) {
-            $css .= ' kv-single-select';
+            $css[] = 'kv-single-select';
         }
         Html::addCssClass($this->treeOptions, $css);
         Html::addCssClass($this->rootOptions, 'kv-tree-root');
@@ -1374,6 +1379,7 @@ HTML;
             'nodeSelected' => $this->_nodeSelected,
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
+            'cascadeSelectChildren' => $this->cascadeSelectChildren,
             'allowNewRoots' => $this->allowNewRoots
         ];
         $this->registerPlugin('treeview');

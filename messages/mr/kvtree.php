@@ -18,7 +18,7 @@
  */
 return [
     '(new)' => '',
-    '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.' => '',
+    '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
     'Active' => '',
     'Add new' => '',
     'Add new root' => '',

@@ -642,10 +642,8 @@
             }
         },
         check: function ($chk) {
-            var self = this, isRoot = ($chk === true),
-                $node = isRoot ? self.$tree : $chk.closest('li'),
-                nodeKey = isRoot ? '' : $node.data('key'),
-                isMultiple = self.multiple && self.multiple != 0; // jshint ignore:line
+            var self = this, isRoot = ($chk === true), desc, $node = isRoot ? self.$tree : $chk.closest('li'),
+                nodeKey = isRoot ? '' : $node.data('key'), isMultiple = self.multiple && self.multiple != 0; // jshint ignore:line
             if ($node.hasClass('kv-disabled') || (isRoot && !isMultiple)) {
                 return;
             }
@@ -657,18 +655,22 @@
                     self.raise('treeview.change', ['', '']);
                     self.raise('change');
                 } else {
-                    $node.find('li:not(.kv-disabled)').removeClass('kv-selected');
+                    if (self.cascadeSelectChildren) {
+                        $node.find('li:not(.kv-disabled)').removeClass('kv-selected');
+                    }
                 }
                 self.raise('treeview.unchecked', [nodeKey]);
             } else {
                 if (!isMultiple) {
                     self.$tree.find('li:not(.kv-disabled)').removeClass('kv-selected');
                     self.$element.val(nodeKey);
-                    var desc = $node.find('>.kv-tree-list .kv-node-label').text();
+                    desc = $node.find('>.kv-tree-list .kv-node-label').text();
                     self.raise('treeview.change', [nodeKey, desc]);
                     self.raise('change');
                 } else {
-                    addCss($node.find('li:not(.kv-disabled)'), 'kv-selected');
+                    if (self.cascadeSelectChildren) {
+                        addCss($node.find('li:not(.kv-disabled)'), 'kv-selected');
+                    }
                 }
                 addCss($node, 'kv-selected');
                 self.raise('treeview.checked', [nodeKey]);
@@ -899,7 +901,8 @@
             nodeLeft: '',
             nodeRight: ''
         },
-        breadcrumbs: {}
+        breadcrumbs: {},
+        cascadeSelectChildren: true
     };
     $.fn.treeview.Constructor = TreeView;
 })(window.jQuery);

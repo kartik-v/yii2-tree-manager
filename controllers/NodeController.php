@@ -100,11 +100,11 @@ class NodeController extends Controller
             if ($security->validateData($oldHash, $salt) && $oldHash === $newHash) {
                 return;
             }
-            //$messageParams = '<pre>OLD HASH:<br>' . $oldHash . '<br>NEW HASH:<br>' . $newHash . '</pre>';
+            $params = YII_DEBUG ? '<pre>OLD HASH:<br>' . $oldHash . '<br>NEW HASH:<br>' . $newHash . '</pre>' : '';
             $message = Yii::t(
                 'kvtree',
-                '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.',
-                ['action' => $act]
+                '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}',
+                ['action' => $act, 'params' => $params]
             );
             throw new InvalidCallException($message);
         };
