@@ -151,9 +151,10 @@ unset($formOptions['id']);
 if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
     $breadcrumbs['depth'] = '';
 }
+$icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete. !!$showFormButtons . !!$showIDAttribute .
     $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
-    Json::encode($nodeAddlViews) . Json::encode(array_values($iconsList)) . Json::encode($breadcrumbs);
+    Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
 echo Html::hiddenInput('treeManageHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 
 // remove signature

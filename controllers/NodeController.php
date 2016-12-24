@@ -121,12 +121,10 @@ class NodeController extends Controller
                 $currUrl = $nodeView = $formAction = $nodeSelected = '';
                 $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
                 extract($data);
-                if (!is_array($iconsList)) {
-                    $iconsList = [$iconsList];
-                }
+                $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
                 $dataToHash = $parentKey . $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
                     !!$showIDAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
-                    Json::encode($nodeAddlViews) . Json::encode(array_values($iconsList)) . Json::encode($breadcrumbs);
+                    Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
                 $validate($action, $treeManageHash, $dataToHash);
                 break;
             case 'remove':
