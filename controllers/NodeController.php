@@ -110,19 +110,20 @@ class NodeController extends Controller
         };
         switch ($action) {
             case 'save':
-                $treeNodeModify = $parentKey = $currUrl = $treeSaveHash = null;
+                $treeNodeModify = $currUrl = $treeSaveHash = null;
                 extract($data);
-                $dataToHash = !!$treeNodeModify . $parentKey . $currUrl . $modelClass;
+                
+                $dataToHash = !!$treeNodeModify . $currUrl . $modelClass;
                 $validate($action, $treeSaveHash, $dataToHash);
                 break;
             case 'manage':
-                $parentKey = $treeManageHash = null;
+                $treeManageHash = null;
                 $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
                 $currUrl = $nodeView = $formAction = $nodeSelected = '';
                 $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
                 extract($data);
                 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
-                $dataToHash = $parentKey . $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
+                $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
                     !!$showIDAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
                     Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
                 $validate($action, $treeManageHash, $dataToHash);
@@ -180,7 +181,7 @@ class NodeController extends Controller
         $isNewRecord = $node->isNewRecord;
         $node->load($post);
         if ($treeNodeModify) {
-            if ($parentKey == 'root') {
+            if ($parentKey == TreeView::ROOT_KEY) {
                 $node->makeRoot();
             } else {
                 $parent = $modelClass::findOne($parentKey);

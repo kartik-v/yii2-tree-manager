@@ -596,21 +596,21 @@
             self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
             if ($root.length > 0) {
                 addCss($root.find('.kv-node-detail'), 'kv-focussed');
-                self.renderForm(null, 'root');
+                self.renderForm(null, self.rootKey);
                 return;
             }
             var content = self.getNewNode(),
                 $node = $(document.createElement("li")).attr({'data-key': 'empty-root', 'class': 'kv-empty'});
             $node.html(content);
             $treeRoot.append($node);
-            self.renderForm(null, 'root');
+            self.renderForm(null, self.rootKey);
             var $nodeDetail = $node.find('.kv-node-detail');
             addCss($nodeDetail, 'kv-focussed');
             self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             $nodeDetail.on('click', function () {
                 self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
                 addCss($nodeDetail, 'kv-focussed');
-                self.renderForm(null, 'root');
+                self.renderForm(null, self.rootKey);
                 self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
             self.raise('treeview.createroot');
@@ -883,11 +883,7 @@
         alertFadeDuration: 1000,
         cacheTimeout: 300000,
         showInactive: false,
-        actions: {
-            manage: '',
-            move: '',
-            delete: ''
-        },
+        actions: {'manage': '', 'move': '', 'delete': ''},
         messages: {
             emptyNode: '',
             nodeDisabled: '',
@@ -902,7 +898,8 @@
             nodeRight: ''
         },
         breadcrumbs: {},
-        cascadeSelectChildren: true
+        cascadeSelectChildren: true,
+        rootKey: ''
     };
     $.fn.treeview.Constructor = TreeView;
 })(window.jQuery);

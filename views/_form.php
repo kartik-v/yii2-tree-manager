@@ -80,7 +80,7 @@ $glue = ArrayHelper::getValue($breadcrumbs, 'glue');
 $activeCss = ArrayHelper::getValue($breadcrumbs, 'activeCss');
 $untitled = ArrayHelper::getValue($breadcrumbs, 'untitled');
 $name = $node->getBreadcrumbs($depth, $glue, $activeCss, $untitled);
-if ($node->isNewRecord && !empty($parentKey) && $parentKey !== 'root') {
+if ($node->isNewRecord && !empty($parentKey) && $parentKey !== TreeView::ROOT_KEY) {
     /**
      * @var Tree $modelClass
      * @var Tree $parent
@@ -142,7 +142,7 @@ $security = Yii::$app->security;
 $id = $node->isNewRecord ? null : $node->$keyAttribute;
 
 // save signature
-$dataToHash = !!$node->isNewRecord . $parentKey . $currUrl . $modelClass;
+$dataToHash = !!$node->isNewRecord . $currUrl . $modelClass;
 echo Html::hiddenInput('treeSaveHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 
 // manage signature

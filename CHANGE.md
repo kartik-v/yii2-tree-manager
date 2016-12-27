@@ -9,6 +9,7 @@ Change Log: `yii2-tree-manager`
 - (enh #144): Add dependency for `kartik-v/yii2-dialog` in composer.
 - (enh #145, #146): Enable model using TreeView behavior to run within yii console app.
 - (bug #148): Parse icons list array correctly in `NodeController::checkSignature`.
+- (enh #151): Root node creation enhancements.
 
 ## Version 1.0.6
 

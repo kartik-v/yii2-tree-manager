@@ -8,12 +8,12 @@
 
 namespace kartik\tree\models;
 
+use creocoder\nestedsets\NestedSetsBehavior;
+use kartik\tree\TreeView;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
-use kartik\tree\TreeView;
-use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
  * Trait that must be used by the Tree model
@@ -35,7 +35,7 @@ trait TreeTrait
         'movable_r',
         'movable_l',
         'removable',
-        'removable_all'
+        'removable_all',
     ];
 
     /**
@@ -46,7 +46,7 @@ trait TreeTrait
         'disabled',
         'readonly',
         'collapsed',
-        'removable_all'
+        'removable_all',
     ];
 
     /**
@@ -112,7 +112,7 @@ trait TreeTrait
         $attribs = array_merge([$nameAttribute, $iconAttribute, $iconTypeAttribute], static::$boolAttribs);
         $rules = [
             [[$nameAttribute], 'required'],
-            [$attribs, 'safe']
+            [$attribs, 'safe'],
         ];
         if ($this->encodeNodeNames) {
             $rules[] = [
@@ -120,7 +120,7 @@ trait TreeTrait
                 'filter',
                 'filter' => function ($value) {
                     return Html::encode($value);
-                }
+                },
             ];
         }
         if ($this->purifyNodeIcons) {
@@ -129,7 +129,7 @@ trait TreeTrait
                 'filter',
                 'filter' => function ($value) {
                     return HtmlPurifier::process($value);
-                }
+                },
             ];
         }
         return $rules;
@@ -151,32 +151,6 @@ trait TreeTrait
             $val = in_array($attr, static::$falseAttribs) ? false : true;
             $this->setDefault($attr, $val);
         }
-    }
-
-    /**
-     * Sets default value of a model attribute
-     *
-     * @param string $attr the attribute name
-     * @param mixed  $val the default value
-     */
-    protected function setDefault($attr, $val)
-    {
-        if (empty($this->$attr)) {
-            $this->$attr = $val;
-        }
-    }
-
-    /**
-     * Parses an attribute value if set - else returns the default
-     *
-     * @param string $attr the attribute name
-     * @param mixed  $default the attribute default value
-     *
-     * @return mixed
-     */
-    protected function parse($attr, $default = true)
-    {
-        return isset($this->$attr) ? $this->$attr : $default;
     }
 
     /**
@@ -300,7 +274,7 @@ trait TreeTrait
                     $this->nodeActivationErrors[] = [
                         'id' => $child->$idAttribute,
                         'name' => $child->$nameAttribute,
-                        'error' => $child->getFirstErrors()
+                        'error' => $child->getFirstErrors(),
                     ];
                 }
             }
@@ -313,7 +287,7 @@ trait TreeTrait
                 $this->nodeActivationErrors[] = [
                     'id' => $this->$idAttribute,
                     'name' => $this->$nameAttribute,
-                    'error' => $this->getFirstErrors()
+                    'error' => $this->getFirstErrors(),
                 ];
                 return false;
             }
@@ -349,7 +323,7 @@ trait TreeTrait
                         $this->nodeRemovalErrors[] = [
                             'id' => $child->$idAttribute,
                             'name' => $child->$nameAttribute,
-                            'error' => $child->getFirstErrors()
+                            'error' => $child->getFirstErrors(),
                         ];
                     }
                 }
@@ -362,7 +336,7 @@ trait TreeTrait
                     $this->nodeRemovalErrors[] = [
                         'id' => $this->$idAttribute,
                         'name' => $this->$nameAttribute,
-                        'error' => $this->getFirstErrors()
+                        'error' => $this->getFirstErrors(),
                     ];
                     return false;
                 }
@@ -402,7 +376,7 @@ trait TreeTrait
             'movable_l' => Yii::t('kvtree', 'Movable Left'),
             'movable_r' => Yii::t('kvtree', 'Movable Right'),
             'removable' => Yii::t('kvtree', 'Removable'),
-            'removable_all' => Yii::t('kvtree', 'Removable (with children)')
+            'removable_all' => Yii::t('kvtree', 'Removable (with children)'),
         ];
         if (!$treeAttribute) {
             $labels[$treeAttribute] = Yii::t('kvtree', 'Root');
@@ -411,26 +385,22 @@ trait TreeTrait
     }
 
     /**
-     * Generate and return the breadcrumbs for the node
+     * Generate and return the breadcrumbs for the node.
      *
-     * @param int $depth the breadcrumbs parent depth
+     * @param integer $depth the breadcrumbs parent depth
      * @param string $glue the pattern to separate the breadcrumbs
-     * @param string $currNodeCss the CSS class to be set for current node
-     * @param string $untitled the name to be displayed for a new node
+     * @param string $currCss the CSS class to be set for current node
+     * @param string $new the name to be displayed for a new node
      *
      * @return string the parsed breadcrumbs
      */
-    public function getBreadcrumbs(
-        $depth = 1,
-        $glue = ' &raquo; ',
-        $currNodeCss = 'kv-crumb-active',
-        $untitled = 'Untitled'
-    ) {
+    public function getBreadcrumbs($depth = 1, $glue = ' &raquo; ', $currCss = 'kv-crumb-active', $new = 'Untitled')
+    {
         /**
          * @var Tree $this
          */
         if ($this->isNewRecord || empty($this)) {
-            return $currNodeCss ? Html::tag('span', $untitled, ['class' => $currNodeCss]) : $untitled;
+            return $currCss ? Html::tag('span', $new, ['class' => $currCss]) : $new;
         }
         $depth = empty($depth) ? null : intval($depth);
         $module = TreeView::module();
@@ -442,12 +412,38 @@ trait TreeTrait
         $crumbs = [];
         foreach ($crumbNodes as $node) {
             $name = $node->$nameAttribute;
-            if ($i === $len && $currNodeCss) {
-                $name = Html::tag('span', $name, ['class' => $currNodeCss]);
+            if ($i === $len && $currCss) {
+                $name = Html::tag('span', $name, ['class' => $currCss]);
             }
             $crumbs[] = $name;
             $i++;
         }
         return implode($glue, $crumbs);
+    }
+
+    /**
+     * Sets default value of a model attribute
+     *
+     * @param string $attr the attribute name
+     * @param mixed $val the default value
+     */
+    protected function setDefault($attr, $val)
+    {
+        if (empty($this->$attr)) {
+            $this->$attr = $val;
+        }
+    }
+
+    /**
+     * Parses an attribute value if set - else returns the default
+     *
+     * @param string $attr the attribute name
+     * @param mixed $default the attribute default value
+     *
+     * @return mixed
+     */
+    protected function parse($attr, $default = true)
+    {
+        return isset($this->$attr) ? $this->$attr : $default;
     }
 }

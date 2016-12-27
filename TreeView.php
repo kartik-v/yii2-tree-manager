@@ -31,6 +31,10 @@ use yii\helpers\Html;
 class TreeView extends Widget
 {
     /**
+     * Value for root node key
+     */
+    const ROOT_KEY = 'KRAJEE~!~ROOT~!~NODE';
+    /**
      * Create root tree node button
      */
     const BTN_CREATE_ROOT = 'create-root';
@@ -218,8 +222,8 @@ class TreeView extends Widget
     /**
      * @var array cache settings for displaying the detail form content for each tree node via ajax. The following
      * options are supported:
-     * - `enableCache`: bool, defaults to `true`.
-     * - `cacheTimeout`: int, the cache timeout in milliseconds. Defaults to `300000` (or `5 minutes`).
+     * - `enableCache`: _boolean_, defaults to `true`.
+     * - `cacheTimeout`: _integer_, the cache timeout in milliseconds. Defaults to `300000` (or `5 minutes`).
      */
     public $cacheSettings = [];
 
@@ -1382,6 +1386,7 @@ HTML;
             'cascadeSelectChildren' => $this->cascadeSelectChildren,
             'allowNewRoots' => $this->allowNewRoots
         ];
+        $this->pluginOptions['rootKey'] = self::ROOT_KEY;
         $this->registerPlugin('treeview');
     }
 }
