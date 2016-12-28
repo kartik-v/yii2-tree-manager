@@ -8,22 +8,22 @@
 
 namespace kartik\tree\controllers;
 
-use Yii;
 use Closure;
 use Exception;
-use yii\db\Exception as DbException;
+use kartik\tree\models\Tree;
+use kartik\tree\TreeView;
+use Yii;
+use yii\base\Event;
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Exception as DbException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\base\InvalidCallException;
 use yii\web\View;
-use yii\base\Event;
-use kartik\tree\TreeView;
-use kartik\tree\models\Tree;
 
 /**
  * The `NodeController` class manages all the manipulation actions for each tree node. It includes security
@@ -42,8 +42,51 @@ class NodeController extends Controller
         'showIDAttribute',
         'multiple',
         'treeNodeModify',
-        'allowNewRoots'
+        'allowNewRoots',
     ];
+
+    /**
+     * Processes a code block and catches exceptions
+     *
+     * @param Closure $callback the function to execute (this returns a valid `$success`)
+     * @param string $msgError the default error message to return
+     * @param string $msgSuccess the default success error message to return
+     *
+     * @return array outcome of the code consisting of following keys:
+     * - 'out': string, the output content
+     * - 'status': string, success or error
+     */
+    public static function process($callback, $msgError, $msgSuccess)
+    {
+        $error = $msgError;
+        try {
+            $success = call_user_func($callback);
+        } catch (DbException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (NotSupportedException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (InvalidParamException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (InvalidConfigException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (InvalidCallException $e) {
+            $success = false;
+            $error = $e->getMessage();
+        } catch (Exception $e) {
+            $success = false;
+            $error = $e->getMessage();
+        }
+        if ($success !== false) {
+            $out = $msgSuccess === null ? $success : $msgSuccess;
+            return ['out' => $out, 'status' => 'success'];
+        } else {
+            return ['out' => $error, 'status' => 'error'];
+        }
+    }
 
     /**
      * Gets the data from $_POST after parsing boolean values
@@ -85,12 +128,15 @@ class NodeController extends Controller
      * Checks signature of posted data for ensuring security against data tampering.
      *
      * @param string $action the controller action for which post data signature will be verified
-     * @param array  $data   the posted data
+     * @param array $data the posted data
      *
      * @throws InvalidCallException
      */
     protected static function checkSignature($action, $data = [])
     {
+        if (Yii::$app instanceof 'yii\console\Application') {
+            return; // skip hash signature validation for console apps
+        }
         $module = TreeView::module();
         $security = Yii::$app->security;
         $modelClass = '\kartik\tree\models\Tree';
@@ -112,7 +158,6 @@ class NodeController extends Controller
             case 'save':
                 $treeNodeModify = $currUrl = $treeSaveHash = null;
                 extract($data);
-                
                 $dataToHash = !!$treeNodeModify . $currUrl . $modelClass;
                 $validate($action, $treeSaveHash, $dataToHash);
                 break;
@@ -270,11 +315,13 @@ class NodeController extends Controller
                     'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
                 ];
             if (!empty($module->unsetAjaxBundles)) {
-                Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
+                Event::on(
+                    View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
                     foreach ($module->unsetAjaxBundles as $bundle) {
                         unset($e->sender->assetBundles[$bundle]);
                     }
-                });
+                }
+                );
             }
             static::checkSignature('manage', $data);
             return $this->renderAjax($nodeView, ['params' => $params]);
@@ -360,48 +407,5 @@ class NodeController extends Controller
             return true;
         };
         return self::process($callback, $errorMsg, Yii::t('kvtree', 'The node was moved successfully.'));
-    }
-
-    /**
-     * Processes a code block and catches exceptions
-     *
-     * @param Closure $callback   the function to execute (this returns a valid `$success`)
-     * @param string  $msgError   the default error message to return
-     * @param string  $msgSuccess the default success error message to return
-     *
-     * @return array outcome of the code consisting of following keys:
-     * - 'out': string, the output content
-     * - 'status': string, success or error
-     */
-    public static function process($callback, $msgError, $msgSuccess)
-    {
-        $error = $msgError;
-        try {
-            $success = call_user_func($callback);
-        } catch (DbException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (NotSupportedException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (InvalidParamException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (InvalidConfigException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (InvalidCallException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (Exception $e) {
-            $success = false;
-            $error = $e->getMessage();
-        }
-        if ($success !== false) {
-            $out = $msgSuccess === null ? $success : $msgSuccess;
-            return ['out' => $out, 'status' => 'success'];
-        } else {
-            return ['out' => $error, 'status' => 'error'];
-        }
     }
 }

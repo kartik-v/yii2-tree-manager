@@ -3,12 +3,13 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.7 (_under development_)
 
-**Date:** 24-Dec-2016
+**Date:** 28-Dec-2016
 
 - (bug #139): New boolean property `cascadeSelectChildren` to control child nodes selection when parent node is selected.
 - (enh #144): Add dependency for `kartik-v/yii2-dialog` in composer.
 - (enh #145, #146): Enable model using TreeView behavior to run within yii console app.
 - (bug #148): Parse icons list array correctly in `NodeController::checkSignature`.
+- (enh #150): Modify `NodeController` actions security for console apps.
 - (enh #151): Root node creation enhancements.
 
 ## Version 1.0.6
