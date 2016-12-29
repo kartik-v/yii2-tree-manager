@@ -134,7 +134,7 @@ class NodeController extends Controller
      */
     protected static function checkSignature($action, $data = [])
     {
-        if (Yii::$app instanceof 'yii\console\Application') {
+        if (Yii::$app instanceof \yii\console\Application) {
             return; // skip hash signature validation for console apps
         }
         $module = TreeView::module();
