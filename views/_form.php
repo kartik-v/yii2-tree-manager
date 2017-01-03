@@ -12,6 +12,7 @@ use kartik\tree\models\Tree;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\base\Model;
 use yii\web\View;
 
 /**
@@ -46,6 +47,7 @@ use yii\web\View;
 <?php
 /**  */
 extract($params);
+$session = Yii::$app->has('session') ? Yii::$app->session : null;
 $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
 $inputOpts = [];                                      // readonly/disabled input options for node
 $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
@@ -63,6 +65,7 @@ $form = ActiveForm::begin([   // the active form instance
     'action' => $action,
     'options' => $formOptions
 ]);
+
 // the primary key input field
 if ($showIDAttribute) {
     $options = ['readonly' => true];
@@ -193,13 +196,12 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
 ?>
 <div class="kv-treeview-alerts">
     <?php
-    $session = Yii::$app->session;
-    if ($session->hasFlash('success')) {
+    if ($session && $session->hasFlash('success')) {
         echo $showAlert('success', $session->getFlash('success'), false);
     } else {
         echo $showAlert('success');
     }
-    if ($session->hasFlash('error')) {
+    if ($session && $session->hasFlash('error')) {
         echo $showAlert('danger', $session->getFlash('error'), false);
     } else {
         echo $showAlert('danger');

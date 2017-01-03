@@ -13,6 +13,7 @@ use Exception;
 use kartik\tree\models\Tree;
 use kartik\tree\TreeView;
 use Yii;
+use yii\base\ErrorException;
 use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
@@ -108,16 +109,21 @@ class NodeController extends Controller
     /**
      * Checks if request is valid and throws exception if invalid condition is true
      *
+     * @param bool $isJsonResponse whether the action response is of JSON format
      * @param bool $isInvalid whether the request is invalid
      *
      * @throws InvalidCallException
      *
      * @return void
      */
-    protected static function checkValidRequest($isInvalid = null)
+    protected static function checkValidRequest($isJsonResponse = true, $isInvalid = null)
     {
+        $app = Yii::$app;
+        if ($isJsonResponse) {
+            $app->response->format = Response::FORMAT_JSON;
+        }
         if ($isInvalid === null) {
-            $isInvalid = !Yii::$app->request->isAjax || !Yii::$app->request->isPost;
+            $isInvalid = !$app->request->isAjax || !$app->request->isPost;
         }
         if ($isInvalid) {
             throw new InvalidCallException(Yii::t('kvtree', 'This operation is not allowed.'));
@@ -197,14 +203,13 @@ class NodeController extends Controller
     public function actionSave()
     {
         $post = Yii::$app->request->post();
-        static::checkValidRequest(!isset($post['treeNodeModify']));
+        static::checkValidRequest(false, !isset($post['treeNodeModify']));
         $treeNodeModify = $parentKey = $currUrl = $treeSaveHash = null;
         $modelClass = '\kartik\tree\models\Tree';
         $data = static::getPostData();
         extract($data);
         $module = TreeView::module();
         $keyAttr = $module->dataStructure['keyAttribute'];
-        $session = Yii::$app->session;
         /**
          * @var Tree $modelClass
          * @var Tree $node
@@ -258,12 +263,16 @@ class NodeController extends Controller
         } else {
             $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
-
-        $session->set(ArrayHelper::getValue($post, 'nodeSelected', 'kvNodeId'), $node->$keyAttr);
-        if ($success) {
-            $session->setFlash('success', $successMsg);
-        } else {
-            $session->setFlash('error', $errorMsg);
+        if (Yii::$app->has('session')) {
+            $session = Yii::$app->session;
+            $session->set(ArrayHelper::getValue($post, 'nodeSelected', 'kvNodeId'), $node->{$keyAttr});
+            if ($success) {
+                $session->setFlash('success', $successMsg);
+            } else {
+                $session->setFlash('error', $errorMsg);
+            }
+        } elseif (!$success) {
+            throw new ErrorException("Error saving node!\n{$errorMsg}");
         }
         return $this->redirect($currUrl);
     }
@@ -275,7 +284,6 @@ class NodeController extends Controller
      */
     public function actionManage()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $callback = function () {
             $parentKey = null;
@@ -338,7 +346,6 @@ class NodeController extends Controller
      */
     public function actionRemove()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $callback = function () {
             /**
@@ -371,7 +378,6 @@ class NodeController extends Controller
          * @var Tree $nodeFrom
          * @var Tree $nodeTo
          */
-        Yii::$app->response->format = Response::FORMAT_JSON;
         static::checkValidRequest();
         $dir = $idFrom = $idTo = $treeMoveHash = null;
         $modelClass = '\kartik\tree\models\Tree';
