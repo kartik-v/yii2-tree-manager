@@ -321,6 +321,7 @@ class NodeController extends Controller
                     'nodeAddlViews' => $nodeAddlViews,
                     'nodeSelected' => $nodeSelected,
                     'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
+                    'noNodesMessage' => ''
                 ];
             if (!empty($module->unsetAjaxBundles)) {
                 Event::on(

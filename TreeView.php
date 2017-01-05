@@ -1288,9 +1288,10 @@ HTML;
          */
         $modelClass = $this->query->modelClass;
         $node = $this->displayValue ? $modelClass::findOne($this->displayValue) : null;
+        $msg = null;
         if (empty($node)) {
             $msg = Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions);
-            return Html::tag('div', $msg, $this->detailOptions);
+            $node = new $modelClass;
         }
         $iconTypeAttribute = ArrayHelper::getValue($this->_module->dataStructure, 'iconTypeAttribute', 'icon_type');
         if ($this->_iconsList !== false) {
@@ -1311,7 +1312,8 @@ HTML;
                 'nodeView' => $this->nodeView,
                 'nodeAddlViews' => $this->nodeAddlViews,
                 'nodeSelected' => $this->_nodeSelected,
-                'breadcrumbs' => $this->breadcrumbs
+                'breadcrumbs' => $this->breadcrumbs,
+                'noNodesMessage' => $msg
             ];
         $content = $this->render($this->nodeView, ['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);

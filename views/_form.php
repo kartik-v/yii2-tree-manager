@@ -35,6 +35,7 @@ use yii\web\View;
  * @var array      $params
  * @var string     $keyField
  * @var string     $nodeView
+ * @var string     $noNodesMessage
  * @var boolean    $softDelete
  */
 ?>
@@ -67,7 +68,9 @@ $form = ActiveForm::begin([   // the active form instance
 ]);
 
 // the primary key input field
-if ($showIDAttribute) {
+if ($noNodesMessage) {
+    $keyField = '';
+} elseif ($showIDAttribute) {
     $options = ['readonly' => true];
     if ($node->isNewRecord) {
         $options['value'] = Yii::t('kvtree', '(new)');
@@ -168,6 +171,10 @@ echo Html::hiddenInput('treeRemoveHash', $security->hashData($dataToHash, $modul
 $dataToHash = $modelClass . $allowNewRoots;
 echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 ?>
+
+<!-- BEGIN DISPLAY ONLY FOR VALID NODE -->
+<?php if (!$noNodesMessage): ?> 
+<!--------------------------------------->
 
 <?php
 /**
@@ -334,6 +341,11 @@ echo $renderContent(Module::VIEW_PART_1);
     ?>
     <?= $renderContent(Module::VIEW_PART_4) ?>
 <?php endif; ?>
+
+<!------------------------------------->
+<?php endif;?>
+<!-- END DISPLAY ONLY FOR VALID NODE -->
+
 <?php ActiveForm::end() ?>
 
 <?php
@@ -341,4 +353,4 @@ echo $renderContent(Module::VIEW_PART_1);
  * SECTION 12: Additional views part 5 accessible by all users after admin zone.
  */
 ?>
-<?= $renderContent(Module::VIEW_PART_5) ?>
+<?= $noNodesMessage ? $noNodesMessage : $renderContent(Module::VIEW_PART_5) ?>
