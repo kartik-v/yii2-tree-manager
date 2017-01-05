@@ -1,5 +1,5 @@
 Contributing to yii2-tree-manager
-=========================
+=================================
 Looking to contribute something to yii2-tree-manager? **Here's how you can help.**
 
 Please take a moment to review this document in order to make the contribution
@@ -21,7 +21,7 @@ The issue tracker **is not** a place for support requests. Refer the
 [webtips Q & A forum](http://webtips.krajee.com/questions) which are the better places to get help.
 
 Reporting bugs with yii2-tree-manager
------------------------------
+-------------------------------------
 We really appreciate clear bug reports that _consistently_ show an issue
 _within yii2-tree-manager_.
 
@@ -48,7 +48,7 @@ to are:
 All of these questions will help others fix and identify any potential bugs.
 
 Requesting features in yii2-tree-manager
-------------------------------------------
+----------------------------------------
 Before starting work on a major feature for yii2-tree-manager, **read the
 [documentation](http://demos.krajee.com/tree-manager)  first** or you may risk spending a considerable amount of
 time on something which the project developers are not interested in bringing into the project.

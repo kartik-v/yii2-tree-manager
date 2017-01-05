@@ -57,28 +57,27 @@ class Tree extends ActiveRecord
     public static $treeQueryClass;
 
     /**
-     * @var boolean whether to HTML encode the tree node names. Defaults to `true`.
+     * @var boolean whether to HTML encode the tree node names.
      */
     public $encodeNodeNames = true;
 
     /**
      * @var boolean whether to HTML purify the tree node icon content before saving.
-     * Defaults to `true`.
      */
     public $purifyNodeIcons = true;
 
     /**
-     * @var array activation errors for the node
+     * @var array activation errors for the node.
      */
     public $nodeActivationErrors = [];
 
     /**
-     * @var array node removal errors
+     * @var array node removal errors.
      */
     public $nodeRemovalErrors = [];
 
     /**
-     * @var boolean attribute to cache the `active` state before a model update. Defaults to `true`.
+     * @var boolean attribute to cache the `active` state before a model update.
      */
     public $activeOrig = true;
 }

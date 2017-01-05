@@ -19,6 +19,7 @@ use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\console\Application;
 use yii\db\Exception as DbException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -54,8 +55,8 @@ class NodeController extends Controller
      * @param string $msgSuccess the default success error message to return
      *
      * @return array outcome of the code consisting of following keys:
-     * - 'out': string, the output content
-     * - 'status': string, success or error
+     * - `out`: _string_, the output content
+     * - `status`: _string_, success or error
      */
     public static function process($callback, $msgError, $msgSuccess)
     {
@@ -109,12 +110,10 @@ class NodeController extends Controller
     /**
      * Checks if request is valid and throws exception if invalid condition is true
      *
-     * @param bool $isJsonResponse whether the action response is of JSON format
-     * @param bool $isInvalid whether the request is invalid
+     * @param boolean $isJsonResponse whether the action response is of JSON format
+     * @param boolean $isInvalid whether the request is invalid
      *
      * @throws InvalidCallException
-     *
-     * @return void
      */
     protected static function checkValidRequest($isJsonResponse = true, $isInvalid = null)
     {
@@ -140,7 +139,7 @@ class NodeController extends Controller
      */
     protected static function checkSignature($action, $data = [])
     {
-        if (Yii::$app instanceof \yii\console\Application) {
+        if (Yii::$app instanceof Application) {
             return; // skip hash signature validation for console apps
         }
         $module = TreeView::module();

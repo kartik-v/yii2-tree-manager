@@ -156,7 +156,7 @@ trait TreeTrait
     /**
      * Validate if the node is active
      *
-     * @return bool
+     * @return boolean
      */
     public function isActive()
     {
@@ -166,7 +166,7 @@ trait TreeTrait
     /**
      * Validate if the node is selected
      *
-     * @return bool
+     * @return boolean
      */
     public function isSelected()
     {
@@ -176,7 +176,7 @@ trait TreeTrait
     /**
      * Validate if the node is visible
      *
-     * @return bool
+     * @return boolean
      */
     public function isVisible()
     {
@@ -186,7 +186,7 @@ trait TreeTrait
     /**
      * Validate if the node is readonly
      *
-     * @return bool
+     * @return boolean
      */
     public function isReadonly()
     {
@@ -196,7 +196,7 @@ trait TreeTrait
     /**
      * Validate if the node is disabled
      *
-     * @return bool
+     * @return boolean
      */
     public function isDisabled()
     {
@@ -206,7 +206,7 @@ trait TreeTrait
     /**
      * Validate if the node is collapsed
      *
-     * @return bool
+     * @return boolean
      */
     public function isCollapsed()
     {
@@ -218,7 +218,7 @@ trait TreeTrait
      *
      * @param string $dir the direction, one of 'u', 'd', 'l', or 'r'
      *
-     * @return bool
+     * @return boolean
      */
     public function isMovable($dir)
     {
@@ -229,7 +229,7 @@ trait TreeTrait
     /**
      * Validate if the node is removable
      *
-     * @return bool
+     * @return boolean
      */
     public function isRemovable()
     {
@@ -239,7 +239,7 @@ trait TreeTrait
     /**
      * Validate if the node is removable with descendants
      *
-     * @return bool
+     * @return boolean
      */
     public function isRemovableAll()
     {
@@ -249,9 +249,9 @@ trait TreeTrait
     /**
      * Activates a node (for undoing a soft deletion scenario)
      *
-     * @param bool $currNode whether to update the current node value also
+     * @param boolean $currNode whether to update the current node value also
      *
-     * @return bool status of activation
+     * @return boolean status of activation
      */
     public function activateNode($currNode = true)
     {
@@ -298,10 +298,10 @@ trait TreeTrait
     /**
      * Removes a node
      *
-     * @param bool $softDelete whether to soft delete or hard delete
-     * @param bool $currNode whether to update the current node value also
+     * @param boolean $softDelete whether to soft delete or hard delete
+     * @param boolean $currNode   whether to update the current node value also
      *
-     * @return bool status of activation/inactivation
+     * @return boolean status of activation/inactivation
      */
     public function removeNode($softDelete = true, $currNode = true)
     {
@@ -387,10 +387,10 @@ trait TreeTrait
     /**
      * Generate and return the breadcrumbs for the node.
      *
-     * @param integer $depth the breadcrumbs parent depth
-     * @param string $glue the pattern to separate the breadcrumbs
-     * @param string $currCss the CSS class to be set for current node
-     * @param string $new the name to be displayed for a new node
+     * @param integer $depth   the breadcrumbs parent depth
+     * @param string  $glue    the pattern to separate the breadcrumbs
+     * @param string  $currCss the CSS class to be set for current node
+     * @param string  $new     the name to be displayed for a new node
      *
      * @return string the parsed breadcrumbs
      */
@@ -425,7 +425,7 @@ trait TreeTrait
      * Sets default value of a model attribute
      *
      * @param string $attr the attribute name
-     * @param mixed $val the default value
+     * @param mixed  $val  the default value
      */
     protected function setDefault($attr, $val)
     {
@@ -437,8 +437,8 @@ trait TreeTrait
     /**
      * Parses an attribute value if set - else returns the default
      *
-     * @param string $attr the attribute name
-     * @param mixed $default the attribute default value
+     * @param string $attr    the attribute name
+     * @param mixed  $default the attribute default value
      *
      * @return mixed
      */

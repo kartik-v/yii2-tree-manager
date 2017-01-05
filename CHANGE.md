@@ -13,6 +13,7 @@ Change Log: `yii2-tree-manager`
 - (enh #151): Root node creation enhancements.
 - (enh #156): Auto node selection and session validation enhancements.
 - (bug #157): Validate request signatures correctly for invalid initial displayValue.
+- Code formatting updates.
 
 ## Version 1.0.6
 

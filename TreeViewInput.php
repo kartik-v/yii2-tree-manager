@@ -17,8 +17,7 @@ use yii\base\InvalidConfigException;
 use yii\web\View;
 
 /**
- * An input widget that extends kartik\tree\TreeView, and allows one to
- * select records from the tree.
+ * An input widget that extends [[TreeView]], and allows one to select records from the tree.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
@@ -52,8 +51,8 @@ class TreeViewInput extends TreeView
 
     /**
      * @var boolean whether to show the input as a dropdown select. If set to `false`, it will display directly the tree
-     *     view selector widget. Defaults to `true`. The `BootstrapPluginAsset` will automatically be loaded if this is
-     *     set to `true`. Defaults to `true`.
+     * view selector widget. Defaults to `true`. The `BootstrapPluginAsset` will automatically be loaded if this is
+     * set to `true`. Defaults to `true`.
      */
     public $asDropdown = true;
 
@@ -228,7 +227,7 @@ class TreeViewInput extends TreeView
     }
 
     /**
-     * @return bool whether this widget is associated with a data model.
+     * @return boolean whether this widget is associated with a data model.
      */
     protected function hasModel()
     {

@@ -645,9 +645,9 @@ HTML;
      *
      * @param string $class the class name to check
      * @param string $trait the trait class name
-     * @param bool   $autoload whether to autoload the class
+     * @param boolean $autoload whether to autoload the class
      *
-     * @return bool whether the class has used the trait
+     * @return boolean whether the class has used the trait
      */
     protected static function usesTrait($class, $trait, $autoload = false)
     {
@@ -734,6 +734,7 @@ HTML;
         $this->_iconPrefix = $this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-';
         $this->_nodeSelected = $this->options['id'] . '-nodesel';
         $this->initSelectedNode();
+        $this->nodeFormOptions['id'] = $this->options['id'] . '-nodeform';
         $this->options['data-key'] = $this->displayValue;
         if (empty($this->buttonIconOptions['class'])) {
             $this->buttonIconOptions['class'] = $this->fontAwesome ? 'kv-icon-10' : 'kv-icon-05';
@@ -871,7 +872,7 @@ HTML;
     /**
      * Gets the default node icon markup
      *
-     * @param int $type 1 = child, 2 = parent, 3 = parent open
+     * @param integer $type 1 = child, 2 = parent, 3 = parent open
      *
      * @return string
      */
@@ -898,10 +899,10 @@ HTML;
      * Render the default node icon markup
      *
      * @param string $icon the current node's icon
-     * @param int    $iconType the current node's icon type, must be one of:
+     * @param integer $iconType the current node's icon type, must be one of:
      * - `TreeView::ICON_CSS` or `1`: if the icon css class suffix name is stored in $icon.
      * - `TreeView::ICON_RAW` or `2`: if the raw icon markup is stored in $icon.
-     * @param bool   $child whether child or parent
+     * @param boolean $child whether child or parent
      *
      * @return string
      */
@@ -951,7 +952,7 @@ HTML;
     /**
      * Renders the toggle icon container
      *
-     * @param bool $root whether a root node
+     * @param boolean $root whether a root node
      *
      * @return string
      */
@@ -965,7 +966,7 @@ HTML;
     /**
      * Gets the checkbox icon based on fontAwesome setting
      *
-     * @param bool $checked whether 'checked'
+     * @param boolean $checked whether 'checked'
      *
      * @return string
      */
@@ -980,7 +981,7 @@ HTML;
     /**
      * Renders the checkbox icon markup based on fontAwesome setting
      *
-     * @param bool $checked whether 'checked'
+     * @param boolean $checked whether 'checked'
      *
      * @return string
      */
@@ -996,7 +997,7 @@ HTML;
     /**
      * Renders the checkbox icon container
      *
-     * @param bool $root whether its a root node
+     * @param boolean $root whether its a root node
      *
      * @return string
      */
@@ -1159,8 +1160,8 @@ HTML;
      */
     public function renderTree()
     {
-        $struct = $this->_module->treeStructure + $this->_module->dataStructure;
-        extract($struct);
+        $structure = $this->_module->treeStructure + $this->_module->dataStructure;
+        extract($structure);
         $nodeDepth = $currDepth = $counter = 0;
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
         foreach ($this->_nodes as $node) {
@@ -1187,7 +1188,6 @@ HTML;
 
             $isChild = ($nodeRight == $nodeLeft + 1);
             $indicators = '';
-            $css = '';
 
             if (isset($this->nodeLabel)) {
                 $label = $this->nodeLabel;
@@ -1222,27 +1222,27 @@ HTML;
                 'data-removable-all' => static::parseBool($node->isRemovableAll()),
             ];
 
+            $css = [];
             if (!$isChild) {
-                $css = ' kv-parent ';
+                $css[] = 'kv-parent ';
             }
             if (!$node->isVisible() && $this->isAdmin) {
-                $css .= ' kv-invisible';
+                $css[] = 'kv-invisible';
             }
             if ($this->showCheckbox && $node->isSelected()) {
-                $css .= ' kv-selected ';
+                $css[] = 'kv-selected ';
             }
             if ($node->isCollapsed()) {
-                $css .= ' kv-collapsed ';
+                $css[] = 'kv-collapsed ';
             }
             if ($node->isDisabled()) {
-                $css .= ' kv-disabled ';
+                $css[] = 'kv-disabled ';
             }
             if (!$node->isActive()) {
-                $css .= ' kv-inactive ';
+                $css[] = 'kv-inactive ';
             }
             $indicators .= $this->renderToggleIconContainer(false) . "\n";
             $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer(false) . "\n" : '';
-            $css = trim($css);
             if (!empty($css)) {
                 Html::addCssClass($nodeOptions, $css);
             }
@@ -1266,9 +1266,9 @@ HTML;
     /**
      * Parses a boolean variable and returns as integer
      *
-     * @param bool $var the variable to parse
+     * @param boolean $var the variable to parse
      *
-     * @return int
+     * @return integer 
      */
     protected static function parseBool($var)
     {

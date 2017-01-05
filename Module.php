@@ -71,14 +71,12 @@ class Module extends \kartik\base\Module
     public $treeStructure = [];
 
     /**
-     * @var array the configuration of additional data attributes
-     * for the tree
+     * @var array the configuration of additional data attributes for the tree
      */
     public $dataStructure = [];
 
     /**
-     * @var string the name to identify the nested set behavior name in the
-     * Tree model. Defaults to `tree`.
+     * @var string the name to identify the nested set behavior name in the [[\kartik\tree\models\Tree]] model.
      */
     public $treeBehaviorName = 'tree';
 
@@ -97,8 +95,7 @@ class Module extends \kartik\base\Module
     ];
 
     /**
-     * @var array the list of asset bundles that would be unset when rendering
-     * the node detail form via ajax
+     * @var array the list of asset bundles that would be unset when rendering the node detail form via ajax
      */
     public $unsetAjaxBundles = [
         'yii\web\YiiAsset',
@@ -110,23 +107,26 @@ class Module extends \kartik\base\Module
     /**
      * @var string a random salt that will be used to generate a hash signature for tree configuration. If not set, this
      * will be generated using [[\yii\base\Security::generateRandomKey()]] to generate a random key. The randomly
-     * generated salt will be stored in a session variable identified by [[SALT_SESS_KEY]].
+     * generated salt in the second case will be stored in a session variable identified by [[SALT_SESS_KEY]].
      */
     public $treeEncryptSalt;
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function init()
     {
         $this->_msgCat = 'kvtree';
         parent::init();
-        if (Yii::$app->has('session') && !isset($this->treeEncryptSalt)) {
-            $session = Yii::$app->session;
+        $app = Yii::$app;
+        if ($app->has('session') && !isset($this->treeEncryptSalt)) {
+            $session = $app->session;
             if (!$session->get(self::SALT_SESS_KEY)) {
-                $session->set(self::SALT_SESS_KEY, Yii::$app->security->generateRandomKey());
+                $session->set(self::SALT_SESS_KEY, $app->security->generateRandomKey());
             }
             $this->treeEncryptSalt = $session->get(self::SALT_SESS_KEY);
+        } else {
+            $this->treeEncryptSalt = '<$0ME_R@ND0M_$@LT>';
         }
         $this->treeStructure += [
             'treeAttribute' => 'root',
