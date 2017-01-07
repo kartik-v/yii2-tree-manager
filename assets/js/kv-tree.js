@@ -209,11 +209,10 @@
                     addCss($detail, 'kv-loading');
                 },
                 success: function (data, textStatus, jqXHR) {
-                    var isError = data.status === 'error', ev = isError ? 'treeview.selecterror' : 'treeview.selected';
-                    self.raise(ev, [key, data, textStatus, jqXHR]);
                     $detail.removeClass('kv-loading');
-                    if (isError) {
+                    if (data.status === 'error') {
                         $detail.html('<div class="alert alert-danger" style="margin-top:20px">' + data.out + '</div>');
+                        self.raise('treeview.selecterror', [key, data, textStatus, jqXHR]);
                         return;
                     }
                     $detail.html(data.out);
@@ -225,13 +224,14 @@
                     if (msg !== false && !isEmpty(msg.out)) {
                         self.showAlert(msg.out, msg.type);
                     }
+                    self.raise('treeview.selected', [key, data, textStatus, jqXHR]);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     self.raise('treeview.selectajaxerror', [key, jqXHR, textStatus, errorThrown]);
                 },
                 complete: function (jqXHR) {
-                    self.raise('treeview.selectajaxcomplete', [key, jqXHR]);
                     self.validateTooltips();
+                    self.raise('treeview.selectajaxcomplete', [key, jqXHR]);
                 }
             });
         },
