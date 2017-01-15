@@ -1,9 +1,9 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
-## Version 1.0.7 (_under development_)
+## Version 1.0.7
 
-**Date:** 07-Jan-2017
+**Date:** 15-Jan-2017
 
 - (bug #139): New boolean property `cascadeSelectChildren` to control child nodes selection when parent node is selected.
 - (enh #144): Add dependency for `kartik-v/yii2-dialog` in composer.
