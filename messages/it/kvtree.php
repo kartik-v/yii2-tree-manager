@@ -68,7 +68,7 @@ return [
     'Save' => 'Salva',
     'Saved the node details successfully.' => 'Dettagli del nodo salvati con successo.',
     'Search...' => 'Cerca...',
-    'Select a node by clicking on one of the tree items.' => 'Selezionare un nodo cliccando su un elemnto dell\'albero',
+    'Select a node by clicking on one of the tree items.' => 'Selezionare un nodo cliccando su un elemento dell\'albero',
     'Select...' => 'Seleziona...',
     'Selected' => 'Selezionato',
     'The node was moved successfully.' => 'Nodo spostato con successo',
