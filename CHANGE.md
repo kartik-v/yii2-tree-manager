@@ -1,6 +1,13 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.0.8 (_under development_)
+
+**Date:** 02-Feb-2017
+
+- (bug #160): Correct key attribute usage in `TreeTrait::removeNode`.
+- (enh #161): Update Italian Translations.
+
 ## Version 1.0.7
 
 **Date:** 15-Jan-2017

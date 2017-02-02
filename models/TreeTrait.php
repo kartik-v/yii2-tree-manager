@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
- * @version   1.0.7
+ * @version   1.0.8
  */
 
 namespace kartik\tree\models;
@@ -321,7 +321,7 @@ trait TreeTrait
                         /** @noinspection PhpUndefinedFieldInspection */
                         /** @noinspection PhpUndefinedVariableInspection */
                         $this->nodeRemovalErrors[] = [
-                            'id' => $child->$idAttribute,
+                            'id' => $child->$keyAttribute,
                             'name' => $child->$nameAttribute,
                             'error' => $child->getFirstErrors(),
                         ];
@@ -334,7 +334,7 @@ trait TreeTrait
                     /** @noinspection PhpUndefinedFieldInspection */
                     /** @noinspection PhpUndefinedVariableInspection */
                     $this->nodeRemovalErrors[] = [
-                        'id' => $this->$idAttribute,
+                        'id' => $this->$keyAttribute,
                         'name' => $this->$nameAttribute,
                         'error' => $this->getFirstErrors(),
                     ];
