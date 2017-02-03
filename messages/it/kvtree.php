@@ -18,8 +18,8 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Error removing the node. Please try again later.' => '',
-    'The selected node cannot be moved.' => '',
+    'Error removing the node. Please try again later.' => 'Errore durante la rimozione del nodo. Riprovare più tardi.',
+    'The selected node cannot be moved.' => 'Il nodo selezionato non può essere spostato',
     '(new)' => '(nuovo)',
     'Active' => 'Attivo',
     'Add new' => 'Aggiungi nuovo',
@@ -56,7 +56,7 @@ return [
     'Move Right' => 'Sposta a Destra',
     'Move Up' => 'Sposta in Alto',
     'Name' => 'Nome',
-    'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.' => 'Non ci sono nodi disponibili da mostrare. Utilizzare la i bottoni della toolbar per aggiungere nodi all\'albero',
+    'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.' => 'Non ci sono nodi disponibili da mostrare. Utilizzare i bottoni della toolbar per aggiungere nodi all\'albero',
     'Node # {id} - \'{name}\': {error}' => 'Nodo # {id} - \'{name}\': {error}',
     'Read Only' => 'Sola Lettura',
     'Refresh' => 'Aggiorna',
