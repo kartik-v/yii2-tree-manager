@@ -98,6 +98,9 @@
             self.treeMoveHash = $form.find('input[name="treeMoveHash"]').val();
             self.select(self.$element.data('key'), true);
             kvTreeCache.timeout = self.cacheTimeout;
+
+            self.hasActiveFilter = false;
+
             self.selectNodes();
             self.validateTooltips();
         },
@@ -682,7 +685,7 @@
         clear: function () {
             var self = this;
             self.$treeContainer.removeClass('kv-loading-search');
-            self.$tree.find('.kv-node-label').removeClass('kv-highlight');
+            self.$tree.find('.kv-highlight').removeClass('kv-highlight');
         },
         parseCache: function () {
             var self = this;
@@ -710,8 +713,36 @@
                 }
             });
         },
+
+        focusActiveFilter: function () {
+            var self = this;
+
+            if (!self.hasActiveFilter) {
+                self.hasActiveFilter = true;
+            }
+
+            if (self.$search.val().length > 0)
+                addCss(self.$treeContainer, 'kv-active-filter')
+
+        },
+
+        blurActiveFilter: function () {
+            var self = this;
+            var $node = $(this), $root = $node.closest('.kv-tree-container');
+
+            if (self.hasActiveFilter) {
+                self.hasActiveFilter = false;
+            }
+
+            self.$treeContainer.removeClass("kv-active-filter")
+            self.$tree.find('.kv-highlight').removeClass('kv-highlight');
+            $root.find('li.kv-filter-match').removeClass('kv-filter-match')
+        },
+
+
         listen: function () {
             var self = this;
+
             // node toggle actions
             self.$tree.find('.kv-node-toggle').each(function () {
                 $(this).on('click', function () {
@@ -741,20 +772,31 @@
             self.$search.on('keyup', function () {
                 var filter = $(this).val();
                 self.clear();
+
                 if (filter.length === 0) {
+                    self.blurActiveFilter();
                     return;
                 }
+
+                self.focusActiveFilter()
+
                 addCss(self.$treeContainer, 'kv-loading-search');
                 delay(function () {
+
+                    self.$tree.find('li.kv-filter-match').removeClass('kv-filter-match')
+
                     self.toggleAll('collapse', false);
+
                     filter = escapeRegExp(filter);
                     self.$tree.find('.kv-node-label').each(function () {
                         var $label = $(this), text = $label.text();
                         var pos = text.search(new RegExp(filter, "i"));
                         if (pos < 0) {
                             $label.removeClass('kv-highlight');
+
                         } else {
                             addCss($label, 'kv-highlight');
+
                             self.$tree.find('li.kv-parent').each(function () {
                                 var $node = $(this);
                                 if ($node.has($label).length > 0) {
@@ -763,17 +805,33 @@
                             });
                         }
                     });
+
+                    self.$tree.find('.kv-highlight').parentsUntil(self.$tree.selector, 'li').each(function () {
+                        addCss($(this), 'kv-filter-match')
+                    })
+
                     self.$treeContainer.removeClass('kv-loading-search');
                     self.raise('treeview.search');
                 }, 1500);
-            });
+            })
+                .focus(function () {
+                    self.focusActiveFilter()
+                })
+                .blur(function () {
+                    if ($(this).val() == "") {
+                        self.blurActiveFilter()
+                    }
+                });
             // search clear
             self.$clear.on('click', function () {
                 self.$search.val('');
                 self.clear();
+                self.blurActiveFilter()
             });
             // select node
             self.$tree.find('.kv-node-detail').each(function () {
+
+
                 $(this).on('click', function () {
                     var $el = $(this), $node = $el.closest('li'),
                         key = $node.data('key');

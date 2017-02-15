@@ -22,6 +22,9 @@
     border-bottom: 1px solid #ddd;
 }
 
+
+
+
 .kv-tree-root {
     display: inline-block;
     background-color: #fff;
@@ -334,8 +337,19 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
     display: inline;
 }
 
+.kv-active-filter li {
+    display: none;
+}
+
+.kv-active-filter li.kv-filter-match {
+    display: block;
+}
+
 @media (max-width: 768px) {
     .kv-detail-container {
         margin-top: 20px;
     }
 }
+
+
+
