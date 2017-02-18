@@ -449,6 +449,11 @@ class TreeView extends Widget
     public $searchClearOptions = ['class' => 'close'];
 
     /**
+     * @var boolean whether to hide unmatched search items when searching
+     */
+    public $hideUnmatchedSearchItems = true;
+
+    /**
      * @var array the HTML attributes for the tree footer container.
      */
     public $footerOptions = [];
@@ -1386,7 +1391,8 @@ HTML;
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
             'cascadeSelectChildren' => $this->cascadeSelectChildren,
-            'allowNewRoots' => $this->allowNewRoots
+            'allowNewRoots' => $this->allowNewRoots,
+            'hideUnmatchedSearchItems' => $this->hideUnmatchedSearchItems
         ];
         $this->pluginOptions['rootKey'] = self::ROOT_KEY;
         $this->registerPlugin('treeview');

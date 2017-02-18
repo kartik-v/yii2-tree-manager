@@ -13,8 +13,13 @@
 (function ($) {
     /*jshint bitwise: false*/
     "use strict";
-    var QUERY_PARAM = 'kvtree',
-        defaultBtns = {
+
+    var $h, TreeView;
+
+    // internal helper methods and constants
+    $h = {
+        QUERY_PARAM: 'kvtree',
+        DEFAULT_BUTTONS: {
             'create': 'create',
             'createR': 'create-root',
             'trash': 'remove',
@@ -24,66 +29,46 @@
             'moveR': 'move-right',
             'refresh': 'refresh'
         },
-        isEmpty = function (value, trim) {
+        isEmpty: function (value, trim) {
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
-        escapeRegExp = function (str) {
+        escapeRegExp: function (str) {
             return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
-        addCss = function ($el, css) {
+        addCss: function ($el, css) {
             $el.removeClass(css).addClass(css);
         },
-        hashString = function (s) {
+        hashString: function (s) {
             return s.split("").reduce(function (a, b) {
                 a = ((a << 5) - a) + b.charCodeAt(0);
                 return a & a;
             }, 0);
         },
-        delay = (function () {
+        delay: (function () {
             var timer = 0;
             return function (callback, ms) {
                 clearTimeout(timer);
                 timer = setTimeout(callback, ms);
             };
-        })(),
-        kvTreeCache = {
-            timeout: 300000,
-            data: {},
-            remove: function (url) {
-                delete kvTreeCache.data[url];
-            },
-            exist: function (url) {
-                return !!kvTreeCache.data[url] && ((new Date().getTime() - kvTreeCache.data[url]._) < kvTreeCache.timeout);
-            },
-            get: function (url) {
-                return kvTreeCache.data[url].data;
-            },
-            set: function (url, cachedData, callback) {
-                kvTreeCache.remove(url);
-                kvTreeCache.data[url] = {
-                    _: new Date().getTime(),
-                    data: cachedData
-                };
-                if ($.isFunction(callback)) {
-                    callback(cachedData);
-                }
-            }
-        },
-        TreeView = function (element, options) {
-            var self = this;
-            self.$element = $(element);
-            self.init(options);
-            self.listen();
-        };
+        })()
+    };
+    // TreeView constructor
+    TreeView = function (element, options) {
+        var self = this;
+        self.$element = $(element);
+        self.init(options);
+        self.listen();
+    };
     TreeView.prototype = {
         constructor: TreeView,
         init: function (options) {
             var self = this, $form;
+            self.initCache();
             $.each(options, function (key, data) {
                 self[key] = data;
             });
             self.dialogLib = window[self.dialogLib] || '';
-            self.btns = $.extend({}, defaultBtns, self.btns);
+            self.btns = $.extend({}, $h.DEFAULT_BUTTONS, self.btns);
             self.$tree = $('#' + self.treeId);
             self.$treeContainer = self.$tree.parent();
             self.$detail = $('#' + self.detailId);
@@ -97,9 +82,37 @@
             self.treeRemoveHash = $form.find('input[name="treeRemoveHash"]').val();
             self.treeMoveHash = $form.find('input[name="treeMoveHash"]').val();
             self.select(self.$element.data('key'), true);
-            kvTreeCache.timeout = self.cacheTimeout;
+            self.treeCache.timeout = self.cacheTimeout;
+            self.hasActiveFilter = false;
             self.selectNodes();
             self.validateTooltips();
+        },
+        initCache: function () {
+            var self = this;
+            self.treeCache = {
+                timeout: 300000,
+                data: {},
+                remove: function (url) {
+                    delete self.treeCache.data[url];
+                },
+                exist: function (url) {
+                    var c = self.treeCache;
+                    return !!c.data[url] && ((new Date().getTime() - c.data[url]._) < c.timeout);
+                },
+                get: function (url) {
+                    return self.treeCache.data[url].data;
+                },
+                set: function (url, cachedData, callback) {
+                    self.treeCache.remove(url);
+                    self.treeCache.data[url] = {
+                        _: new Date().getTime(),
+                        data: cachedData
+                    };
+                    if ($.isFunction(callback)) {
+                        callback(cachedData);
+                    }
+                }
+            };
         },
         validateTooltips: function () {
             var self = this;
@@ -120,14 +133,14 @@
         },
         selectNodes: function () {
             var self = this, selected = self.$element.val();
-            if (selected.length === 0 || isEmpty(selected)) {
+            if (selected.length === 0 || $h.isEmpty(selected)) {
                 return;
             }
             var $nodes = self.$tree.find('li');
             $nodes.removeClass('kv-selected');
             selected = selected.split(",");
             $(selected).each(function (i, key) {
-                addCss(self.$tree.find('li[data-key="' + key + '"]'), 'kv-selected');
+                $h.addCss(self.$tree.find('li[data-key="' + key + '"]'), 'kv-selected');
             });
         },
         raise: function (event) {
@@ -169,9 +182,9 @@
         },
         renderForm: function (key, par, mesg) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
-                params = hashString(key + self.modelClass + self.isAdmin + parent), $form = $detail.find('form'),
+                params = $h.hashString(key + self.modelClass + self.isAdmin + parent), $form = $detail.find('form'),
                 vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
-            vUrl += encodeURI(sep + QUERY_PARAM + '=' + params);
+            vUrl += encodeURI(sep + $h.QUERY_PARAM + '=' + params);
             self.formViewBegin = true;
             self.parseCache();
             self.removeAlert();
@@ -206,7 +219,7 @@
                         $form.off().yiiActiveForm('destroy').remove();
                     }
                     $detail.html('');
-                    addCss($detail, 'kv-loading');
+                    $h.addCss($detail, 'kv-loading');
                 },
                 success: function (data, textStatus, jqXHR) {
                     $detail.removeClass('kv-loading');
@@ -221,7 +234,7 @@
                         self.removeAlert();
                     });
                     self.removeAlert();
-                    if (msg !== false && !isEmpty(msg.out)) {
+                    if (msg !== false && !$h.isEmpty(msg.out)) {
                         self.showAlert(msg.out, msg.type);
                     }
                     self.raise('treeview.selected', [key, data, textStatus, jqXHR]);
@@ -236,7 +249,7 @@
             });
         },
         select: function (key, init, mesg) {
-            if (isEmpty(key)) {
+            if ($h.isEmpty(key)) {
                 return;
             }
             var self = this, $sel, isInit = init || false, msg = mesg || false,
@@ -245,7 +258,7 @@
                 return;
             }
             self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
-            addCss($currNode, 'kv-focussed');
+            $h.addCss($currNode, 'kv-focussed');
             if (isInit) {
                 self.$tree.find('li.kv-parent').each(function () {
                     var $node = $(this);
@@ -302,33 +315,33 @@
             if ($nodeText.length === 0 && !$node.hasClass('kv-empty') || $node.hasClass('kv-disabled')) {
                 return;
             }
+            clearNode = function (isEmpty) {
+                var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved, $parent = $node.closest('li.kv-parent');
+                $node.remove();
+                $alert = $detail.find('.alert');
+                self.formViewBegin = false;
+                $detail.find('.kv-select-node-msg').remove();
+                if ($alert.length) {
+                    $detail.before($alert).html('').append($alert);
+                }
+                if (!$parent.find('li').length) {
+                    $parent.removeClass('kv-parent');
+                }
+                self.showAlert(m, 'info', function () {
+                    $detail.append(
+                        '<h4 class="alert text-center kv-select-node-msg" style="display:none;">' + msg.selectNode + '</h4>'
+                    );
+                    setTimeout(function () {
+                        if (!self.formViewBegin) {
+                            $detail.find('.kv-select-node-msg').fadeIn(self.alertFadeDuration);
+                        }
+                    }, self.alertFadeDuration);
+                });
+            };
             self.dialogLib.confirm(msg.removeNode, function (result) {
                 if (!result) {
                     return;
                 }
-                clearNode = function (isEmpty) {
-                    var m = isEmpty ? msg.emptyNodeRemoved : msg.nodeRemoved,
-                        $parent = $node.closest('li.kv-parent');
-                    $node.remove();
-                    $alert = $detail.find('.alert');
-                    self.formViewBegin = false;
-                    $detail.find('.kv-select-node-msg').remove();
-                    if ($alert.length) {
-                        $detail.before($alert).html('').append($alert);
-                    }
-                    if (!$parent.find('li').length) {
-                        $parent.removeClass('kv-parent');
-                    }
-                    self.showAlert(m, 'info', function () {
-                        $detail.append(
-                            '<h4 class="alert text-center kv-select-node-msg" style="display:none;">' + msg.selectNode + '</h4>');
-                        setTimeout(function () {
-                            if (!self.formViewBegin) {
-                                $detail.find('.kv-select-node-msg').fadeIn(self.alertFadeDuration);
-                            }
-                        }, self.alertFadeDuration);
-                    });
-                };
                 if ($node.hasClass('kv-empty')) {
                     clearNode(true);
                     return;
@@ -348,7 +361,7 @@
                         self.raise('treeview.beforeremove', [key, jqXHR, settings]);
                         $form.hide();
                         self.removeAlert();
-                        addCss($detail, 'kv-loading');
+                        $h.addCss($detail, 'kv-loading');
                     },
                     success: function (data, textStatus, jqXHR) {
                         if (data.status === 'success') {
@@ -359,11 +372,11 @@
                                     $cbx = $form.find('input[name="' + fld + '[active]"]');
                                 $cbx.val(false);
                                 $cbx.prop('checked', false);
-                                addCss($node, 'kv-inactive');
+                                $h.addCss($node, 'kv-inactive');
                                 if ($node.data('removableAll')) {
-                                    addCss($node.find('li'), 'kv-inactive');
+                                    $h.addCss($node.find('li'), 'kv-inactive');
                                 }
-                                addCss($node, 'kv-inactive');
+                                $h.addCss($node, 'kv-inactive');
                             } else {
                                 clearNode();
                             }
@@ -449,7 +462,7 @@
                         if ($nodeTo.find('li').length > 0) {
                             $nodeTo.children('ul').append($nodeFrom);
                         } else {
-                            addCss($nodeTo, 'kv-parent');
+                            $h.addCss($nodeTo, 'kv-parent');
                             $(document.createElement('ul')).appendTo($nodeTo).append($nodeFrom);
                         }
                     };
@@ -473,7 +486,7 @@
                 url: self.actions.move,
                 beforeSend: function (jqXHR, settings) {
                     self.raise('treeview.beforemove', [dir, keyFrom, keyTo, jqXHR, settings]);
-                    addCss(self.$treeContainer, 'kv-loading-search');
+                    $h.addCss(self.$treeContainer, 'kv-loading-search');
                 },
                 success: function (data, textStatus, jqXHR) {
                     if ($detail.length > 0) {
@@ -482,14 +495,14 @@
                     if (data.status === 'success') {
                         fnMove();
                         if (dir === 'l' || dir === 'r') {
-                            kvTreeCache.timeout = 0;
+                            self.treeCache.timeout = 0;
                             if ($detail.length > 0) {
                                 outMsg = {out: data.out, type: 'success'};
                             } else {
                                 outMsg = false;
                             }
                             self.select(keyFrom, false, outMsg);
-                            kvTreeCache.timeout = self.cacheTimeout;
+                            self.treeCache.timeout = self.cacheTimeout;
                         } else {
                             if ($detail.length > 0) {
                                 self.showAlert(data.out, 'success');
@@ -525,7 +538,7 @@
         setSelected: function () {
             var self = this, keys = '', desc = '';
             self.$tree.find('.kv-selected').each(function () {
-                var $node = $(this), sep = isEmpty(keys) ? '' : ',';
+                var $node = $(this), sep = $h.isEmpty(keys) ? '' : ',';
                 keys += sep + $node.data('key');
                 desc += sep + $node.find('>.kv-tree-list .kv-node-label').text();
             });
@@ -559,7 +572,7 @@
                 key = $newNode.data('key').replace('empty-', '');
                 self.renderForm(null, key);
                 $nodeText.removeClass('kv-focussed');
-                addCss($newNode.find('.kv-node-detail'), 'kv-focussed');
+                $h.addCss($newNode.find('.kv-node-detail'), 'kv-focussed');
                 return;
             }
             $newNode = $(document.createElement("li")).attr({
@@ -573,7 +586,7 @@
                 //noinspection JSValidateTypes
                 $node.children('ul').append($newNode);
             } else {
-                addCss($node, 'kv-parent');
+                $h.addCss($node, 'kv-parent');
                 $n = $(document.createElement("ul")).append($newNode);
                 $node.append($n);
             }
@@ -583,7 +596,7 @@
             $newNode.children('.kv-tree-list').focus();
             $nodeDetail.on('click', function () {
                 self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
-                addCss($nodeDetail, 'kv-focussed');
+                $h.addCss($nodeDetail, 'kv-focussed');
                 key = $newNode.data('key').replace('empty-', '');
                 self.renderForm(null, key);
                 self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
@@ -595,7 +608,7 @@
                 $root = $treeRoot.children('li.kv-empty');
             self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
             if ($root.length > 0) {
-                addCss($root.find('.kv-node-detail'), 'kv-focussed');
+                $h.addCss($root.find('.kv-node-detail'), 'kv-focussed');
                 self.renderForm(null, self.rootKey);
                 return;
             }
@@ -605,11 +618,11 @@
             $treeRoot.append($node);
             self.renderForm(null, self.rootKey);
             var $nodeDetail = $node.find('.kv-node-detail');
-            addCss($nodeDetail, 'kv-focussed');
+            $h.addCss($nodeDetail, 'kv-focussed');
             self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             $nodeDetail.on('click', function () {
                 self.$tree.find('.kv-node-detail').removeClass('kv-focussed');
-                addCss($nodeDetail, 'kv-focussed');
+                $h.addCss($nodeDetail, 'kv-focussed');
                 self.renderForm(null, self.rootKey);
                 self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
@@ -621,7 +634,7 @@
                 $node.removeClass('kv-collapsed');
                 self.raise('treeview.expand', [nodeKey]);
             } else {
-                addCss($node, 'kv-collapsed');
+                $h.addCss($node, 'kv-collapsed');
                 self.raise('treeview.collapse', [nodeKey]);
             }
         },
@@ -635,8 +648,8 @@
                 }
                 return;
             }
-            addCss(self.$tree.find('li.kv-parent'), 'kv-collapsed');
-            addCss(self.$tree, 'kv-collapsed');
+            $h.addCss(self.$tree.find('li.kv-parent'), 'kv-collapsed');
+            $h.addCss(self.$tree, 'kv-collapsed');
             if (trig) {
                 self.raise('treeview.collapseall');
             }
@@ -669,10 +682,10 @@
                     self.raise('change');
                 } else {
                     if (self.cascadeSelectChildren) {
-                        addCss($node.find('li:not(.kv-disabled)'), 'kv-selected');
+                        $h.addCss($node.find('li:not(.kv-disabled)'), 'kv-selected');
                     }
                 }
-                addCss($node, 'kv-selected');
+                $h.addCss($node, 'kv-selected');
                 self.raise('treeview.checked', [nodeKey]);
             }
             if (isMultiple) {
@@ -682,7 +695,8 @@
         clear: function () {
             var self = this;
             self.$treeContainer.removeClass('kv-loading-search');
-            self.$tree.find('.kv-node-label').removeClass('kv-highlight');
+            self.$tree.find('.kv-highlight').removeClass('kv-highlight');
+            self.blurFilter();
         },
         parseCache: function () {
             var self = this;
@@ -694,34 +708,69 @@
                     var beforeSend = originalOptions.beforeSend || $.noop,
                         success = originalOptions.success || $.noop,
                         url = originalOptions.url;
-                    //remove jQuery cache as we have our own kvTreeCache
+                    //remove jQuery cache as we have our own self.treeCache
                     options.cache = false;
                     options.beforeSend = function () {
                         beforeSend();
-                        if (kvTreeCache.exist(url)) {
-                            success(kvTreeCache.get(url));
+                        if (self.treeCache.exist(url)) {
+                            success(self.treeCache.get(url));
                             return false;
                         }
                         return true;
                     };
                     options.success = function (data) {
-                        kvTreeCache.set(url, data, success);
+                        self.treeCache.set(url, data, success);
                     };
                 }
             });
         },
+        focusFilter: function () {
+            var self = this;
+            if (!self.hideUnmatchedSearchItems) {
+                return;
+            }
+            if (!self.hasActiveFilter) {
+                self.hasActiveFilter = true;
+            }
+            if (self.$search.val().length > 0) {
+                $h.addCss(self.$treeContainer, 'kv-active-filter');
+            }
+        },
+        blurFilter: function () {
+            var self = this;
+            self.clearSearchResults();
+            if (!self.hideUnmatchedSearchItems) {
+                return;
+            }
+            if (self.hasActiveFilter) {
+                self.hasActiveFilter = false;
+            }
+            self.$treeContainer.removeClass("kv-active-filter");
+            self.$tree.find('.kv-highlight').removeClass('kv-highlight');
+            self.$treeContainer.find('.kv-tree-container li.kv-filter-match').removeClass('kv-filter-match');
+        },
+        clearSearchResults: function () {
+            var self = this;
+            self.$tree.find('.kv-node-label .kv-search-found').each(function () {
+                var $item = $(this), $tmp = $(document.createElement('span')).appendTo($item);
+                $tmp.unwrap().remove();
+            });
+        },
         listen: function () {
             var self = this;
+
             // node toggle actions
             self.$tree.find('.kv-node-toggle').each(function () {
-                $(this).on('click', function () {
-                    self.toggle($(this));
+                var $node = $(this);
+                $node.on('click', function () {
+                    self.toggle($node);
                 });
             });
             // node checkbox actions
             self.$tree.find('.kv-node-checkbox:not(.kv-disabled)').each(function () {
-                $(this).on('click', function () {
-                    self.check($(this));
+                var $node = $(this);
+                $node.on('click', function () {
+                    self.check($node);
                 });
             });
             // node toggle all actions
@@ -741,20 +790,28 @@
             self.$search.on('keyup', function () {
                 var filter = $(this).val();
                 self.clear();
+                self.clearSearchResults();
                 if (filter.length === 0) {
+                    self.blurFilter();
                     return;
                 }
-                addCss(self.$treeContainer, 'kv-loading-search');
-                delay(function () {
+                $h.addCss(self.$treeContainer, 'kv-loading-search');
+                $h.delay(function () {
+                    self.focusFilter();
+                    self.$tree.find('li.kv-filter-match').removeClass('kv-filter-match');
                     self.toggleAll('collapse', false);
-                    filter = escapeRegExp(filter);
+                    filter = $h.escapeRegExp(filter);
                     self.$tree.find('.kv-node-label').each(function () {
-                        var $label = $(this), text = $label.text();
-                        var pos = text.search(new RegExp(filter, "i"));
+                        var $label = $(this), text = $label.text(), pos = text.search(new RegExp(filter, "i")), s, mark;
                         if (pos < 0) {
                             $label.removeClass('kv-highlight');
                         } else {
-                            addCss($label, 'kv-highlight');
+                            $h.addCss($label, 'kv-highlight');
+                            s = new RegExp(filter, "ig");
+                            mark = text.replace(s, function (term) {
+                                return '<span class="kv-search-found">' + term + '</span>';
+                            });
+                            $label.html(mark);
                             self.$tree.find('li.kv-parent').each(function () {
                                 var $node = $(this);
                                 if ($node.has($label).length > 0) {
@@ -763,9 +820,20 @@
                             });
                         }
                     });
+                    self.$tree.find('.kv-highlight').parentsUntil(self.$tree.selector, 'li').each(function () {
+                        $h.addCss($(this), 'kv-filter-match');
+                    });
                     self.$treeContainer.removeClass('kv-loading-search');
+                    self.$treeContainer.find('.kv-tree-container').removeClass('kv-collapsed');
                     self.raise('treeview.search');
-                }, 1500);
+                }, 250);
+            }).on('focus', function () {
+                self.focusFilter();
+            }).on('blur', function () {
+                var v = $(this).val();
+                if (v === null || v === '') {
+                    self.blurFilter();
+                }
             });
             // search clear
             self.$clear.on('click', function () {
@@ -775,8 +843,7 @@
             // select node
             self.$tree.find('.kv-node-detail').each(function () {
                 $(this).on('click', function () {
-                    var $el = $(this), $node = $el.closest('li'),
-                        key = $node.data('key');
+                    var $el = $(this), $node = $el.closest('li'), key = $node.data('key');
                     if (self.$tree.hasClass('kv-tree-input-widget')) {
                         $el.removeClass('kv-focussed');
                         self.check($node);
@@ -839,7 +906,7 @@
         },
         uncheckAll: function () {
             var self = this;
-            addCss(self.$tree, 'kv-selected');
+            $h.addCss(self.$tree, 'kv-selected');
             self.check(true);
         },
         checkNode: function (key) {
@@ -852,7 +919,7 @@
         uncheckNode: function (key) {
             var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
             if ($node.length) {
-                addCss($node, 'kv-selected');
+                $h.addCss($node, 'kv-selected');
                 self.check($node);
             }
         }
@@ -899,7 +966,8 @@
         },
         breadcrumbs: {},
         cascadeSelectChildren: true,
-        rootKey: ''
+        rootKey: '',
+        hideUnmatchedSearchItems: true
     };
     $.fn.treeview.Constructor = TreeView;
 })(window.jQuery);

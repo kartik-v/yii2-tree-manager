@@ -3,10 +3,16 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.8 (_under development_)
 
-**Date:** 02-Feb-2017
+**Date:** 18-Feb-2017
 
 - (bug #160): Correct key attribute usage in `TreeTrait::removeNode`.
 - (enh #161): Update Italian Translations.
+- (enh #162): Update Italian Translations.
+- (enh #164): Enhance search functionality and search results styling.
+    - Add ability to highlight search terms within shortlisted search results
+    - Ability to override styling of the search terms with CSS.
+    - New boolean property `hideUnmatchedSearchItems` (defaults to true) that will intelligently hide nodes/node groups that do not have any matching nodes.
+    - More faster tree node searching
 
 ## Version 1.0.7
 

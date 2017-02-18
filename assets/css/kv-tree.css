@@ -227,14 +227,14 @@ ul.kv-tree, .kv-tree ul {
     font-size: 1.2em;
 }
 
-.kv-highlight {
-    color: #8a6d3b;
-    background-color: #fcf8e3;
-    padding: 1px;
+.kv-loading {
+    background: #fff url('../img/loading.gif') no-repeat center center;
+    min-height: 150px;
+    cursor: wait;
 }
 
 .kv-loading-search {
-    background: #fff url('../img/loading-search.gif') no-repeat center center;
+    background: #fff url('../img/loading-results.gif') no-repeat center 55px;
 }
 
 .kv-loading-search .kv-tree {
@@ -242,10 +242,12 @@ ul.kv-tree, .kv-tree ul {
     cursor: wait;
 }
 
-.kv-loading {
-    background: #fff url('../img/loading.gif') no-repeat center center;
-    min-height: 150px;
-    cursor: wait;
+.kv-active-filter li {
+    display: none;
+}
+
+.kv-active-filter li.kv-filter-match {
+    display: block;
 }
 
 .kv-search-container {
@@ -260,6 +262,16 @@ ul.kv-tree, .kv-tree ul {
     position: absolute;
     padding: 10px;
     right: 0;
+}
+
+.kv-highlight {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    padding: 0.3em 0;
+}
+
+.kv-node-label .kv-search-found {
+    font-weight: bold;
 }
 
 .kv-search-sm .kv-search-clear {
