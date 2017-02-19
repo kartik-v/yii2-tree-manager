@@ -14,6 +14,10 @@
     background-color: #fff;
 }
 
+.kv-tree-dropdown-container {
+    cursor: pointer;
+}
+
 .kv-tree-input-widget .kv-disabled > .kv-tree-list .kv-node-checkbox, .kv-tree-input-widget .kv-disabled > .kv-tree-list .kv-node-detail {
     cursor: not-allowed;
 }
@@ -33,7 +37,6 @@
 
 .kv-tree-input, .kv-tree-input.form-control {
     height: auto;
-
 }
 
 .kv-tree-input.disabled {
@@ -49,7 +52,6 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    cursor: text;
     white-space: nowrap;
 }
 
@@ -96,7 +98,6 @@
 
 .kv-carets {
     float: right;
-    cursor: pointer;
 }
 
 .kv-tree-input.disabled .kv-carets, .kv-tree-input.disabled .kv-tree-input-values {

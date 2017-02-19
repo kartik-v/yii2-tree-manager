@@ -746,7 +746,7 @@
                 self.hasActiveFilter = false;
             }
             self.$treeContainer.removeClass("kv-active-filter");
-            self.$tree.find('.kv-highlight').removeClass('kv-highlight');
+            self.$treeContainer.find('.kv-highlight').removeClass('kv-highlight');
             self.$treeContainer.find('.kv-tree-container li.kv-filter-match').removeClass('kv-filter-match');
         },
         clearSearchResults: function () {
@@ -758,7 +758,6 @@
         },
         listen: function () {
             var self = this;
-
             // node toggle actions
             self.$tree.find('.kv-node-toggle').each(function () {
                 var $node = $(this);
@@ -791,10 +790,6 @@
                 var filter = $(this).val();
                 self.clear();
                 self.clearSearchResults();
-                if (filter.length === 0) {
-                    self.blurFilter();
-                    return;
-                }
                 $h.addCss(self.$treeContainer, 'kv-loading-search');
                 $h.delay(function () {
                     self.focusFilter();
@@ -826,6 +821,9 @@
                     self.$treeContainer.removeClass('kv-loading-search');
                     self.$treeContainer.find('.kv-tree-container').removeClass('kv-collapsed');
                     self.raise('treeview.search');
+                    if (filter.length === 0) {
+                        self.blurFilter();
+                    }
                 }, 250);
             }).on('focus', function () {
                 self.focusFilter();

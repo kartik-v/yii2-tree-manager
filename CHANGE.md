@@ -13,6 +13,7 @@ Change Log: `yii2-tree-manager`
     - Ability to override styling of the search terms with CSS.
     - New boolean property `hideUnmatchedSearchItems` (defaults to true) that will intelligently hide nodes/node groups that do not have any matching nodes.
     - More faster tree node searching
+- (enh #165): Implement tap behavior for TreeViewInput for touch based devices.
 
 ## Version 1.0.7
 
