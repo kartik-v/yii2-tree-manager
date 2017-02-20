@@ -565,6 +565,7 @@ HTML;
         $this->initTreeView();
         parent::init();
         $this->initOptions();
+        $this->initSelectedNode();        
         $this->registerAssets();
     }
 
