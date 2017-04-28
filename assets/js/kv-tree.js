@@ -153,7 +153,7 @@
         },
         enableToolbar: function () {
             var self = this;
-            self.$toolbar.find('button').removeAttr('disabled');
+            self.$toolbar.find('button:not([global_disabled])').removeAttr('disabled');
         },
         disableToolbar: function () {
             var self = this;
