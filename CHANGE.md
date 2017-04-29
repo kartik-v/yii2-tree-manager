@@ -1,7 +1,7 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
-## Version 1.0.8 (_under development_)
+## Version 1.0.8
 
 **Date:** 29-Apr-2017
 
