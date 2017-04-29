@@ -153,12 +153,12 @@
         },
         enableToolbar: function () {
             var self = this;
-            self.$toolbar.find('button').removeAttr('disabled');
+            self.$toolbar.find('button:not([data-always-disabled])').removeAttr('disabled');
         },
         disableToolbar: function () {
             var self = this;
             self.$toolbar.find('button').attr('disabled', true);
-            self.$toolbar.find('.kv-' + self.btns.createR).removeAttr('disabled');
+            self.$toolbar.find('.kv-' + self.btns.createR + ':not([data-always-disabled])').removeAttr('disabled');
         },
         enable: function (action) {
             var self = this;
