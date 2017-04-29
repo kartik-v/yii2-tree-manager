@@ -85,7 +85,7 @@ class TreeViewInput extends TreeView
     /**
      * @var string the placeholder for the dropdown input
      */
-    private $_placeholder;
+    protected $_placeholder;
 
     /**
      * @var boolean whether the input is disabled
