@@ -18,8 +18,8 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Error removing the node. Please try again later.' => '',
-    'The selected node cannot be moved.' => '',
+    'Error removing the node. Please try again later.' => 'Ошибка перемещения элемента. Пожалуйста попробуйте позже.',
+    'The selected node cannot be moved.' => 'Этот выделенный элемент нельзя перенести.',
     '(new)' => '(новый)',
     'Active' => 'Активный',
     'Add new' => 'Добавить новый',
@@ -27,8 +27,8 @@ return [
     'Admin Settings' => 'Настройки администратора',
     'Already at bottom-most node in the hierarchy.' => 'Элемент уже находится в самом низу иерархии',
     'Already at left-most node in the hierarchy.' => 'Элемент уже находится на самом верхнем уровне иерархии',
-    'Already at right-most node in the hierarchy.' => 'Элемент уже находится в самой последнем уровне иерархии',
-    'Already at top-most node in the hierarchy.' => 'Элемент уже находится в самом вверху иерархии',
+    'Already at right-most node in the hierarchy.' => 'Элемент уже находится в самом последнем уровне иерархии',
+    'Already at top-most node in the hierarchy.' => 'Элемент уже находится в самом верху иерархии',
     'Are you sure you want to remove this node?' => 'Вы действительно хотите удалить элемент?',
     'Cannot create node. Parent node is not saved or is invalid.' => 'Нельзя создать элемент. Родительский элемент не сохранен',
     'Cannot move this node as the node details are not saved yet.' => 'Нельзя переместить элемент пока вы его не сохранили',
