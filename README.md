@@ -48,7 +48,7 @@ The following important PHP classes are available with this module:
 6. **kartik\tree\controllers\NodeController:** _Controller_, the controller actions that manages the editing of each node for create, update, delete, or reorder (move).
 
 ## Demo
-You can see detailed [documentation](http://demos.krajee.com/tree-manager) and [TreeView demonstration](http://demos.krajee.com/tree-manager-demo/treeview) or [TreeViewInput demonstration](http://demos.krajee.com/tree-manager-demo/treeview-input) on usage of the extension.
+You can see detailed [documentation](http://demos.krajee.com/tree-manager) and [TreeView demonstration](http://demos.krajee.com/tree-manager-demo/treeview) or [TreeViewInput demonstration](http://demos.krajee.com/tree-manager-demo/tree-view-input) on usage of the extension.
 
 ## Installation
 
