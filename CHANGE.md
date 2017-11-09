@@ -1,7 +1,14 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
-## Version 1.0.8
+## Version 1.0.9 (_under development_)
+
+**Date:** 09-Nov-2017
+
+- (enh #172): Update Russian Translations.
+- (bug #64): Correct `VIEW_PART_5` rendering.
+
+## Version 1.0.9
 
 **Date:** 29-Apr-2017
 

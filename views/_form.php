@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package   yii2-tree-manager
- * @version   1.0.8
+ * @version   1.0.9
  */
 
 use kartik\form\ActiveForm;
@@ -348,19 +348,18 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
         ?>
         <?= $renderContent(Module::VIEW_PART_4) ?>
     <?php endif; ?>
-
+    <?php
+    /**
+     * SECTION 13: Additional views part 5 accessible by all users after admin zone.
+     */
+    ?>
+    <?= $renderContent(Module::VIEW_PART_5) ?>
+<?php else: ?>
+    <?= $noNodesMessage ?>
 <?php endif; ?>
 <?php
 /**
  * END VALID NODE DISPLAY
  */
 ?>
-
-<?php ActiveForm::end() ?>
-
-<?php
-/**
- * SECTION 13: Additional views part 5 accessible by all users after admin zone.
- */
-?>
-<?= $noNodesMessage ? $noNodesMessage : $renderContent(Module::VIEW_PART_5) ?>
+<?php ActiveForm::end(); ?>
