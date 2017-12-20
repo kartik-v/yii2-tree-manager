@@ -370,6 +370,18 @@ class TreeView extends Widget
      * @var array the HTML attributes for the root node's checkbox indicator
      */
     public $rootNodeCheckboxOptions = ['class' => 'text-success'];
+    
+    /**
+     * @var boolean whether to hide the topmost root node container
+     */
+    public $hideTopRoot = false;
+    
+    /**
+     * @var boolean whether to show topmost root node as heading. In this case the [[rootOptions]] will be used to 
+     * format the topmost root node and [[headingOptions]] will be skipped. The CSS class `kv-root-heading` will 
+     * be appended to `rootOptions` when this is set to `true`.
+     */
+    public $topRootAsHeading = false;
 
     /**
      * @var array the HTML attributes for the node toggle indicator for each parent item in the tree
@@ -420,11 +432,14 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the wrapper container for the tree header, body, and footer.
      */
-    public $treeWrapperOptions = ['class' => 'kv-tree-wrapper form-control'];
+    public $treeWrapperOptions = ['class' => 'form-control'];
 
     /**
      * @var array the HTML attributes for the heading. The following additional option is recognized:
      * `label`: _string_, the label to display for the heading
+     * Note that when [[topRootAsHeading]] is set to true, then [[headingOptions]] will be entirely skipped
+     * and [[rootOptions]] and [[rootNodeToggleOptions]] and [[rootNodeCheckboxOptions]] will be used to render 
+     * the heading.
      */
     public $headingOptions = ['class' => 'kv-tree-heading'];
 
@@ -691,6 +706,7 @@ HTML;
         if (empty($this->options['class'])) {
             $this->options['class'] = 'form-control hide';
         }
+        Html::addCssClass($this->treeWrapperOptions, 'kv-tree-wrapper');
         Html::addCssClass($this->headerOptions, 'kv-header-container');
         Html::addCssClass($this->headingOptions, 'kv-heading-container');
         Html::addCssClass($this->toolbarOptions, 'kv-toolbar-container');
@@ -941,6 +957,10 @@ HTML;
      */
     public function renderHeading()
     {
+        if ($this->topRootAsHeading) {
+            Html::addCssClass($this->rootOptions, 'kv-root-heading');
+            return $this->renderRoot();
+        }
         $heading = ArrayHelper::remove($this->headingOptions, 'label', '');
         return Html::tag('div', $heading, $this->headingOptions);
     }
@@ -1052,7 +1072,10 @@ HTML;
         }
         $out .= str_repeat("</li>\n</ul>", $nodeDepth) . "</li>\n";
         $out .= "</ul>\n";
-        return Html::tag('div', $this->renderRoot() . $out, $this->treeOptions);
+        if (!$this->hideTopRoot && !$this->topRootAsHeading) {
+            $out = $this->renderRoot() . $out;
+        }
+        return Html::tag('div', $out, $this->treeOptions);
     }
 
     /**

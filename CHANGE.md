@@ -3,8 +3,10 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.9 (_under development_)
 
-**Date:** 09-Nov-2017
+**Date:** Work In Process
 
+- (bug #179): Validate breadcrumbs depth more correctly.
+- (enh #178): Topmost root node display enhancements.
 - (enh #172): Update Russian Translations.
 - (bug #64): Correct `VIEW_PART_5` rendering.
 

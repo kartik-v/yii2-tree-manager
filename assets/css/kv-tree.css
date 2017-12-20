@@ -29,6 +29,12 @@
     padding: 0 5px;
 }
 
+.kv-tree-root.kv-root-heading {
+    margin: 0;
+    padding: 5px;
+    font-weight: bold;
+}
+
 .kv-heading-container {
     margin: 4px 6px;
     font-weight: bold;
@@ -118,11 +124,11 @@
     cursor: pointer;
 }
 
-.kv-tree-container .kv-node-unchecked {
+.kv-tree-wrapper .kv-node-unchecked {
     display: inline;
 }
 
-.kv-tree-container .kv-node-checked {
+.kv-tree-wrapper .kv-node-checked {
     display: none;
 }
 
@@ -189,25 +195,25 @@ ul.kv-tree, .kv-tree ul {
     border-bottom: 1px solid white;
 }
 
-.kv-tree-container .kv-node-collapse {
+.kv-tree-wrapper .kv-node-collapse {
     display: inline;
 }
 
-.kv-tree-container .kv-node-expand {
+.kv-tree-wrapper .kv-node-expand {
     display: none;
 }
 
-.kv-tree-container .kv-collapsed > ul > li {
+.kv-tree-wrapper .kv-collapsed > ul > li {
     display: none;
 }
 
-.kv-tree-container.kv-collapsed .kv-tree-root .kv-node-collapse,
-.kv-tree-container .kv-collapsed .kv-node-collapse {
+.kv-tree-wrapper.kv-collapsed .kv-tree-root .kv-node-collapse,
+.kv-tree-wrapper .kv-collapsed .kv-node-collapse {
     display: none;
 }
 
-.kv-tree-container.kv-collapsed .kv-tree-root .kv-node-expand,
-.kv-tree-container .kv-collapsed .kv-node-expand {
+.kv-tree-wrapper.kv-collapsed .kv-tree-root .kv-node-expand,
+.kv-tree-wrapper .kv-collapsed .kv-node-expand {
     display: inline;
 }
 
@@ -279,7 +285,7 @@ ul.kv-tree, .kv-tree ul {
     padding: 6px 9px;
 }
 
-.kv-tree-container .kv-tree {
+.kv-tree-wrapper .kv-tree {
     margin-top: -10px !important;
 }
 
@@ -327,7 +333,7 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
     font-size: 1.4em;
 }
 
-.kv-tree-container .kv-node-closed, .kv-tree-container .kv-node-opened, .kv-tree-container .kv-icon-parent,
+.kv-tree-wrapper .kv-node-closed, .kv-tree-wrapper .kv-node-opened, .kv-tree-wrapper .kv-icon-parent,
 .kv-node-toggle, .kv-parent > .kv-tree-list > .kv-node-detail > .kv-node-icon.kv-icon-child {
     display: none;
 }
@@ -344,6 +350,10 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
 .kv-collapsed > .kv-tree-list > .kv-node-detail > .kv-node-icon .kv-node-closed,
 .kv-parent > .kv-tree-list > .kv-node-indicators > .kv-node-toggle {
     display: inline;
+}
+
+.kv-hide-top .kv-tree-root {
+    display:none;
 }
 
 @media (max-width: 768px) {

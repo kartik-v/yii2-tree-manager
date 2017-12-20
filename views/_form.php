@@ -166,7 +166,9 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
          * @var Tree $modelClass
          * @var Tree $parent
          */
-        $depth = empty($breadcrumbsDepth) ? null : intval($breadcrumbsDepth) - 1;
+        if (empty($depth)) {
+            $depth = null;
+        }
         if ($depth === null || $depth > 0) {
             $parent = $modelClass::findOne($parentKey);
             $name = $parent->getBreadcrumbs($depth, $glue, null) . $glue . $name;

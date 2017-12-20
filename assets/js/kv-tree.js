@@ -70,7 +70,7 @@
             self.dialogLib = window[self.dialogLib] || '';
             self.btns = $.extend({}, $h.DEFAULT_BUTTONS, self.btns);
             self.$tree = $('#' + self.treeId);
-            self.$treeContainer = self.$tree.parent();
+            self.$treeContainer = self.$tree.closest('.kv-tree-wrapper');
             self.$detail = $('#' + self.detailId);
             self.$toolbar = $('#' + self.toolbarId);
             self.$wrapper = $('#' + self.wrapperId);
@@ -641,15 +641,15 @@
         toggleAll: function (action, trig) {
             var self = this;
             if (action === 'expand') {
-                self.$tree.removeClass('kv-collapsed');
-                self.$tree.find('.kv-collapsed').removeClass('kv-collapsed');
+                self.$treeContainer.removeClass('kv-collapsed');
+                self.$treeContainer.find('.kv-collapsed').removeClass('kv-collapsed');
                 if (trig) {
                     self.raise('treeview.expandall');
                 }
                 return;
             }
-            $h.addCss(self.$tree.find('li.kv-parent'), 'kv-collapsed');
-            $h.addCss(self.$tree, 'kv-collapsed');
+            $h.addCss(self.$treeContainer.find('li.kv-parent'), 'kv-collapsed');
+            $h.addCss(self.$treeContainer, 'kv-collapsed');
             if (trig) {
                 self.raise('treeview.collapseall');
             }
@@ -774,8 +774,8 @@
             });
             // node toggle all actions
             self.$treeContainer.find('.kv-root-node-toggle').on('click', function () {
-                var $node = $(this), $root = $node.closest('.kv-tree-container');
-                if ($root.hasClass('kv-collapsed')) {
+                var $node = $(this);
+                if (self.$treeContainer.hasClass('kv-collapsed')) {
                     self.toggleAll('expand', true);
                 } else {
                     self.toggleAll('collapse', true);
