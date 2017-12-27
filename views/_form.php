@@ -113,6 +113,8 @@ echo Html::hiddenInput('treeSaveHash', $security->hashData($dataToHash, $module-
 // manage signature
 if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
     $breadcrumbs['depth'] = '';
+} elseif (!empty($breadcrumbs['depth'])) {
+    $breadcrumbs['depth'] = (string) $breadcrumbs['depth'];
 }
 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons . !!$showIDAttribute .
