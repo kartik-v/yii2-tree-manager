@@ -180,6 +180,11 @@ class TreeView extends Widget
     public $showIDAttribute = true;
 
     /**
+     * @var boolean whether to show the name attribute (name) in the node details form/view.
+     */
+    public $showNameAttribute = true;
+
+    /**
      * @var boolean whether to show the form action buttons in the node details form/view.
      */
     public $showFormButtons = true;
@@ -1112,6 +1117,7 @@ HTML;
                 'allowNewRoots' => $this->allowNewRoots,
                 'showFormButtons' => $this->showFormButtons,
                 'showIDAttribute' => $this->showIDAttribute,
+                'showNameAttribute' => $this->showNameAttribute,
                 'nodeView' => $this->nodeView,
                 'nodeAddlViews' => $this->nodeAddlViews,
                 'nodeSelected' => $this->_nodeSelected,
@@ -1155,6 +1161,7 @@ HTML;
             'iconsList' => $this->_iconsList,
             'showFormButtons' => $this->showFormButtons,
             'showIDAttribute' => $this->showIDAttribute,
+            'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeSelected' => $this->_nodeSelected,

@@ -42,6 +42,7 @@ class NodeController extends Controller
         'softDelete',
         'showFormButtons',
         'showIDAttribute',
+        'showNameAttribute',
         'multiple',
         'treeNodeModify',
         'allowNewRoots',
@@ -168,14 +169,15 @@ class NodeController extends Controller
                 break;
             case 'manage':
                 $treeManageHash = null;
-                $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = false;
+                $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = $showNameAttribute = false;
                 $currUrl = $nodeView = $formAction = $nodeSelected = '';
                 $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
                 extract($data);
                 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
                 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
-                    !!$showIDAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
-                    Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
+                    !!$showIDAttribute . !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected .
+                    Json::encode($formOptions) . Json::encode($nodeAddlViews) . Json::encode($icons) .
+                    Json::encode($breadcrumbs);
                 $validate($action, $treeManageHash, $dataToHash);
                 break;
             case 'remove':
@@ -287,7 +289,7 @@ class NodeController extends Controller
         $callback = function () {
             $parentKey = null;
             $modelClass = '\kartik\tree\models\Tree';
-            $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = $allowNewRoots = false;
+            $isAdmin = $softDelete = $showFormButtons = $showIDAttribute = $showNameAttribute = $allowNewRoots = false;
             $currUrl = $nodeView = $formAction = $nodeSelected = '';
             $formOptions = $iconsList = $nodeAddlViews = $breadcrumbs = [];
             $data = static::getPostData();
@@ -315,6 +317,7 @@ class NodeController extends Controller
                     'softDelete' => $softDelete,
                     'showFormButtons' => $showFormButtons,
                     'showIDAttribute' => $showIDAttribute,
+                    'showNameAttribute' => $showNameAttribute,
                     'allowNewRoots' => $allowNewRoots,
                     'nodeView' => $nodeView,
                     'nodeAddlViews' => $nodeAddlViews,

@@ -29,6 +29,7 @@ use yii\web\View;
  * @var array      $nodeAddlViews
  * @var mixed      $currUrl
  * @var boolean    $showIDAttribute
+ * @var boolean    $showNameAttribute
  * @var boolean    $showFormButtons
  * @var boolean    $allowNewRoots
  * @var string     $nodeSelected
@@ -118,7 +119,7 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
 }
 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons . !!$showIDAttribute .
-    $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
+    !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
     Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
 echo Html::hiddenInput('treeManageHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 
@@ -186,6 +187,7 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
         $flagOptions['disabled'] = true;
     }
 
+    $nameField = $showNameAttribute ? $form->field($node, $nameAttribute)->textInput($inputOpts) : '';
     ?>
     <?php
     /**
@@ -244,18 +246,18 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
      */
     ?>
     <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
-        <?php if ($showIDAttribute): ?>
+        <?php if ($showIDAttribute && $showNameAttribute): ?>
             <div class="row">
                 <div class="col-sm-4">
                     <?= $keyField ?>
                 </div>
                 <div class="col-sm-8">
-                    <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
+                    <?= $nameField ?>
                 </div>
             </div>
         <?php else: ?>
             <?= $keyField ?>
-            <?= $form->field($node, $nameAttribute)->textInput($inputOpts) ?>
+            <?= $nameField ?>
         <?php endif; ?>
         <?php if ($iconsList === 'text'): ?>
             <div class="row">
@@ -275,7 +277,7 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
             <div class="col-sm-6">
                 <?= $keyField ?>
                 <?= Html::activeHiddenInput($node, $iconTypeAttribute) ?>
-                <?= $form->field($node, $nameAttribute)->textArea(['rows' => 3] + $inputOpts) ?>
+                <?= $nameField ?>
             </div>
             <div class="col-sm-6">
                 <?= /** @noinspection PhpUndefinedMethodInspection */

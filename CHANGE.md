@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** Work In Process
 
+- (enh #180): New property `TreeView::showNameAttribute` to hide/show name attribute in form.
 - (bug #179): Validate breadcrumbs depth more correctly.
 - (enh #178): Topmost root node display enhancements.
 - (enh #172): Update Russian Translations.

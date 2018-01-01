@@ -203,6 +203,7 @@
                     'softDelete': self.softDelete,
                     'showFormButtons': self.showFormButtons,
                     'showIDAttribute': self.showIDAttribute,
+                    'showNameAttribute': self.showNameAttribute,
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
                     'nodeAddlViews': self.nodeAddlViews,
