@@ -1,20 +1,15 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
-## Version 1.0.9 (_under development_)
+## Version 1.0.9
 
-**Date:** Work In Process
+**Date:** _work in process_
 
+- (enh #183): Enhance `NodeController` to perform safe extraction of post parameters.
 - (enh #180): New property `TreeView::showNameAttribute` to hide/show name attribute in form.
 - (bug #179): Validate breadcrumbs depth more correctly.
 - (enh #178): Topmost root node display enhancements.
 - (enh #172): Update Russian Translations.
-- (bug #64): Correct `VIEW_PART_5` rendering.
-
-## Version 1.0.9
-
-**Date:** 29-Apr-2017
-
 - Chronological ordering of issues for change log.
 - (enh #167): Add `alwaysDisabled` setting within `toolbar` buttons config to force disable the button (which will never become enabled).
 - (enh #165): Implement tap behavior for TreeViewInput for touch based devices.
@@ -26,6 +21,7 @@ Change Log: `yii2-tree-manager`
 - (enh #162): Update Italian Translations.
 - (enh #161): Update Italian Translations.
 - (bug #160): Correct key attribute usage in `TreeTrait::removeNode`.
+- (bug #64): Correct `VIEW_PART_5` rendering.
 
 ## Version 1.0.7
 
