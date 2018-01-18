@@ -189,6 +189,7 @@ ul.kv-tree, .kv-tree ul {
 .kv-parent ul li:last-child ul {
     margin-bottom: -0.75em;
     padding-bottom: 0.75em;
+    border-left: 0.1em solid #fff;
 }
 
 .kv-tree li.kv-parent {
