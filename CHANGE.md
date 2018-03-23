@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _work in process_
 
+- (enh #188): Enhance node manipulation jquery events to be prevented/abandoned.
 - (enh #183): Enhance `NodeController` to perform safe extraction of post parameters.
 - (enh #180): New property `TreeView::showNameAttribute` to hide/show name attribute in form.
 - (bug #179): Validate breadcrumbs depth more correctly.
