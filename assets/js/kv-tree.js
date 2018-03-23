@@ -1,12 +1,12 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-tree-manager
  * @version 1.0.9
  * 
  * Tree View Validation Module.
  *
  * Author: Kartik Visweswaran
- * Copyright: 2015 - 2017, Kartik Visweswaran, Krajee.com
+ * Copyright: 2015 - 2018, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
