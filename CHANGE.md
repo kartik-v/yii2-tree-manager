@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _work in process_
 
+- (bug #192): Correct minified JS library `kv-tree.min.js`.
 - (enh #190): Simplify `treeEncryptSalt` parsing without using session dependencies.
 - (enh #188): Enhance node manipulation jquery events to be prevented/abandoned.
 - (enh #183): Enhance `NodeController` to perform safe extraction of post parameters.
