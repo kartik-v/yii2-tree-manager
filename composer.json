@@ -30,7 +30,7 @@
   },
   "autoload": {
     "psr-4": {
-      "kartik\\tree\\": ""
+      "kartik\\tree\\": "src"
     }
   },
   "extra": {

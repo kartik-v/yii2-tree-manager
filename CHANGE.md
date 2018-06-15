@@ -5,6 +5,8 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _work in process_
 
+- Move source code to `src` folder as per yii standards.
+- (enh #196): New property `TreeView::nodeViewParams` for setting additional (or overriding) parameters to the `nodeView`.
 - (bug #192): Correct minified JS library `kv-tree.min.js`.
 - (enh #190): Simplify `treeEncryptSalt` parsing without using session dependencies.
 - (enh #188): Enhance node manipulation jquery events to be prevented/abandoned.
@@ -13,6 +15,12 @@ Change Log: `yii2-tree-manager`
 - (bug #179): Validate breadcrumbs depth more correctly.
 - (enh #178): Topmost root node display enhancements.
 - (enh #172): Update Russian Translations.
+- (enh #121): Pass yii CSRF parameters to ajax requests to prevent 400 errors.
+
+## Version 1.0.9
+
+**Date:** 29-Apr-2017
+
 - Chronological ordering of issues for change log.
 - (enh #167): Add `alwaysDisabled` setting within `toolbar` buttons config to force disable the button (which will never become enabled).
 - (enh #165): Implement tap behavior for TreeViewInput for touch based devices.
