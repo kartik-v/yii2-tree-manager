@@ -19,6 +19,7 @@
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
     'Admin Settings' => '',
+    'Child Allowed' => '',
     'Collapsed' => '',
     'Default' => '',
     'Disabled' => '',
@@ -45,6 +46,7 @@ return [
     'The selected node cannot be moved.' => '',
     'Untitled' => '',
     'Visible' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(baru)',
     'Active' => 'Aktif',
     'Add new' => 'Tambah baru',

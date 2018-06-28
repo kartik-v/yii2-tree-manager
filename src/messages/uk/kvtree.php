@@ -18,8 +18,10 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
+    'Child Allowed' => '',
     'Error removing the node. Please try again later.' => '',
     'The selected node cannot be moved.' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(новий)',
     'Active' => 'Активний',
     'Add new' => 'Додати новий',

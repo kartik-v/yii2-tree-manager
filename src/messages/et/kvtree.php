@@ -18,9 +18,11 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
+    'Child Allowed' => '',
     'Collapsed' => '',
     'Disabled' => '',
     'ID' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(uus)',
     'Active' => 'Aktiivne',
     'Add new' => 'Lisa uus',

@@ -18,6 +18,8 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
+    'Child Allowed' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(新建)',
     'Active' => '已激活',
     'Add new' => '添加节点',

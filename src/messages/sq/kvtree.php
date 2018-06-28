@@ -30,6 +30,7 @@ return [
     'Are you sure you want to remove this node?' => '',
     'Cannot create node. Parent node is not saved or is invalid.' => '',
     'Cannot move this node as the node details are not saved yet.' => '',
+    'Child Allowed' => '',
     'Clear search results' => '',
     'Collapsed' => '',
     'Default' => '',
@@ -78,4 +79,5 @@ return [
     'This operation is not allowed.' => '',
     'Untitled' => '',
     'Visible' => '',
+    'You cannot add children under this node.' => '',
 ];

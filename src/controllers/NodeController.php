@@ -203,15 +203,28 @@ class NodeController extends Controller
         $node->activeOrig = $node->active;
         $isNewRecord = $node->isNewRecord;
         $node->load($post);
+        $errors = $success = false;
+        if (Yii::$app->has('session')) {
+            $session = Yii::$app->session;
+        }
         if ($treeNodeModify) {
             if ($parentKey == TreeView::ROOT_KEY) {
                 $node->makeRoot();
             } else {
                 $parent = $modelClass::findOne($parentKey);
-                $node->appendTo($parent);
+                if ($node->isChildAllowed()) {
+                    $node->appendTo($parent);
+                } else {
+                    $errorMsg = Yii::t('kvtree', 'You cannot add children under this node.');
+                    if (Yii::$app->has('session')) {
+                        $session->setFlash('error', $errorMsg);
+                    } else {
+                        throw new ErrorException("Error saving node!\n{$errorMsg}");
+                    }
+                    return $this->redirect($currUrl);
+                }
             }
         }
-        $errors = $success = false;
         if ($node->save()) {
             // check if active status was changed
             if (!$isNewRecord && $node->activeOrig != $node->active) {
@@ -237,7 +250,6 @@ class NodeController extends Controller
             $errorMsg = '<ul style="margin:0"><li>' . implode('</li><li>', $node->getFirstErrors()) . '</li></ul>';
         }
         if (Yii::$app->has('session')) {
-            $session = Yii::$app->session;
             $session->set(ArrayHelper::getValue($post, 'nodeSelected', 'kvNodeId'), $node->{$keyAttr});
             if ($success) {
                 $session->setFlash('success', $successMsg);

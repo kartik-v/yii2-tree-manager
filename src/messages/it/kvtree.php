@@ -18,8 +18,8 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Error removing the node. Please try again later.' => 'Errore durante la rimozione del nodo. Riprovare più tardi.',
-    'The selected node cannot be moved.' => 'Il nodo selezionato non può essere spostato',
+    'Child Allowed' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(nuovo)',
     'Active' => 'Attivo',
     'Add new' => 'Aggiungi nuovo',
@@ -38,6 +38,7 @@ return [
     'Delete' => 'Cancella',
     'Depth' => 'Profondità',
     'Disabled' => 'Disabilitato',
+    'Error removing the node. Please try again later.' => 'Errore durante la rimozione del nodo. Riprovare più tardi.',
     'Error while creating the node. Please try again later.' => 'Errore durante la creazione del nodo. Ritentare in seguito.',
     'Error while moving the node. Please try again later.' => 'Errore durante lo spostamento del nodo. Ritentare in seguito.',
     'Error while removing the node. Please try again later.' => 'Errore durante la rimozione del nodo. Ritentare in seguito.',
@@ -74,6 +75,7 @@ return [
     'The node was moved successfully.' => 'Nodo spostato con successo',
     'The node was removed successfully.' => 'Nodo rimosso con successo',
     'The node was successfully created.' => 'Nodo creato con successo.',
+    'The selected node cannot be moved.' => 'Il nodo selezionato non può essere spostato',
     'The untitled node was removed.' => 'Il nodo senza titolo è stato rimosso.',
     'This operation is not allowed.' => 'Operazione non permessa.',
     'Untitled' => 'Senza titolo',

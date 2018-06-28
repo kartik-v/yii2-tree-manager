@@ -18,8 +18,8 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Error removing the node. Please try again later.' => 'Ошибка перемещения элемента. Пожалуйста попробуйте позже.',
-    'The selected node cannot be moved.' => 'Этот выделенный элемент нельзя перенести.',
+    'Child Allowed' => '',
+    'You cannot add children under this node.' => '',
     '(new)' => '(новый)',
     'Active' => 'Активный',
     'Add new' => 'Добавить новый',
@@ -38,6 +38,7 @@ return [
     'Delete' => 'Удалить',
     'Depth' => 'Глубина',
     'Disabled' => 'Выключенный',
+    'Error removing the node. Please try again later.' => 'Ошибка перемещения элемента. Пожалуйста попробуйте позже.',
     'Error while creating the node. Please try again later.' => 'Ошибка при создании узла. Пожалуйста, повторите попытку позже.',
     'Error while moving the node. Please try again later.' => 'Ошибка при перемещении узла. Пожалуйста, повторите попытку позже.',
     'Error while removing the node. Please try again later.' => 'Ошибка при удалении узла. Пожалуйста, повторите попытку позже.',
@@ -74,6 +75,7 @@ return [
     'The node was moved successfully.' => 'Элемент успешно перемещен.',
     'The node was removed successfully.' => 'Элемент успешно удален.',
     'The node was successfully created.' => 'Элемент успешно создан.',
+    'The selected node cannot be moved.' => 'Этот выделенный элемент нельзя перенести.',
     'The untitled node was removed.' => 'Элементы без названия были удалены',
     'This operation is not allowed.' => 'Операция не разрешена',
     'Untitled' => 'Без названия',

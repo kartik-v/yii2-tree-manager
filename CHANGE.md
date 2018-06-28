@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _work in process_
 
+- (enh #197): New database field `child-allowed` to control children being added for certain nodes.
 - Move source code to `src` folder as per yii standards.
 - (enh #196): New property `TreeView::nodeViewParams` for setting additional (or overriding) parameters to the `nodeView`.
 - (bug #192): Correct minified JS library `kv-tree.min.js`.

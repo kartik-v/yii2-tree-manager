@@ -283,7 +283,7 @@
                 self.renderForm(key, null, msg);
             }
             $sel = $currNode.closest('li');
-            if ($sel.hasClass('kv-disabled')) {
+            if ($sel.data('disabled')) {
                 self.disableToolbar();
             } else {
                 self.enableToolbar();
@@ -303,6 +303,9 @@
             }
             if (!$sel.data('movable-r')) {
                 self.disable('moveR');
+            }
+            if (!$sel.data('child-allowed')) {
+                self.disable('create');
             }
             self.parseParentFlag(key);
         },

@@ -1035,6 +1035,7 @@ HTML;
                 'data-lft' => $nodeLeft,
                 'data-rgt' => $nodeRight,
                 'data-lvl' => $nodeDepth,
+                'data-disabled' => static::parseBool($node->isDisabled()),
                 'data-readonly' => static::parseBool($node->isReadonly()),
                 'data-movable-u' => static::parseBool($node->isMovable('u')),
                 'data-movable-d' => static::parseBool($node->isMovable('d')),
@@ -1042,6 +1043,7 @@ HTML;
                 'data-movable-r' => static::parseBool($node->isMovable('r')),
                 'data-removable' => static::parseBool($node->isRemovable()),
                 'data-removable-all' => static::parseBool($node->isRemovableAll()),
+                'data-child-allowed' => static::parseBool($node->isChildAllowed()), 
             ];
 
             $css = [];
