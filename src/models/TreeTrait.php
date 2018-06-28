@@ -260,7 +260,7 @@ trait TreeTrait
          */
         $this->nodeActivationErrors = [];
         $module = TreeView::module();
-        extract($module->treeStructure);
+        extract($module->dataStructure);
         if ($this->isRemovableAll()) {
             $children = $this->children()->all();
             foreach ($children as $child) {
@@ -312,7 +312,7 @@ trait TreeTrait
         if ($softDelete) {
             $this->nodeRemovalErrors = [];
             $module = TreeView::module();
-            extract($module->treeStructure);
+            extract($module->dataStructure);
             if ($this->isRemovableAll()) {
                 $children = $this->children()->all();
                 foreach ($children as $child) {
