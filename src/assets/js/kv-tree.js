@@ -213,6 +213,7 @@
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
                     'nodeAddlViews': self.nodeAddlViews,
+                    'nodeViewButtonLabels': self.nodeViewButtonLabels,
                     'nodeSelected': self.nodeSelected,
                     'breadcrumbs': self.breadcrumbs,
                     'allowNewRoots': self.allowNewRoots,

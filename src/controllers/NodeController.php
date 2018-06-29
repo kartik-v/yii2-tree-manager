@@ -212,7 +212,7 @@ class NodeController extends Controller
                 $node->makeRoot();
             } else {
                 $parent = $modelClass::findOne($parentKey);
-                if ($node->isChildAllowed()) {
+                if ($parent->isChildAllowed()) {
                     $node->appendTo($parent);
                 } else {
                     $errorMsg = Yii::t('kvtree', 'You cannot add children under this node.');
@@ -289,12 +289,13 @@ class NodeController extends Controller
             $formOptions = ArrayHelper::getValue($data, 'formOptions', []);
             $iconsList = ArrayHelper::getValue($data, 'iconsList', []);
             $nodeAddlViews = ArrayHelper::getValue($data, 'nodeAddlViews', []);
+            $nodeViewButtonLabels = ArrayHelper::getValue($data, 'nodeViewButtonLabels', []);
             $breadcrumbs = ArrayHelper::getValue($data, 'breadcrumbs', []);
             $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
             $newHashData = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
                 !!$showIDAttribute . !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected .
-                Json::encode($formOptions) . Json::encode($nodeAddlViews) . Json::encode($icons) .
-                Json::encode($breadcrumbs);
+                Json::encode($formOptions) . Json::encode($nodeAddlViews) . 
+                Json::encode($nodeViewButtonLabels) . Json::encode($icons) . Json::encode($breadcrumbs);
             /**
              * @var Tree $node
              */
@@ -321,6 +322,7 @@ class NodeController extends Controller
                     'allowNewRoots' => $allowNewRoots,
                     'nodeView' => $nodeView,
                     'nodeAddlViews' => $nodeAddlViews,
+                    'nodeViewButtonLabels' => $nodeViewButtonLabels,
                     'nodeSelected' => $nodeSelected,
                     'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
                     'noNodesMessage' => '',

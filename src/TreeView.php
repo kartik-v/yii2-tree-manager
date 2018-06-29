@@ -123,6 +123,14 @@ class TreeView extends Widget
      * @var string the view file that will render the form for editing the node.
      */
     public $nodeView;
+    
+    /**
+     * @var array the markup for the submit and reset button labels in the node view form 
+     */
+    public $nodeViewButtonLabels = [
+        'submit' => '<i class="glyphicon glyphicon-floppy-disk"></i>',
+        'reset' => ' <i class="glyphicon glyphicon-repeat"></i>'
+    ];
 
     /**
      * @var array any additional parameters to be sent or any parameters to override within the [[nodeView]].
@@ -1127,6 +1135,7 @@ HTML;
                 'showNameAttribute' => $this->showNameAttribute,
                 'nodeView' => $this->nodeView,
                 'nodeAddlViews' => $this->nodeAddlViews,
+                'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
                 'nodeSelected' => $this->_nodeSelected,
                 'breadcrumbs' => $this->breadcrumbs,
                 'noNodesMessage' => $msg,
@@ -1171,6 +1180,7 @@ HTML;
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
+            'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeSelected' => $this->_nodeSelected,
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,

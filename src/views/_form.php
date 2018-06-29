@@ -36,6 +36,8 @@ use yii\web\View;
  * @var array      $params
  * @var string     $keyField
  * @var string     $nodeView
+ * @var string     $nodeAddlViews
+ * @var string     $nodeViewButtonLabels
  * @var string     $noNodesMessage
  * @var boolean    $softDelete
  * @var string     $modelClass
@@ -50,6 +52,8 @@ use yii\web\View;
 <?php
 extract($params);
 $session = Yii::$app->has('session') ? Yii::$app->session : null;
+$resetTitle = Yii::t('kvtree', 'Reset');
+$submitTitle = Yii::t('kvtree', 'Save');
 
 // parse parent key
 if ($noNodesMessage) {
@@ -120,7 +124,8 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons . !!$showIDAttribute .
     !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
-    Json::encode($nodeAddlViews) . Json::encode($icons) . Json::encode($breadcrumbs);
+    Json::encode($nodeAddlViews) . Json::encode($nodeViewButtonLabels) . Json::encode($icons) . 
+    Json::encode($breadcrumbs);
 echo Html::hiddenInput('treeManageHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 
 // remove signature
@@ -197,12 +202,14 @@ echo Html::hiddenInput('treeMoveHash', $security->hashData($dataToHash, $module-
     <div class="kv-detail-heading">
         <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
             <div class="pull-right">
-                <button type="reset" class="btn btn-default" title="<?= Yii::t('kvtree', 'Reset') ?>">
-                    <i class="glyphicon glyphicon-repeat"></i>
-                </button>
-                <button type="submit" class="btn btn-primary" title="<?= Yii::t('kvtree', 'Save') ?>">
-                    <i class="glyphicon glyphicon-floppy-disk"></i>
-                </button>
+                <?= Html::resetButton(
+                    ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle), 
+                    ['class' => 'btn btn-default', 'title' => $resetTitle]
+                ) ?>
+                <?= Html::submitButton(
+                    ArrayHelper::getValue($nodeViewButtonLabels, 'submit', $submitTitle), 
+                    ['class' => 'btn btn-primary', 'title' => $submitTitle]
+                ) ?>
             </div>
         <?php endif; ?>
         <div class="kv-detail-crumbs"><?= $name ?></div>
