@@ -817,10 +817,10 @@ HTML;
                 'url' => Yii::$app->request->url,
             ],
         ];
-        if (!$this->allowNewRoots) {
-            unset($defaultToolbar[self::BTN_CREATE_ROOT]);
-        }
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
+        if (!$this->allowNewRoots) {
+            unset($this->toolbar[self::BTN_CREATE_ROOT]);
+        }
         $this->sortToolbar();
         if ($this->defaultChildNodeIcon === null) {
             $this->defaultChildNodeIcon = $this->getNodeIcon(1);
