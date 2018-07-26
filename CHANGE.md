@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _work in process_
 
+- (enh #202): Enhance node title to be configurable in messages.
 - (bug #200): Correct validation for `TreeView::allowNewRoots`.
 - (enh #198): New property `TreeView::nodeButtonLabels` to configure submit and reset button icons/labels.
 - (enh #197): New database field `child-allowed` to control children being added for certain nodes.

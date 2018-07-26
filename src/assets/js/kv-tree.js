@@ -35,11 +35,6 @@
         escapeRegExp: function (str) {
             return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
-        getAjaxData: function (data) {
-            var objCsrf = {};
-            objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken();
-            return $.extend(true, {}, data, objCsrf);
-        },
         addCss: function ($el, css) {
             $el.removeClass(css).addClass(css);
         },
@@ -119,6 +114,12 @@
                 }
             };
         },
+        getAjaxData: function (data) {
+            var self = this, objCsrf = {}, msg = this.messages,
+                nodeTitles = {nodeTitle: msg.nodeTitle, nodeTitlePlural: msg.nodeTitlePlural};
+            objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken();
+            return $.extend(true, {}, data, objCsrf, nodeTitles);
+        },
         validateTooltips: function () {
             var self = this;
             if (self.showTooltips) {
@@ -197,7 +198,7 @@
             $.ajax({
                 type: 'post',
                 dataType: 'json',
-                data: $h.getAjaxData({
+                data: self.getAjaxData({
                     'id': key,
                     'modelClass': self.modelClass,
                     'isAdmin': self.isAdmin,
@@ -367,7 +368,7 @@
                 $.ajax({
                     type: 'post',
                     dataType: 'json',
-                    data: $h.getAjaxData({
+                    data: self.getAjaxData({
                         'id': key,
                         'modelClass': self.modelClass,
                         'softDelete': self.softDelete,
@@ -498,7 +499,7 @@
             $.ajax({
                 type: 'post',
                 dataType: 'json',
-                data: $h.getAjaxData({
+                data: self.getAjaxData({
                     'idFrom': keyFrom,
                     'idTo': keyTo,
                     'modelClass': self.modelClass,
@@ -594,6 +595,10 @@
             }
             if ($nodeText.length === 0 || $node.hasClass('kv-empty')) {
                 self.dialogLib.alert(msg.invalidCreateNode);
+                return;
+            }
+            if (!$node.attr('data-child-allowed')) {
+                self.dialogLib.alert(msg.noChildAllowed);
                 return;
             }
             self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
@@ -1005,7 +1010,9 @@
             nodeTop: '',
             nodeBottom: '',
             nodeLeft: '',
-            nodeRight: ''
+            nodeRight: '',
+            nodeTitle: '',
+            nodeTitlePlural: ''
         },
         breadcrumbs: {},
         cascadeSelectChildren: true,

@@ -107,6 +107,18 @@ class TreeView extends Widget
      * ```
      */
     public $nodeActions = [];
+    
+    /**
+     * @var string the title label to display for the tree node in the validation client messages.
+     * Defaults to `node`.
+     */
+    public $nodeTitle;
+
+    /**
+     * @var string the title label to display for plural tree nodes in the validation client messages.
+     * Defaults to `nodes`.
+     */
+    public $nodeTitlePlural;
 
     /**
      * @var array|Closure the value to customize a tree node's label.
@@ -765,19 +777,29 @@ HTML;
         }
         $this->toolbarOptions['role'] = 'toolbar';
         $this->buttonGroupOptions['role'] = 'group';
+        if (empty($this->nodeTitle)) {
+            $this->nodeTitle = Yii::t('kvtree', 'node');
+        }
+        if (empty($this->nodeTitlePlural)) {
+            $this->nodeTitlePlural = Yii::t('kvtree', 'nodes');
+        }
+        $msgParams = ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural];
         $this->clientMessages += [
-            'invalidCreateNode' => Yii::t('kvtree', 'Cannot create node. Parent node is not saved or is invalid.'),
+            'invalidCreateNode' => Yii::t('kvtree', 'Cannot create {node}. Parent node is not saved or is invalid.', $msgParams),
             'emptyNode' => Yii::t('kvtree', '(new)'),
-            'removeNode' => Yii::t('kvtree', 'Are you sure you want to remove this node?'),
-            'nodeRemoved' => Yii::t('kvtree', 'The node was removed successfully.'),
-            'nodeRemoveError' => Yii::t('kvtree', 'Error while removing the node. Please try again later.'),
-            'nodeNewMove' => Yii::t('kvtree', 'Cannot move this node as the node details are not saved yet.'),
-            'nodeTop' => Yii::t('kvtree', 'Already at top-most node in the hierarchy.'),
-            'nodeBottom' => Yii::t('kvtree', 'Already at bottom-most node in the hierarchy.'),
-            'nodeLeft' => Yii::t('kvtree', 'Already at left-most node in the hierarchy.'),
-            'nodeRight' => Yii::t('kvtree', 'Already at right-most node in the hierarchy.'),
-            'emptyNodeRemoved' => Yii::t('kvtree', 'The untitled node was removed.'),
-            'selectNode' => Yii::t('kvtree', 'Select a node by clicking on one of the tree items.'),
+            'removeNode' => Yii::t('kvtree', 'Are you sure you want to remove this {node}?', $msgParams),
+            'nodeRemoved' => Yii::t('kvtree', 'The {node} was removed successfully.', $msgParams),
+            'nodeRemoveError' => Yii::t('kvtree', 'Error while removing the {node}. Please try again later.', $msgParams),
+            'nodeNewMove' => Yii::t('kvtree', 'Cannot move this {node} as the {node} details are not saved yet.', $msgParams),
+            'nodeTop' => Yii::t('kvtree', 'Already at top-most {node} in the hierarchy.', $msgParams),
+            'nodeBottom' => Yii::t('kvtree', 'Already at bottom-most {node} in the hierarchy.', $msgParams),
+            'nodeLeft' => Yii::t('kvtree', 'Already at left-most {node} in the hierarchy.', $msgParams),
+            'nodeRight' => Yii::t('kvtree', 'Already at right-most {node} in the hierarchy.', $msgParams),
+            'emptyNodeRemoved' => Yii::t('kvtree', 'The untitled {node} was removed.', $msgParams),
+            'selectNode' => Yii::t('kvtree', 'Select a {node} by clicking on one of the tree items.', $msgParams),
+            'noChildAllowed' => Yii::t('kvtree', 'You cannot add children under this {node}.', $msgParams),
+            'nodeTitle' => $this->nodeTitle,
+            'nodeTitlePlural' => $this->nodeTitlePlural
         ];
         $defaultToolbar = [
             self::BTN_CREATE => [
@@ -1139,6 +1161,8 @@ HTML;
                 'nodeSelected' => $this->_nodeSelected,
                 'breadcrumbs' => $this->breadcrumbs,
                 'noNodesMessage' => $msg,
+                'nodeTitle' => $this->nodeTitle,
+                'nodeTitlePlural' => $this->nodeTitlePlural
             ] + $this->nodeViewParams;
         $content = $this->render($this->nodeView, ['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);
@@ -1204,7 +1228,8 @@ HTML;
         if (empty($this->emptyNodeMsg)) {
             $this->emptyNodeMsg = Yii::t(
                 'kvtree',
-                'No valid tree nodes are available for display. Use toolbar buttons to add tree nodes.'
+                'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.',
+                ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural]
             );
         }
         $this->_hasBootstrap = $this->showTooltips;

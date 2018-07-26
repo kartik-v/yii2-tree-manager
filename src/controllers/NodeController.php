@@ -184,21 +184,23 @@ class NodeController extends Controller
         $modelClass = static::getModelClass($data);
         $module = TreeView::module();
         $keyAttr = $module->dataStructure['keyAttribute'];
+        $nodeTitles = static::getNodeTitles($data);
         /**
          * @var Tree $node
          * @var Tree $parent
          */
+         
         if ($treeNodeModify) {
             $node = new $modelClass;
-            $successMsg = Yii::t('kvtree', 'The node was successfully created.');
-            $errorMsg = Yii::t('kvtree', 'Error while creating the node. Please try again later.');
+            $successMsg = Yii::t('kvtree', 'The {node} was successfully created.', $nodeTitles);
+            $errorMsg = Yii::t('kvtree', 'Error while creating the {node}. Please try again later.', $nodeTitles);
         } else {
             $tag = explode("\\", $modelClass);
             $tag = array_pop($tag);
             $id = $post[$tag][$keyAttr];
             $node = $modelClass::findOne($id);
-            $successMsg = Yii::t('kvtree', 'Saved the node details successfully.');
-            $errorMsg = Yii::t('kvtree', 'Error while saving the node. Please try again later.');
+            $successMsg = Yii::t('kvtree', 'Saved the {node} details successfully.', $nodeTitles);
+            $errorMsg = Yii::t('kvtree', 'Error while saving the {node}. Please try again later.', $nodeTitles);
         }
         $node->activeOrig = $node->active;
         $isNewRecord = $node->isNewRecord;
@@ -215,11 +217,11 @@ class NodeController extends Controller
                 if ($parent->isChildAllowed()) {
                     $node->appendTo($parent);
                 } else {
-                    $errorMsg = Yii::t('kvtree', 'You cannot add children under this node.');
+                    $errorMsg = Yii::t('kvtree', 'You cannot add children under this {node}.', $nodeTitles);
                     if (Yii::$app->has('session')) {
                         $session->setFlash('error', $errorMsg);
                     } else {
-                        throw new ErrorException("Error saving node!\n{$errorMsg}");
+                        throw new ErrorException("Error saving {node}!\n{$errorMsg}", $nodeTitles);
                     }
                     return $this->redirect($currUrl);
                 }
@@ -242,7 +244,7 @@ class NodeController extends Controller
                 $success = false;
                 $errorMsg = "<ul style='padding:0'>\n";
                 foreach ($errors as $err) {
-                    $errorMsg .= "<li>" . Yii::t('kvtree', "Node # {id} - '{name}': {error}", $err) . "</li>\n";
+                    $errorMsg .= "<li>" . Yii::t('kvtree', "{node} # {id} - '{name}': {error}", $err + $nodeTitles) . "</li>\n";
                 }
                 $errorMsg .= "</ul>";
             }
@@ -257,7 +259,7 @@ class NodeController extends Controller
                 $session->setFlash('error', $errorMsg);
             }
         } elseif (!$success) {
-            throw new ErrorException("Error saving node!\n{$errorMsg}");
+            throw new ErrorException("Error saving {node}!\n{$errorMsg}", $nodeTitles);
         }
         return $this->redirect($currUrl);
     }
@@ -270,8 +272,9 @@ class NodeController extends Controller
     public function actionManage()
     {
         static::checkValidRequest();
-        $callback = function () {
-            $data = static::getPostData();
+        $data = static::getPostData();
+        $nodeTitles = static::getNodeTitles($data);
+        $callback = function () use ($data, $nodeTitles) {
             $modelClass = static::getModelClass($data);
             $parentKey = ArrayHelper::getValue($data, 'parentKey', null);
             $id = ArrayHelper::getValue($data, 'id', null);
@@ -294,7 +297,7 @@ class NodeController extends Controller
             $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
             $newHashData = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
                 !!$showIDAttribute . !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected .
-                Json::encode($formOptions) . Json::encode($nodeAddlViews) . 
+                $nodeTitles['node'] . $nodeTitles['nodes'] . Json::encode($formOptions) . Json::encode($nodeAddlViews) . 
                 Json::encode($nodeViewButtonLabels) . Json::encode($icons) . Json::encode($breadcrumbs);
             /**
              * @var Tree $node
@@ -326,6 +329,8 @@ class NodeController extends Controller
                     'nodeSelected' => $nodeSelected,
                     'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
                     'noNodesMessage' => '',
+                    'nodeTitle' => $nodeTitles['node'],
+                    'nodeTitlePlural' => $nodeTitles['nodes'],
                 ];
             if (!empty($module->unsetAjaxBundles)) {
                 Event::on(
@@ -341,7 +346,7 @@ class NodeController extends Controller
         };
         return self::process(
             $callback,
-            Yii::t('kvtree', 'Error while viewing the node. Please try again later.'),
+            Yii::t('kvtree', 'Error while viewing the {node}. Please try again later.', $nodeTitles),
             null
         );
     }
@@ -352,8 +357,9 @@ class NodeController extends Controller
     public function actionRemove()
     {
         static::checkValidRequest();
-        $callback = function () {
-            $data = static::getPostData();
+        $data = static::getPostData();
+        $nodeTitles = static::getNodeTitles($data);
+        $callback = function () use($data) {
             $id = ArrayHelper::getValue($data, 'id', null);
             $modelClass = static::getModelClass($data);
             $oldHash = ArrayHelper::getValue($data, 'treeRemoveHash', '');
@@ -368,8 +374,8 @@ class NodeController extends Controller
         };
         return self::process(
             $callback,
-            Yii::t('kvtree', 'Error removing the node. Please try again later.'),
-            Yii::t('kvtree', 'The node was removed successfully.')
+            Yii::t('kvtree', 'Error removing the {node}. Please try again later.', $nodeTitles),
+            Yii::t('kvtree', 'The {node} was removed successfully.', $nodeTitles)
         );
     }
 
@@ -387,6 +393,7 @@ class NodeController extends Controller
         $oldHash = ArrayHelper::getValue($data, 'treeMoveHash', '');
         $allowNewRoots = ArrayHelper::getValue($data, 'allowNewRoots', true);
         $newHashData = $modelClass . $allowNewRoots;
+        $nodeTitles = static::getNodeTitles($data);
         /**
          * @var Tree $nodeFrom
          * @var Tree $nodeTo
@@ -395,31 +402,44 @@ class NodeController extends Controller
         $nodeTo = $modelClass::findOne($idTo);
         $isMovable = $nodeFrom->isMovable($dir);
         $errorMsg = $isMovable ?
-            Yii::t('kvtree', 'Error while moving the node. Please try again later.') :
-            Yii::t('kvtree', 'The selected node cannot be moved.');
-        $callback = function () use ($dir, $allowNewRoots, $isMovable, $nodeFrom, $nodeTo, $oldHash, $newHashData) {
+        Yii::t('kvtree', 'Error while moving the {node}. Please try again later.', $nodeTitles) :
+            Yii::t('kvtree', 'The selected {node} cannot be moved.', $nodeTitles);
+        $callback = function () use ($dir, $allowNewRoots, $isMovable, $nodeFrom, $nodeTo, $oldHash, $newHashData, $nodeTitles) {
             if (!empty($nodeFrom) && !empty($nodeTo)) {
                 static::checkSignature('move', $oldHash, $newHashData);
-                if (!$isMovable) {
+                if (!$isMovable || ($dir !== 'u' && $dir !== 'd' && $dir !== 'l' && $dir !== 'r')) {
                     return false;
                 }
-                if ($dir == 'u') {
-                    $nodeFrom->insertBefore($nodeTo);
-                } elseif ($dir == 'd') {
-                    $nodeFrom->insertAfter($nodeTo);
-                } elseif ($dir == 'l') {
-                    if ($nodeTo->isRoot() && $allowNewRoots) {
+                if ($dir === 'r') {
+                    $nodeFrom->appendTo($nodeTo);
+                } else {
+                    if ($dir === 'l' && $nodeTo->isRoot() && $allowNewRoots) {
                         $nodeFrom->makeRoot();
+                    } elseif ($nodeTo->isRoot()) {
+                        throw new Exception(Yii::t('kvtree', 'Cannot move root level {nodes} before or after other root level {nodes}.', $nodeTitles));
+                    } elseif ($dir == 'u') {
+                        $nodeFrom->insertBefore($nodeTo);
                     } else {
                         $nodeFrom->insertAfter($nodeTo);
                     }
-                } elseif ($dir == 'r') {
-                    $nodeFrom->appendTo($nodeTo);
                 }
                 return $nodeFrom->save();
             }
             return true;
         };
-        return self::process($callback, $errorMsg, Yii::t('kvtree', 'The node was moved successfully.'));
+        return self::process($callback, $errorMsg, Yii::t('kvtree', 'The {node} was moved successfully.', $nodeTitles));
+    }
+    
+    /**
+     * Gets the node singular and plural titles
+     * @param array $data the source data
+     * @return array
+     */
+    protected static function getNodeTitles($data)
+    {
+        return [
+            'node' => ArrayHelper::getValue($data, 'nodeTitle', 'node'), 
+            'nodes' => ArrayHelper::getValue($data, 'nodeTitlePlural', 'nodes')
+        ];
     }
 }

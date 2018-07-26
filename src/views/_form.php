@@ -33,6 +33,8 @@ use yii\web\View;
  * @var boolean    $showFormButtons
  * @var boolean    $allowNewRoots
  * @var string     $nodeSelected
+ * @var string     $nodeTitle
+ * @var string     $nodeTitlePlural
  * @var array      $params
  * @var string     $keyField
  * @var string     $nodeView
@@ -95,6 +97,8 @@ $renderContent = function ($part) use ($nodeAddlViews, $params, $form) {
  * to set all these hidden inputs as defined below.
  */
 ?>
+<?= Html::hiddenInput('nodeTitle', $nodeTitle) ?>
+<?= Html::hiddenInput('nodeTitlePlural', $nodeTitlePlural) ?>
 <?= Html::hiddenInput('treeNodeModify', $node->isNewRecord) ?>
 <?= Html::hiddenInput('parentKey', $parentKey) ?>
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
@@ -123,9 +127,9 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
 }
 $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 $dataToHash = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons . !!$showIDAttribute .
-    !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected . Json::encode($formOptions) .
-    Json::encode($nodeAddlViews) . Json::encode($nodeViewButtonLabels) . Json::encode($icons) . 
-    Json::encode($breadcrumbs);
+    !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected . $nodeTitle . $nodeTitlePlural .
+    Json::encode($formOptions) . Json::encode($nodeAddlViews) . Json::encode($nodeViewButtonLabels) . 
+    Json::encode($icons) . Json::encode($breadcrumbs);
 echo Html::hiddenInput('treeManageHash', $security->hashData($dataToHash, $module->treeEncryptSalt));
 
 // remove signature
