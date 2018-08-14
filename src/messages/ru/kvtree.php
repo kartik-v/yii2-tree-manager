@@ -18,11 +18,10 @@
  */
 return [
     '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Cannot create {node}. Parent node is not saved or is invalid.' => '',
-    'Cannot move root level {nodes} before or after other root level {nodes}.' => '',
-    'Child Allowed' => '',
-    'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.' => '',
-    'You cannot add children under this {node}.' => '',
+    'Cannot create {node}. Parent node is not saved or is invalid.' => 'Нельзя создать {node}. Родительский {node} не сохранен',
+    'Cannot move root level {nodes} before or after other root level {nodes}.' => 'Движение корневых {nodes} между другими корневыми {nodes} невозможно',
+    'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.' => 'Нет доступных {nodes} для отображения. Используйте тулбар для добавлния новых {nodes}',
+    'You cannot add children under this {node}.' => 'Вы не можете добавить дочерний элемент в корневой {node} ',
     'Cannot create {node}. Parent {node} is not saved or is invalid.' => '@@Нельзя создать {node}. Родительский {node} не сохранен@@',
     'No valid tree {nodes} are available for display. Use toolbar buttons to add tree {nodes}.' => '@@Нет доступных {nodes} дерева для отображения. Используйте кнопки на панели инструментов, чтобы добавить {nodes}.@@',
     '(new)' => '(новый)',
@@ -36,6 +35,7 @@ return [
     'Already at top-most {node} in the hierarchy.' => '{node} уже находится в самом верху иерархии',
     'Are you sure you want to remove this {node}?' => 'Вы действительно хотите удалить {node}?',
     'Cannot move this {node} as the {node} details are not saved yet.' => 'Нельзя переместить {node} пока вы его не сохранили',
+    'Child Allowed' => 'Дочерние элементы разрешены'
     'Clear search results' => 'Очистить результаты поиска',
     'Collapsed' => 'Свернутый',
     'Default' => 'По умолчанию',
