@@ -10,19 +10,18 @@ namespace kartik\tree\controllers;
 
 use Closure;
 use Exception;
+use kartik\tree\Module;
 use kartik\tree\models\Tree;
 use kartik\tree\TreeView;
+use kartik\tree\TreeSecurity;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\console\Application;
 use yii\db\Exception as DbException;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\View;
@@ -68,9 +67,6 @@ class NodeController extends Controller
             $success = false;
             $error = $e->getMessage();
         } catch (NotSupportedException $e) {
-            $success = false;
-            $error = $e->getMessage();
-        } catch (InvalidParamException $e) {
             $success = false;
             $error = $e->getMessage();
         } catch (InvalidConfigException $e) {
@@ -130,75 +126,38 @@ class NodeController extends Controller
         }
     }
 
-    /**
-     * Gets the model class name key from the data array
-     * @param array $data
-     * @return mixed
-     */
-    protected static function getModelClass($data = [])
-    {
-        return ArrayHelper::getValue($data, 'modelClass', Tree::className());
-    }
-
-    /**
-     * Checks signature of posted data for ensuring security against data tampering.
-     *
-     * @param string $action the name of the action
-     * @param string $oldHash the old hashed data
-     * @param string $newHashData the raw new data for hasing
-     *
-     * @throws InvalidCallException
-     */
-    protected static function checkSignature($action, $oldHash = '', $newHashData = null)
-    {
-        if (Yii::$app instanceof Application) {
-            return; // skip hash signature validation for console apps
-        }
-        $module = TreeView::module();
-        $security = Yii::$app->security;
-        $salt = $module->treeEncryptSalt;
-        $newHash = $security->hashData($newHashData, $salt);
-        if ($security->validateData($oldHash, $salt) && $oldHash === $newHash) {
-            return;
-        }
-        $params = YII_DEBUG ? '<pre>OLD HASH:<br>' . $oldHash . '<br>NEW HASH:<br>' . $newHash . '</pre>' : '';
-        $message = Yii::t(
-            'kvtree',
-            '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}',
-            ['action' => $action, 'params' => $params]
-        );
-        throw new InvalidCallException($message);
-    }
 
     /**
      * Saves a node once form is submitted
      */
     public function actionSave()
     {
+        /**
+         * @var Module $module
+         * @var Tree $node
+         * @var Tree $parent
+         * @var \yii\web\Session $session
+         */
         $post = Yii::$app->request->post();
         static::checkValidRequest(false, !isset($post['treeNodeModify']));
         $data = static::getPostData();
         $parentKey = ArrayHelper::getValue($data, 'parentKey', null);
         $treeNodeModify = ArrayHelper::getValue($data, 'treeNodeModify', null);
         $currUrl = ArrayHelper::getValue($data, 'currUrl', '');
-        $modelClass = static::getModelClass($data);
+        $treeClass = TreeSecurity::getModelClass($data);
         $module = TreeView::module();
         $keyAttr = $module->dataStructure['keyAttribute'];
-        $nodeTitles = static::getNodeTitles($data);
-        /**
-         * @var Tree $node
-         * @var Tree $parent
-         */
-         
+        $nodeTitles = TreeSecurity::getNodeTitles($data);
+
         if ($treeNodeModify) {
-            $node = new $modelClass;
+            $node = new $treeClass;
             $successMsg = Yii::t('kvtree', 'The {node} was successfully created.', $nodeTitles);
             $errorMsg = Yii::t('kvtree', 'Error while creating the {node}. Please try again later.', $nodeTitles);
         } else {
-            $tag = explode("\\", $modelClass);
+            $tag = explode("\\", $treeClass);
             $tag = array_pop($tag);
             $id = $post[$tag][$keyAttr];
-            $node = $modelClass::findOne($id);
+            $node = $treeClass::findOne($id);
             $successMsg = Yii::t('kvtree', 'Saved the {node} details successfully.', $nodeTitles);
             $errorMsg = Yii::t('kvtree', 'Error while saving the {node}. Please try again later.', $nodeTitles);
         }
@@ -213,7 +172,7 @@ class NodeController extends Controller
             if ($parentKey == TreeView::ROOT_KEY) {
                 $node->makeRoot();
             } else {
-                $parent = $modelClass::findOne($parentKey);
+                $parent = $treeClass::findOne($parentKey);
                 if ($parent->isChildAllowed()) {
                     $node->appendTo($parent);
                 } else {
@@ -244,7 +203,8 @@ class NodeController extends Controller
                 $success = false;
                 $errorMsg = "<ul style='padding:0'>\n";
                 foreach ($errors as $err) {
-                    $errorMsg .= "<li>" . Yii::t('kvtree', "{node} # {id} - '{name}': {error}", $err + $nodeTitles) . "</li>\n";
+                    $errorMsg .= "<li>" . Yii::t('kvtree', "{node} # {id} - '{name}': {error}",
+                            $err + $nodeTitles) . "</li>\n";
                 }
                 $errorMsg .= "</ul>";
             }
@@ -273,76 +233,44 @@ class NodeController extends Controller
     {
         static::checkValidRequest();
         $data = static::getPostData();
-        $nodeTitles = static::getNodeTitles($data);
+        $nodeTitles = TreeSecurity::getNodeTitles($data);
         $callback = function () use ($data, $nodeTitles) {
-            $modelClass = static::getModelClass($data);
-            $parentKey = ArrayHelper::getValue($data, 'parentKey', null);
             $id = ArrayHelper::getValue($data, 'id', null);
-            $oldHash = ArrayHelper::getValue($data, 'treeManageHash', '');
-            $isAdmin = ArrayHelper::getValue($data, 'isAdmin', false);
-            $softDelete = ArrayHelper::getValue($data, 'softDelete', true);
-            $showFormButtons = ArrayHelper::getValue($data, 'showFormButtons', true);
-            $showIDAttribute = ArrayHelper::getValue($data, 'showIDAttribute', true);
-            $showNameAttribute = ArrayHelper::getValue($data, 'showNameAttribute', true);
-            $allowNewRoots = ArrayHelper::getValue($data, 'allowNewRoots', true);
-            $currUrl = ArrayHelper::getValue($data, 'currUrl', '');
-            $nodeView = ArrayHelper::getValue($data, 'nodeView', '');
-            $nodeSelected = ArrayHelper::getValue($data, 'nodeSelected', '');
-            $formAction = ArrayHelper::getValue($data, 'formAction', '');
-            $formOptions = ArrayHelper::getValue($data, 'formOptions', []);
-            $iconsList = ArrayHelper::getValue($data, 'iconsList', []);
-            $nodeAddlViews = ArrayHelper::getValue($data, 'nodeAddlViews', []);
-            $nodeViewButtonLabels = ArrayHelper::getValue($data, 'nodeViewButtonLabels', []);
-            $breadcrumbs = ArrayHelper::getValue($data, 'breadcrumbs', []);
-            $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
-            $newHashData = $modelClass . !!$isAdmin . !!$softDelete . !!$showFormButtons .
-                !!$showIDAttribute . !!$showNameAttribute . $currUrl . $nodeView . $nodeSelected .
-                $nodeTitles['node'] . $nodeTitles['nodes'] . Json::encode($formOptions) . Json::encode($nodeAddlViews) . 
-                Json::encode($nodeViewButtonLabels) . Json::encode($icons) . Json::encode($breadcrumbs);
+            $parentKey = ArrayHelper::getValue($data, 'parentKey', null);
+            $parsedData = TreeSecurity::parseManageData($data);
+            $out = $parsedData['out'];
+            $oldHash = $parsedData['oldHash'];
+            $newHash = $parsedData['newHash'];
             /**
+             * @var Module $module
+             * @var Tree $treeClass
              * @var Tree $node
              */
+            $treeClass = $out['treeClass'];
             if (!isset($id) || empty($id)) {
-                $node = new $modelClass;
+                $node = new $treeClass;
                 $node->initDefaults();
             } else {
-                $node = $modelClass::findOne($id);
+                $node = $treeClass::findOne($id);
             }
             $module = TreeView::module();
             $params = $module->treeStructure + $module->dataStructure + [
                     'node' => $node,
                     'parentKey' => $parentKey,
-                    'action' => $formAction,
-                    'formOptions' => empty($formOptions) ? [] : $formOptions,
-                    'modelClass' => $modelClass,
-                    'currUrl' => $currUrl,
-                    'isAdmin' => $isAdmin,
-                    'iconsList' => $iconsList,
-                    'softDelete' => $softDelete,
-                    'showFormButtons' => $showFormButtons,
-                    'showIDAttribute' => $showIDAttribute,
-                    'showNameAttribute' => $showNameAttribute,
-                    'allowNewRoots' => $allowNewRoots,
-                    'nodeView' => $nodeView,
-                    'nodeAddlViews' => $nodeAddlViews,
-                    'nodeViewButtonLabels' => $nodeViewButtonLabels,
-                    'nodeSelected' => $nodeSelected,
-                    'breadcrumbs' => empty($breadcrumbs) ? [] : $breadcrumbs,
-                    'noNodesMessage' => '',
-                    'nodeTitle' => $nodeTitles['node'],
-                    'nodeTitlePlural' => $nodeTitles['nodes'],
-                ];
+                    'treeManageHash' => $newHash,
+                    'treeRemoveHash' => ArrayHelper::getValue($data, 'treeRemoveHash', ''),
+                    'treeMoveHash' => ArrayHelper::getValue($data, 'treeMoveHash', ''),
+                ] + $out;
             if (!empty($module->unsetAjaxBundles)) {
-                Event::on(
-                    View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($module) {
+                $cb = function ($e) use ($module) {
                     foreach ($module->unsetAjaxBundles as $bundle) {
                         unset($e->sender->assetBundles[$bundle]);
                     }
-                }
-                );
+                };
+                Event::on(View::class, View::EVENT_AFTER_RENDER, $cb);
             }
-            static::checkSignature('manage', $oldHash, $newHashData);
-            return $this->renderAjax($nodeView, ['params' => $params]);
+            TreeSecurity::checkSignature('manage', $oldHash, $newHash);
+            return $this->renderAjax($out['nodeView'], ['params' => $params]);
         };
         return self::process(
             $callback,
@@ -358,19 +286,24 @@ class NodeController extends Controller
     {
         static::checkValidRequest();
         $data = static::getPostData();
-        $nodeTitles = static::getNodeTitles($data);
-        $callback = function () use($data) {
+        $nodeTitles = TreeSecurity::getNodeTitles($data);
+        $callback = function () use ($data) {
             $id = ArrayHelper::getValue($data, 'id', null);
-            $modelClass = static::getModelClass($data);
-            $oldHash = ArrayHelper::getValue($data, 'treeRemoveHash', '');
-            $softDelete = ArrayHelper::getValue($data, 'softDelete', true);
-            $newHashData = $modelClass . $softDelete;
-            static::checkSignature('remove', $oldHash, $newHashData);
+            $parsedData = TreeSecurity::parseRemoveData($data);
+            $out = $parsedData['out'];
+            $oldHash = $parsedData['oldHash'];
+            $newHash = $parsedData['newHash'];
+            /**
+             * @var Tree $treeClass
+             * @var Tree $node
+             */
+            $treeClass = $out['treeClass'];
+            TreeSecurity::checkSignature('remove', $oldHash, $newHash);
             /**
              * @var Tree $node
              */
-            $node = $modelClass::findOne($id);
-            return $node->removeNode($softDelete);
+            $node = $treeClass::findOne($id);
+            return $node->removeNode($out['softDelete']);
         };
         return self::process(
             $callback,
@@ -386,37 +319,43 @@ class NodeController extends Controller
     {
         static::checkValidRequest();
         $data = static::getPostData();
-        $modelClass = static::getModelClass($data);
         $dir = ArrayHelper::getValue($data, 'dir', null);
         $idFrom = ArrayHelper::getValue($data, 'idFrom', null);
         $idTo = ArrayHelper::getValue($data, 'idTo', null);
-        $oldHash = ArrayHelper::getValue($data, 'treeMoveHash', '');
-        $allowNewRoots = ArrayHelper::getValue($data, 'allowNewRoots', true);
-        $newHashData = $modelClass . $allowNewRoots;
-        $nodeTitles = static::getNodeTitles($data);
+        $parsedData = TreeSecurity::parseMoveData($data);
+        /**
+         * @var Tree $treeClass
+         * @var Tree $node
+         */
+        $treeClass = $parsedData['out']['treeClass'];
+        $nodeTitles = TreeSecurity::getNodeTitles($data);
         /**
          * @var Tree $nodeFrom
          * @var Tree $nodeTo
          */
-        $nodeFrom = $modelClass::findOne($idFrom);
-        $nodeTo = $modelClass::findOne($idTo);
+        $nodeFrom = $treeClass::findOne($idFrom);
+        $nodeTo = $treeClass::findOne($idTo);
         $isMovable = $nodeFrom->isMovable($dir);
         $errorMsg = $isMovable ?
-        Yii::t('kvtree', 'Error while moving the {node}. Please try again later.', $nodeTitles) :
+            Yii::t('kvtree', 'Error while moving the {node}. Please try again later.', $nodeTitles) :
             Yii::t('kvtree', 'The selected {node} cannot be moved.', $nodeTitles);
-        $callback = function () use ($dir, $allowNewRoots, $isMovable, $nodeFrom, $nodeTo, $oldHash, $newHashData, $nodeTitles) {
+        $callback = function () use ($dir, $parsedData, $isMovable, $nodeFrom, $nodeTo, $nodeTitles) {
+            $out = $parsedData['out'];
+            $oldHash = $parsedData['oldHash'];
+            $newHash = $parsedData['newHash'];
             if (!empty($nodeFrom) && !empty($nodeTo)) {
-                static::checkSignature('move', $oldHash, $newHashData);
+                TreeSecurity::checkSignature('move', $oldHash, $newHash);
                 if (!$isMovable || ($dir !== 'u' && $dir !== 'd' && $dir !== 'l' && $dir !== 'r')) {
                     return false;
                 }
                 if ($dir === 'r') {
                     $nodeFrom->appendTo($nodeTo);
                 } else {
-                    if ($dir === 'l' && $nodeTo->isRoot() && $allowNewRoots) {
+                    if ($dir === 'l' && $nodeTo->isRoot() && $out['allowNewRoots']) {
                         $nodeFrom->makeRoot();
                     } elseif ($nodeTo->isRoot()) {
-                        throw new Exception(Yii::t('kvtree', 'Cannot move root level {nodes} before or after other root level {nodes}.', $nodeTitles));
+                        throw new Exception(Yii::t('kvtree',
+                            'Cannot move root level {nodes} before or after other root level {nodes}.', $nodeTitles));
                     } elseif ($dir == 'u') {
                         $nodeFrom->insertBefore($nodeTo);
                     } else {
@@ -428,18 +367,5 @@ class NodeController extends Controller
             return true;
         };
         return self::process($callback, $errorMsg, Yii::t('kvtree', 'The {node} was moved successfully.', $nodeTitles));
-    }
-    
-    /**
-     * Gets the node singular and plural titles
-     * @param array $data the source data
-     * @return array
-     */
-    protected static function getNodeTitles($data)
-    {
-        return [
-            'node' => ArrayHelper::getValue($data, 'nodeTitle', 'node'), 
-            'nodes' => ArrayHelper::getValue($data, 'nodeTitlePlural', 'nodes')
-        ];
     }
 }

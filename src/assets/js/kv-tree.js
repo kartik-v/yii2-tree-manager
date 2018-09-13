@@ -33,6 +33,7 @@
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
         escapeRegExp: function (str) {
+            // noinspection RegExpRedundantEscape
             return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
         addCss: function ($el, css) {
@@ -115,9 +116,9 @@
             };
         },
         getAjaxData: function (data) {
-            var self = this, objCsrf = {}, msg = this.messages,
+            var objCsrf = {}, msg = this.messages,
                 nodeTitles = {nodeTitle: msg.nodeTitle, nodeTitlePlural: msg.nodeTitlePlural};
-            objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken();
+            objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken(); // jshint ignore:line
             return $.extend(true, {}, data, objCsrf, nodeTitles);
         },
         validateTooltips: function () {
@@ -201,6 +202,7 @@
                 data: self.getAjaxData({
                     'id': key,
                     'modelClass': self.modelClass,
+                    'defaultBtnCss': self.defaultBtnCss,
                     'isAdmin': self.isAdmin,
                     'formAction': self.formAction,
                     'formOptions': self.formOptions,
@@ -218,7 +220,9 @@
                     'nodeSelected': self.nodeSelected,
                     'breadcrumbs': self.breadcrumbs,
                     'allowNewRoots': self.allowNewRoots,
-                    'treeManageHash': self.treeManageHash
+                    'treeManageHash': self.treeManageHash,
+                    'treeRemoveHash': self.treeRemoveHash,
+                    'treeMoveHash': self.treeMoveHash
                 }),
                 url: vUrl,
                 cache: true,
@@ -598,6 +602,7 @@
                 return;
             }
             if (!$node.attr('data-child-allowed')) {
+                // noinspection JSUnresolvedVariable
                 self.dialogLib.alert(msg.noChildAllowed);
                 return;
             }
@@ -696,6 +701,7 @@
             $h.addCss(self.$treeContainer, 'kv-collapsed');
         },
         check: function ($chk) {
+            // noinspection EqualityComparisonWithCoercionJS
             var self = this, isRoot = ($chk === true), desc, $node = isRoot ? self.$tree : $chk.closest('li'),
                 nodeKey = isRoot ? '' : $node.data('key'), isMultiple = self.multiple && self.multiple != 0; // jshint ignore:line
             if ($node.hasClass('kv-disabled') || (isRoot && !isMultiple)) {

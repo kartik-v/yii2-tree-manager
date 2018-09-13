@@ -8,7 +8,6 @@
 
 namespace kartik\tree;
 
-use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 

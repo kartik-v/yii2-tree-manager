@@ -13,13 +13,13 @@ use yii\db\ActiveRecord;
 /**
  * This is the base model class for the nested set tree structure
  *
- * @property string  $id
- * @property string  $root
- * @property string  $lft
- * @property string  $rgt
+ * @property string $id
+ * @property string $root
+ * @property string $lft
+ * @property string $rgt
  * @property integer $lvl
- * @property string  $name
- * @property string  $icon
+ * @property string $name
+ * @property string $icon
  * @property integer $icon_type
  * @property boolean $active
  * @property boolean $selected

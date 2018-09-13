@@ -25,11 +25,6 @@ use yii\web\View;
 class TreeViewInput extends TreeView
 {
     /**
-     * Caret rendered for the dropdown toggle
-     */
-    const CARET = '<div class="kv-carets"><span class="caret kv-dn"></span><span class="caret kv-up"></span></div>';
-
-    /**
      * @var Model the data model that this widget is associated with.
      */
     public $model;
@@ -73,7 +68,8 @@ class TreeViewInput extends TreeView
      *   - `placeholder`: string, defaults to `Select...`
      * - `dropdown`: _array_, the HTML attributes for the dropdown tree view menu.
      * - `options`: _array_, the HTML attributes for the wrapper container
-     * - `caret`: _string_, the markup for rendering the dropdown indicator for up and down. Defaults to [[CARET]].
+     * - `caret`: _string_, the markup for rendering the dropdown indicator for up and down. Defaults
+     *    to [[_defaultCaret]].
      */
     public $dropdownConfig = [];
 
@@ -81,6 +77,11 @@ class TreeViewInput extends TreeView
      * @var array the HTML attributes for the input that will store the selected nodes for the widget
      */
     public $options = ['class' => 'form-control hide'];
+
+    /**
+     * @var string default caret markup rendered for the dropdown toggle
+     */
+    protected $_defaultCaret;
 
     /**
      * @var string the placeholder for the dropdown input
@@ -102,6 +103,14 @@ class TreeViewInput extends TreeView
         }
         $this->showCheckbox = true;
         $css = 'kv-tree-input-widget';
+        if ($this->isBs4()) {
+            $carets = '<span class="kv-dn"><i class="fas fa-caret-down"></i></span>' .
+                '<span class="kv-up"><i class="fas fa-caret-up"></i></span>';
+        } else {
+            $carets = '<span class="kv-dn"><i class="caret"></i></span>' .
+                '<span class="kv-up"><i class="caret"></i></span>';
+        }
+        $this->_defaultCaret = Html::tag('div', $carets, ['class' => 'kv-carets']);
         if (!$this->showToolbar) {
             $css .= ' kv-tree-nofooter';
         }
@@ -158,7 +167,7 @@ class TreeViewInput extends TreeView
             'aria-expanded' => 'false',
         ], $input);
         if (empty($config['caret'])) {
-            $config['caret'] = self::CARET;
+            $config['caret'] = $this->_defaultCaret;
         }
         $config['options'] = $options;
         $this->dropdownConfig = $config;
@@ -253,7 +262,7 @@ class TreeViewInput extends TreeView
             'placeholder' => $this->_placeholder,
             'value' => empty($this->value) ? '' : $this->value,
             'caret' => $this->dropdownConfig['caret'],
-            'autoCloseOnSelect' => $this->autoCloseOnSelect
+            'autoCloseOnSelect' => $this->autoCloseOnSelect,
         ]);
         $var = $name . '_' . hash('crc32', $opts);
         $this->options['data-krajee-' . $name] = $var;

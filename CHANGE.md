@@ -3,8 +3,11 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.0.9
 
-**Date:** _work in process_
+**Date:** 13-Sep-2018
 
+- (enh #206): Enhancements to support Bootstrap 4.x.
+- (enh #205): Enhance data hashing and security via a separate `TreeSecurity` helper class (BC Breaking).
+- (enh #203): Update Russian Translations.
 - (enh #202): Enhance node title to be configurable in messages.
 - (bug #200): Correct validation for `TreeView::allowNewRoots`.
 - (enh #198): New property `TreeView::nodeButtonLabels` to configure submit and reset button icons/labels.
