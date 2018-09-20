@@ -35,7 +35,7 @@ return [
     'Already at top-most {node} in the hierarchy.' => '{node} уже находится в самом верху иерархии',
     'Are you sure you want to remove this {node}?' => 'Вы действительно хотите удалить {node}?',
     'Cannot move this {node} as the {node} details are not saved yet.' => 'Нельзя переместить {node} пока вы его не сохранили',
-    'Child Allowed' => 'Дочерние элементы разрешены'
+    'Child Allowed' => 'Дочерние элементы разрешены',
     'Clear search results' => 'Очистить результаты поиска',
     'Collapsed' => 'Свернутый',
     'Default' => 'По умолчанию',
