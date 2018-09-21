@@ -637,7 +637,7 @@ HTML;
         'defaultCheckedNodeIcon' => ['checked', 'check-square', 'check-square-o'],
         'defaultUncheckedNodeIcon' => ['unchecked', 'square', 'square-o'],
         'defaultChildNodeIcon' => ['file', 'file', 'file'],
-        'defaultParentNodeIcon' => ['folder', 'folder-close', 'folder-close', 'kv-node-closed'],
+        'defaultParentNodeIcon' => ['folder', 'folder', 'folder-close', 'kv-node-closed'],
         'defaultParentNodeOpenIcon' => ['folder-open', 'folder-open', 'folder-open', 'kv-node-opened'],
     ];
 
@@ -663,7 +663,7 @@ HTML;
         foreach (static::$_nodeIcons as $prop => $setting) {
             if (!isset($this->$prop)) {
                 $icon = $isBs4 ? $setting[1] : ($this->fontAwesome ? $setting[2] : $setting[0]);
-                $pre = $prefix;
+                $pre = $this->fontAwesome && !$isBs4 ? 'fa fa-' : $prefix;
                 if ($isBs4 && substr($setting[2], -2) === '-o') {
                     $pre = 'far fa-';
                 }

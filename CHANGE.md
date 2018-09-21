@@ -1,6 +1,12 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.1.0
+
+**Date:** _under development_
+
+- Correct icons initialization for BS3 Font Awesome.
+
 ## Version 1.0.9
 
 **Date:** 13-Sep-2018
