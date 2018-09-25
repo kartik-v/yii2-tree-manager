@@ -681,8 +681,8 @@ HTML;
      *
      * @param array $config the widget configuration
      *
-     * @throws InvalidConfigException
      * @return array
+     * @throws InvalidConfigException
      */
     public static function getConfig($config = [])
     {
@@ -919,6 +919,7 @@ HTML;
      * Renders the widget markup
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function renderWidget()
     {
@@ -1183,6 +1184,7 @@ HTML;
      * Renders the markup for the detail form to edit/view the selected tree node
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function renderDetail()
     {

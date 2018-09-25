@@ -58,8 +58,9 @@ class TreeSecurity
             'breadcrumbs' => [],
         ];
         $out = static::getParsedData($defaults, $data, function ($type, $key, $value) {
-            if ($type === 'array' && $key === 'iconsList') {
-                return array_values($value);
+            if ($type === 'array' && $key === 'iconsList' && is_array($value)) {
+                $out = isset($value[0]) ? $value[0] : '';
+                return count($value) === 1 && ($out === 'none' || $out === 'text') ? $out : array_values($value);
             }
             return $value;
         });
