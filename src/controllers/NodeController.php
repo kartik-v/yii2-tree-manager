@@ -129,6 +129,8 @@ class NodeController extends Controller
 
     /**
      * Saves a node once form is submitted
+     * @throws InvalidConfigException
+     * @throws ErrorException
      */
     public function actionSave()
     {
@@ -236,7 +238,7 @@ class NodeController extends Controller
         $nodeTitles = TreeSecurity::getNodeTitles($data);
         $callback = function () use ($data, $nodeTitles) {
             $id = ArrayHelper::getValue($data, 'id', null);
-            $parentKey = ArrayHelper::getValue($data, 'parentKey', null);
+            $parentKey = ArrayHelper::getValue($data, 'parentKey', '');
             $parsedData = TreeSecurity::parseManageData($data);
             $out = $parsedData['out'];
             $oldHash = $parsedData['oldHash'];

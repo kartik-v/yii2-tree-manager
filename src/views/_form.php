@@ -63,8 +63,8 @@ $resetTitle = Yii::t('kvtree', 'Reset');
 $submitTitle = Yii::t('kvtree', 'Save');
 
 // parse parent key
-if ($noNodesMessage) {
-    $parentKey = '';
+if ($node->isNewRecord) {
+    $parentKey = empty($parentKey) ? '' : $parentKey;
 } elseif (empty($parentKey)) {
     $parent = $node->parents(1)->one();
     $parentKey = empty($parent) ? '' : Html::getAttributeValue($parent, $keyAttribute);
@@ -120,6 +120,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
+<?= Html::hiddenInput('noNodesMessage', $noNodesMessage) ?>
 
 <?php
 /**
@@ -130,13 +131,12 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 <?= Html::hiddenInput('treeManageHash', $treeManageHash) ?>
 <?= Html::hiddenInput('treeRemoveHash', $treeRemoveHash) ?>
 <?= Html::hiddenInput('treeMoveHash', $treeMoveHash) ?>
-
 <?php
 /**
  * BEGIN VALID NODE DISPLAY
  */
 ?>
-<?php if (!$noNodesMessage): ?>
+<?php if (!$node->isNewRecord || !empty($parentKey)): ?>
     <?php
     $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
     $inputOpts = [];                                      // readonly/disabled input options for node
@@ -263,10 +263,10 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
         <?php if ($iconsList === 'text'): ?>
 			<div class="row">
 				<div class="col-sm-4">
-                    <?= $form->field($node, $iconTypeAttribute)->dropdownList([
-                        TreeView::ICON_CSS => 'CSS Suffix',
-                        TreeView::ICON_RAW => 'Raw Markup',
-                    ], $inputOpts) ?>
+					$form->field($node, $iconTypeAttribute)->dropdownList([
+					TreeView::ICON_CSS => 'CSS Suffix',
+					TreeView::ICON_RAW => 'Raw Markup',
+					], $inputOpts) ?>
 				</div>
 				<div class="col-sm-8">
                     <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>

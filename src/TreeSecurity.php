@@ -14,6 +14,7 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\console\Application;
 
@@ -183,7 +184,8 @@ class TreeSecurity
         if (Yii::$app->security->validateData($oldHash, $module->treeEncryptSalt) && $oldHash === $newHash) {
             return;
         }
-        $params = YII_DEBUG ? '<pre>OLD HASH:<br>' . $oldHash . '<br>NEW HASH:<br>' . $newHash . '</pre>' : '';
+        $params = YII_DEBUG ? '<pre>OLD HASH:<br>' . Html::encode($oldHash) .
+            '<br>NEW HASH:<br>' . Html::encode($newHash) . '</pre>' : '';
         $message = Yii::t(
             'kvtree',
             '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}',

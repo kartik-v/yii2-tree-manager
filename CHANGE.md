@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _under development_
 
+- (bug #217, bug #219, enh #220): Enhance tree management for root level additions.
 - (bug #212): Correct icon list parsing for node.
 - (enh #210): Correct Russian Translations.
 - Correct icons initialization for BS3 Font Awesome.

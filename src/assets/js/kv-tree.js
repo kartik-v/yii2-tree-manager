@@ -79,6 +79,7 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             $form = self.$detail.find('form');
+            self.noNodesMessage = $form.find('input[name="noNodesMessage"]').val();
             self.treeManageHash = $form.find('input[name="treeManageHash"]').val();
             self.treeRemoveHash = $form.find('input[name="treeRemoveHash"]').val();
             self.treeMoveHash = $form.find('input[name="treeMoveHash"]').val();
@@ -218,6 +219,7 @@
                     'nodeAddlViews': self.nodeAddlViews,
                     'nodeViewButtonLabels': self.nodeViewButtonLabels,
                     'nodeSelected': self.nodeSelected,
+                    'noNodesMessage': self.noNodesMessage,
                     'breadcrumbs': self.breadcrumbs,
                     'allowNewRoots': self.allowNewRoots,
                     'treeManageHash': self.treeManageHash,

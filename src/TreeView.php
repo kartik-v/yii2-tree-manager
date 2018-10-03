@@ -842,12 +842,6 @@ HTML;
         }
         $this->toolbarOptions['role'] = 'toolbar';
         $this->buttonGroupOptions['role'] = 'group';
-        if (empty($this->nodeTitle)) {
-            $this->nodeTitle = Yii::t('kvtree', 'node');
-        }
-        if (empty($this->nodeTitlePlural)) {
-            $this->nodeTitlePlural = Yii::t('kvtree', 'nodes');
-        }
         $msgParams = ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural];
         $this->clientMessages += [
             'invalidCreateNode' => Yii::t('kvtree', 'Cannot create {node}. Parent node is not saved or is invalid.',
@@ -1194,9 +1188,7 @@ HTML;
          */
         $modelClass = $this->query->modelClass;
         $node = $this->displayValue ? $modelClass::findOne($this->displayValue) : null;
-        $msg = null;
         if (empty($node)) {
-            $msg = Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions);
             $node = new $modelClass;
         }
         $iconTypeAttribute = ArrayHelper::getValue($this->_module->dataStructure, 'iconTypeAttribute', 'icon_type');
@@ -1221,7 +1213,7 @@ HTML;
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeSelected' => $this->_nodeSelected,
             'breadcrumbs' => $this->breadcrumbs,
-            'noNodesMessage' => $msg,
+            'noNodesMessage' => Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions),
             'nodeTitle' => $this->nodeTitle,
             'nodeTitlePlural' => $this->nodeTitlePlural,
             'defaultBtnCss' => $this->getDefaultBtnCss(),
@@ -1300,6 +1292,12 @@ HTML;
      */
     protected function initTreeView()
     {
+        if (empty($this->nodeTitle)) {
+            $this->nodeTitle = Yii::t('kvtree', 'node');
+        }
+        if (empty($this->nodeTitlePlural)) {
+            $this->nodeTitlePlural = Yii::t('kvtree', 'nodes');
+        }
         $this->validateSourceData();
         $this->_module = Config::initModule(Module::class);
         if (!isset($this->bsVersion) && isset($this->_module->bsVersion)) {
