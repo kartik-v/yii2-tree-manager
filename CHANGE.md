@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.0
 
-**Date:** _under development_
+**Date:** 03-Oct-2018
 
 - (bug #217, bug #219, enh #220): Enhance tree management for root level additions.
 - (bug #212): Correct icon list parsing for node.

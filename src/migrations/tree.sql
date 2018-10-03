@@ -1,7 +1,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-tree-manager
- * @version 1.0.9
+ * @version 1.1.0
  */
  
 DROP TABLE IF EXISTS tbl_tree;

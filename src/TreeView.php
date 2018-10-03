@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package   yii2-tree-manager
- * @version   1.0.9
+ * @version   1.1.0
  */
 
 namespace kartik\tree;
@@ -695,6 +695,7 @@ HTML;
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public static function begin($config = [])
     {
@@ -762,6 +763,7 @@ HTML;
 
     /**
      * @inheritdoc
+     * @throws \Exception
      */
     public function init()
     {
@@ -773,6 +775,7 @@ HTML;
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function run()
     {
@@ -781,6 +784,7 @@ HTML;
 
     /**
      * Initialize all options & settings for the widget
+     * @throws InvalidConfigException
      */
     public function initOptions()
     {
@@ -1238,6 +1242,7 @@ HTML;
 
     /**
      * Registers the client assets for the widget
+     * @throws \Exception
      */
     public function registerAssets()
     {
