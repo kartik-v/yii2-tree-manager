@@ -1,6 +1,13 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.1.1
+
+**Date:** _under development_
+
+- Better sharing of `noNodesMessage` setting during tree manage. 
+
+
 ## Version 1.1.0
 
 **Date:** 03-Oct-2018

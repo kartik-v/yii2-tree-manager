@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package   yii2-tree-manager
- * @version   1.1.0
+ * @version   1.1.1
  */
 
 namespace kartik\tree;
@@ -846,24 +846,22 @@ HTML;
         }
         $this->toolbarOptions['role'] = 'toolbar';
         $this->buttonGroupOptions['role'] = 'group';
-        $msgParams = ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural];
+        $p = ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural];
         $this->clientMessages += [
             'invalidCreateNode' => Yii::t('kvtree', 'Cannot create {node}. Parent node is not saved or is invalid.',
-                $msgParams),
-            'emptyNode' => Yii::t('kvtree', '(new)'),
-            'removeNode' => Yii::t('kvtree', 'Are you sure you want to remove this {node}?', $msgParams),
-            'nodeRemoved' => Yii::t('kvtree', 'The {node} was removed successfully.', $msgParams),
-            'nodeRemoveError' => Yii::t('kvtree', 'Error while removing the {node}. Please try again later.',
-                $msgParams),
-            'nodeNewMove' => Yii::t('kvtree', 'Cannot move this {node} as the {node} details are not saved yet.',
-                $msgParams),
-            'nodeTop' => Yii::t('kvtree', 'Already at top-most {node} in the hierarchy.', $msgParams),
-            'nodeBottom' => Yii::t('kvtree', 'Already at bottom-most {node} in the hierarchy.', $msgParams),
-            'nodeLeft' => Yii::t('kvtree', 'Already at left-most {node} in the hierarchy.', $msgParams),
-            'nodeRight' => Yii::t('kvtree', 'Already at right-most {node} in the hierarchy.', $msgParams),
-            'emptyNodeRemoved' => Yii::t('kvtree', 'The untitled {node} was removed.', $msgParams),
-            'selectNode' => Yii::t('kvtree', 'Select a {node} by clicking on one of the tree items.', $msgParams),
-            'noChildAllowed' => Yii::t('kvtree', 'You cannot add children under this {node}.', $msgParams),
+                $p),
+            'emptyNode' => Yii::t('kvtree', '(new)', $p),
+            'removeNode' => Yii::t('kvtree', 'Are you sure you want to remove this {node}?', $p),
+            'nodeRemoved' => Yii::t('kvtree', 'The {node} was removed successfully.', $p),
+            'nodeRemoveError' => Yii::t('kvtree', 'Error while removing the {node}. Please try again later.', $p),
+            'nodeNewMove' => Yii::t('kvtree', 'Cannot move this {node} as the {node} details are not saved yet.', $p),
+            'nodeTop' => Yii::t('kvtree', 'Already at top-most {node} in the hierarchy.', $p),
+            'nodeBottom' => Yii::t('kvtree', 'Already at bottom-most {node} in the hierarchy.', $p),
+            'nodeLeft' => Yii::t('kvtree', 'Already at left-most {node} in the hierarchy.', $p),
+            'nodeRight' => Yii::t('kvtree', 'Already at right-most {node} in the hierarchy.', $p),
+            'emptyNodeRemoved' => Yii::t('kvtree', 'The untitled {node} was removed.', $p),
+            'selectNode' => Yii::t('kvtree', 'Select a {node} by clicking on one of the tree items.', $p),
+            'noChildAllowed' => Yii::t('kvtree', 'You cannot add children under this {node}.', $p),
             'nodeTitle' => $this->nodeTitle,
             'nodeTitlePlural' => $this->nodeTitlePlural,
         ];
@@ -1280,6 +1278,7 @@ HTML;
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeSelected' => $this->_nodeSelected,
             'defaultBtnCss' => $this->getDefaultBtnCss(),
+            'noNodesMessage' => Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions),
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
             'cascadeSelectChildren' => $this->cascadeSelectChildren,

@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-tree-manager
- * @version 1.1.0
+ * @version 1.1.1
  * @see http://demos.krajee.com/tree-manager
  */
 

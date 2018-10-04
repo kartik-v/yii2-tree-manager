@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package   yii2-tree-manager
- * @version   1.1.0
+ * @version   1.1.1
  */
 
 use kartik\form\ActiveForm;
@@ -22,7 +22,7 @@ use yii\web\View;
  * @var string $nameAttribute
  * @var string $iconAttribute
  * @var string $iconTypeAttribute
- * @var string $iconsList
+ * @var array|string $iconsList
  * @var string $formAction
  * @var array $breadcrumbs
  * @var array $nodeAddlViews
@@ -39,7 +39,7 @@ use yii\web\View;
  * @var string $keyField
  * @var string $nodeView
  * @var string $nodeAddlViews
- * @var string $nodeViewButtonLabels
+ * @var array $nodeViewButtonLabels
  * @var string $noNodesMessage
  * @var boolean $softDelete
  * @var string $modelClass
@@ -120,7 +120,6 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
-<?= Html::hiddenInput('noNodesMessage', $noNodesMessage) ?>
 
 <?php
 /**

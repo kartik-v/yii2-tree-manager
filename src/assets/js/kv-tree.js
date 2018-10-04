@@ -1,7 +1,7 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-tree-manager
- * @version 1.1.0
+ * @version 1.1.1
  * 
  * Tree View Validation Module.
  *
@@ -79,7 +79,6 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             $form = self.$detail.find('form');
-            self.noNodesMessage = $form.find('input[name="noNodesMessage"]').val();
             self.treeManageHash = $form.find('input[name="treeManageHash"]').val();
             self.treeRemoveHash = $form.find('input[name="treeRemoveHash"]').val();
             self.treeMoveHash = $form.find('input[name="treeMoveHash"]').val();
