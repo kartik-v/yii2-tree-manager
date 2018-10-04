@@ -6,6 +6,7 @@ Change Log: `yii2-tree-manager`
 **Date:** _under development_
 
 - Better sharing of `noNodesMessage` setting during tree manage. 
+- Added missing german translations
 
 
 ## Version 1.1.0
