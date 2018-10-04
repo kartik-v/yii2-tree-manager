@@ -192,9 +192,9 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
      * SECTION 4: Setup form action buttons.
      */
     ?>
-	<div class="kv-detail-heading">
+    <div class="kv-detail-heading">
         <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
-			<div class="float-right pull-right">
+            <div class="float-right pull-right">
                 <?= Html::resetButton(
                     ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle),
                     ['class' => 'btn ' . $defaultBtnCss, 'title' => $resetTitle]
@@ -203,18 +203,18 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
                     ArrayHelper::getValue($nodeViewButtonLabels, 'submit', $submitTitle),
                     ['class' => 'btn btn-primary', 'title' => $submitTitle]
                 ) ?>
-			</div>
+            </div>
         <?php endif; ?>
-		<div class="kv-detail-crumbs"><?= $name ?></div>
-		<div class="clearfix"></div>
-	</div>
+        <div class="kv-detail-crumbs"><?= $name ?></div>
+        <div class="clearfix"></div>
+    </div>
 
     <?php
     /**
      * SECTION 5: Setup alert containers. Mandatory to set this up.
      */
     ?>
-	<div class="kv-treeview-alerts">
+    <div class="kv-treeview-alerts">
         <?php
         if ($session && $session->hasFlash('success')) {
             echo $showAlert('success', $session->getFlash('success'), false);
@@ -229,7 +229,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
         echo $showAlert('warning');
         echo $showAlert('info');
         ?>
-	</div>
+    </div>
 
     <?php
     /**
@@ -247,39 +247,39 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
     ?>
     <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
         <?php if ($showIDAttribute && $showNameAttribute): ?>
-			<div class="row">
-				<div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-4">
                     <?= $keyField ?>
-				</div>
-				<div class="col-sm-8">
+                </div>
+                <div class="col-sm-8">
                     <?= $nameField ?>
-				</div>
-			</div>
+                </div>
+            </div>
         <?php else: ?>
             <?= $keyField ?>
             <?= $nameField ?>
         <?php endif; ?>
         <?php if ($iconsList === 'text'): ?>
-			<div class="row">
-				<div class="col-sm-4">
-					$form->field($node, $iconTypeAttribute)->dropdownList([
-					TreeView::ICON_CSS => 'CSS Suffix',
-					TreeView::ICON_RAW => 'Raw Markup',
-					], $inputOpts) ?>
-				</div>
-				<div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-4">
+                    <?= $form->field($node, $iconTypeAttribute)->dropdownList([
+                        TreeView::ICON_CSS => 'CSS Suffix',
+                        TreeView::ICON_RAW => 'Raw Markup',
+                        ], $inputOpts) ?>
+                </div>
+                <div class="col-sm-8">
                     <?= $form->field($node, $iconAttribute)->textInput($inputOpts) ?>
-				</div>
-			</div>
+                </div>
+            </div>
         <?php endif; ?>
     <?php else: ?>
-		<div class="row">
-			<div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-6">
                 <?= $keyField ?>
                 <?= Html::activeHiddenInput($node, $iconTypeAttribute) ?>
                 <?= $nameField ?>
-			</div>
-			<div class="col-sm-6">
+            </div>
+            <div class="col-sm-6">
                 <?= /** @noinspection PhpUndefinedMethodInspection */
                 $form->field($node, $iconAttribute)->multiselect($iconsList, [
                     'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
@@ -295,8 +295,8 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
                     },
                     'selector' => 'radio',
                 ]) ?>
-			</div>
-		</div>
+            </div>
+        </div>
     <?php endif; ?>
 
     <?php
@@ -312,7 +312,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
      */
     ?>
     <?php if ($isAdmin): ?>
-		<h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
+        <h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
 
         <?php
         /**
@@ -326,27 +326,27 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
          * SECTION 11: Default mandatory admin controlled attributes.
          */
         ?>
-		<div class="row">
-			<div class="col-sm-4">
+        <div class="row">
+            <div class="col-sm-4">
                 <?= $form->field($node, 'active')->checkbox() ?>
                 <?= $form->field($node, 'visible')->checkbox() ?>
                 <?= $form->field($node, 'readonly')->checkbox() ?>
                 <?= $form->field($node, 'disabled')->checkbox() ?>
                 <?= $form->field($node, 'child_allowed')->checkbox() ?>
-			</div>
-			<div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
                 <?= $form->field($node, 'selected')->checkbox() ?>
                 <?= $form->field($node, 'collapsed')->checkbox($flagOptions) ?>
                 <?= $form->field($node, 'removable')->checkbox() ?>
                 <?= $form->field($node, 'removable_all')->checkbox($flagOptions) ?>
-			</div>
-			<div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
                 <?= $form->field($node, 'movable_u')->checkbox() ?>
                 <?= $form->field($node, 'movable_d')->checkbox() ?>
                 <?= $form->field($node, 'movable_l')->checkbox() ?>
                 <?= $form->field($node, 'movable_r')->checkbox() ?>
-			</div>
-		</div>
+            </div>
+        </div>
 
         <?php
         /**
