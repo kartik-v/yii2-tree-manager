@@ -171,7 +171,7 @@ ul.kv-tree, .kv-tree ul {
     padding-left: 0.75em;
     border: dotted #333;
     border-width: 0 0 1px 1px;
-    line-height: 25px;
+    line-height: 1.9;
 }
 
 .kv-tree li ul {
@@ -189,7 +189,7 @@ ul.kv-tree, .kv-tree ul {
 .kv-parent ul li:last-child ul {
     margin-bottom: -0.75em;
     padding-bottom: 0.75em;
-    border-left: 0.1em solid #fff;
+    border-left-color: #fff;
 }
 
 .kv-tree li.kv-parent {

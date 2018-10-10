@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _under development_
 
+- (enh #223): Better styling of node tree.
 - (enh #222): Add German Translations.
 - (bug #221): Correct node view form tag.
 - Better sharing of `noNodesMessage` setting during tree manage.
