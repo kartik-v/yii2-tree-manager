@@ -217,6 +217,7 @@
                     'nodeView': self.nodeView,
                     'nodeAddlViews': self.nodeAddlViews,
                     'nodeViewButtonLabels': self.nodeViewButtonLabels,
+                    'nodeViewParams': self.nodeViewParams,
                     'nodeSelected': self.nodeSelected,
                     'noNodesMessage': self.noNodesMessage,
                     'breadcrumbs': self.breadcrumbs,

@@ -263,6 +263,9 @@ class NodeController extends Controller
                     'treeRemoveHash' => ArrayHelper::getValue($data, 'treeRemoveHash', ''),
                     'treeMoveHash' => ArrayHelper::getValue($data, 'treeMoveHash', ''),
                 ] + $out;
+            if (!empty($data['nodeViewParams'])) {
+                $params = ArrayHelper::merge($params, unserialize($data['nodeViewParams']));
+            }
             if (!empty($module->unsetAjaxBundles)) {
                 $cb = function ($e) use ($module) {
                     foreach ($module->unsetAjaxBundles as $bundle) {

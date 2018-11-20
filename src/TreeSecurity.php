@@ -54,6 +54,7 @@ class TreeSecurity
             'formOptions' => [],
             'nodeAddlViews' => [],
             'nodeViewButtonLabels' => [],
+            'nodeViewParams' => '',
             'icons' => [],
             'iconsList' => [],
             'breadcrumbs' => [],

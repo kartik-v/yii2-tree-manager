@@ -1213,6 +1213,7 @@ HTML;
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
+            'nodeViewParams' => serialize($this->nodeViewParams),
             'nodeSelected' => $this->_nodeSelected,
             'breadcrumbs' => $this->breadcrumbs,
             'noNodesMessage' => Html::tag('div', $this->emptyNodeMsg, $this->emptyNodeMsgOptions),
@@ -1275,6 +1276,7 @@ HTML;
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
             'nodeAddlViews' => $this->nodeAddlViews,
+            'nodeViewParams' => serialize($this->nodeViewParams),
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeSelected' => $this->_nodeSelected,
             'defaultBtnCss' => $this->getDefaultBtnCss(),
@@ -1283,7 +1285,7 @@ HTML;
             'multiple' => $this->multiple,
             'cascadeSelectChildren' => $this->cascadeSelectChildren,
             'allowNewRoots' => $this->allowNewRoots,
-            'hideUnmatchedSearchItems' => $this->hideUnmatchedSearchItems,
+            'hideUnmatchedSearchItems' => $this->hideUnmatchedSearchItems
         ];
         $this->pluginOptions['rootKey'] = self::ROOT_KEY;
         $this->registerPlugin('treeview');
