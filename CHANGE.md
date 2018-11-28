@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _under development_
 
+- (enh #232): Correct migration path in documentation.
 - (enh #228): Correct parsing and sending of `nodeViewParams`.
 - (enh #223): Better styling of node tree.
 - (enh #222): Add German Translations.

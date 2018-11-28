@@ -91,7 +91,7 @@ Create your database table to store the tree structure. You can do it in one of 
 You can run the migrations script provided to create the database structure from your yii programming console:
 
 ```
-php yii migrate/up --migrationPath=@vendor/kartik-v/yii2-tree-manager/migrations
+php yii migrate/up --migrationPath=@vendor/kartik-v/yii2-tree-manager/src/migrations
 ```
 
 #### Option 2: Executing SQL script
