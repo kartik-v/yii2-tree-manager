@@ -1,41 +1,41 @@
 {
-  "name": "kartik-v/yii2-tree-manager",
-  "description": "An enhanced tree management module with tree node selection and manipulation using nested sets.",
-  "keywords": [
-    "bootstrap",
-    "tree",
-    "treeview",
-    "krajee",
-    "hierarchy",
-    "nested",
-    "set",
-    "nestedset",
-    "ajax",
-    "jquery"
-  ],
-  "homepage": "https://github.com/kartik-v/yii2-tree-manager",
-  "type": "yii2-extension",
-  "license": "BSD-3-Clause",
-  "authors": [
-    {
-      "name": "Kartik Visweswaran",
-      "email": "kartikv2@gmail.com",
-      "homepage": "http://www.krajee.com/"
+    "name": "kartik-v/yii2-tree-manager",
+    "description": "An enhanced tree management module with tree node selection and manipulation using nested sets.",
+    "keywords": [
+        "bootstrap",
+        "tree",
+        "treeview",
+        "krajee",
+        "hierarchy",
+        "nested",
+        "set",
+        "nestedset",
+        "ajax",
+        "jquery"
+    ],
+    "homepage": "https://github.com/kartik-v/yii2-tree-manager",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Kartik Visweswaran",
+            "email": "kartikv2@gmail.com",
+            "homepage": "http://www.krajee.com/"
+        }
+    ],
+    "require": {
+        "kartik-v/yii2-widget-activeform": ">=1.5.7",
+        "creocoder/yii2-nested-sets": ">=0.9",
+        "kartik-v/yii2-dialog": ">=1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "kartik\\tree\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
     }
-  ],
-  "require": {
-    "kartik-v/yii2-widget-activeform": ">=1.5.7",
-    "creocoder/yii2-nested-sets": "~0.9",
-    "kartik-v/yii2-dialog": "~1.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "kartik\\tree\\": "src"
-    }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.1.x-dev"
-    }
-  }
 }

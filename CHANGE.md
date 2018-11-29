@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.1
 
-**Date:** _under development_
+**Date:** 29-Nov-2018
 
 - (enh #232): Correct migration path in documentation.
 - (enh #228): Correct parsing and sending of `nodeViewParams`.
