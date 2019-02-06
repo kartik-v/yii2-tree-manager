@@ -241,7 +241,10 @@ class TreeView extends Widget
      */
     public $cascadeSelectChildren = true;
 
-    public $allowSelectOnlyLeaves = false;
+    /**
+     * @var boolean whether to restrict the select to the leaves of the tree.
+     */
+    public $restrictSelectToLeaves = false;
 
     /**
      * @var integer animation duration (ms) for fading in and out alerts that are displayed during manipulation of nodes.
@@ -1286,6 +1289,7 @@ HTML;
             'breadcrumbs' => $this->breadcrumbs,
             'multiple' => $this->multiple,
             'cascadeSelectChildren' => $this->cascadeSelectChildren,
+            'restrictSelectToLeaves' => $this->restrictSelectToLeaves,
             'allowNewRoots' => $this->allowNewRoots,
             'hideUnmatchedSearchItems' => $this->hideUnmatchedSearchItems
         ];
