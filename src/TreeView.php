@@ -241,6 +241,8 @@ class TreeView extends Widget
      */
     public $cascadeSelectChildren = true;
 
+    public $allowSelectOnlyLeaves = false;
+
     /**
      * @var integer animation duration (ms) for fading in and out alerts that are displayed during manipulation of nodes.
      */
