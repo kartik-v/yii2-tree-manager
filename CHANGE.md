@@ -1,5 +1,10 @@
 Change Log: `yii2-tree-manager`
 ===============================
+## Version 1.1.2
+
+**Date:** 02-Feb-2019
+
+- New boolean property `restrictSelectToLeaves` to restrict nodes selection to leaves on TreeViewInput.
 
 ## Version 1.1.1
 
