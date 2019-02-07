@@ -709,6 +709,9 @@
             if ($node.hasClass('kv-disabled') || (isRoot && !isMultiple)) {
                 return;
             }
+            if ($node.hasClass('kv-parent') && self.restrictSelectToLeaves) {
+                return;
+            }
             if ($node.hasClass('kv-selected')) {
                 if (!self.raise('treeview.unchecked', [nodeKey])) {
                     return;
@@ -1024,6 +1027,7 @@
         },
         breadcrumbs: {},
         cascadeSelectChildren: true,
+        restrictSelectToLeaves: false,
         rootKey: '',
         hideUnmatchedSearchItems: true
     };
