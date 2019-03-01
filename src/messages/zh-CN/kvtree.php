@@ -17,14 +17,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '',
-    'Cannot create {node}. Parent node is not saved or is invalid.' => '',
-    'Cannot move root level {nodes} before or after other root level {nodes}.' => '',
-    'Child Allowed' => '',
-    'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.' => '',
-    'You cannot add children under this {node}.' => '',
-    'node' => '',
-    'nodes' => '',
+    '<h4>Operation Disallowed</h4><hr>Invalid request signature detected during tree data <b>{action}</b> action! Please refresh the page and retry.{params}' => '<h4>拒绝操作</h4><hr>无效的签名验证查看这个action<b>{action}</b>! 或尝试重新刷新页面。{params}',
+    'Cannot create {node}. Parent node is not saved or is invalid.' => '无法创建节点{node}。可能是父节点没有保存成功。',
+    'Cannot move root level {nodes} before or after other root level {nodes}.' => '无法将root级别的节点{nodes}移动到其他root级别节点{nodes}的前面或后面。',
+    'Child Allowed' => '允许建立子节点',
+    'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.' => '没有节点可以显示。请使用工具栏按钮添加节点。',
+    'You cannot add children under this {node}.' => '不能在{node}下添加子节点。',
+    'node' => '节点',
+    'nodes' => '节点',
     'Cannot create {node}. Parent {node} is not saved or is invalid.' => '@@无法创建节点，父节点未保存或无效。@@',
     'No valid tree {nodes} are available for display. Use toolbar buttons to add tree {nodes}.' => '@@没有有效的节点可以显示，请用工具条里按钮添加节点。@@',
     '(new)' => '(新建)',
