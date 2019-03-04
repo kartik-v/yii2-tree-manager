@@ -48,6 +48,7 @@ use yii\web\View;
  * @var string $treeSaveHash
  * @var string $treeRemoveHash
  * @var string $treeMoveHash
+ * @var string $hideCssClass
  */
 ?>
 
@@ -77,10 +78,10 @@ $module = TreeView::module();
 $form = ActiveForm::begin(['action' => $formAction, 'options' => $formOptions]);
 
 // helper function to show alert
-$showAlert = function ($type, $body = '', $hide = true) {
+$showAlert = function ($type, $body = '', $hide = true) use($hideCssClass) {
     $class = "alert alert-{$type}";
     if ($hide) {
-        $class .= ' hide';
+        $class .= ' ' . $hideCssClass;
     }
     return Html::tag('div', '<div>' . $body . '</div>', ['class' => $class]);
 };

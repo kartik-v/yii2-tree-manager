@@ -534,6 +534,14 @@ class TreeView extends Widget
     public $treeOptions = ['style' => 'height:410px'];
 
     /**
+     * @var string the CSS class to hide HTML elements on the page. If not set this will default to one of the following
+     * depending on Bootstrap Version:
+     * - if [[bsVersion]] = 3, then this will default to `hidden_xs`
+     * - if [[bsVersion]] = 4, then this will default to `d-none`
+     */
+    public $hideCssClass;
+
+    /**
      * @var array the HTML attributes for the detail form container which will display the details of the selected node
      */
     public $detailOptions = [];
@@ -792,6 +800,9 @@ HTML;
         if (!$this->_module->treeStructure['treeAttribute']) {
             $this->allowNewRoots = false;
         }
+        if (!isset($this->hideCssClass)) {
+            $this->hideCssClass = $this->getCssClass(self::BS_HIDDEN_XS);
+        }
         $this->initIcons();
         $this->_nodes = $this->query->all();
         $this->_iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
@@ -803,7 +814,7 @@ HTML;
             $this->buttonIconOptions['class'] = $this->fontAwesome ? 'kv-icon-10' : 'kv-icon-05';
         }
         if (empty($this->options['class'])) {
-            $this->options['class'] = 'form-control hide';
+            $this->options['class'] = 'form-control ' . $this->hideCssClass ;
         }
         Html::addCssClass($this->treeWrapperOptions, 'kv-tree-wrapper');
         Html::addCssClass($this->headerOptions, 'kv-header-container');
@@ -1200,6 +1211,7 @@ HTML;
         $url = Yii::$app->request->url;
         $manageData = TreeSecurity::parseManageData([
             'formOptions' => $this->nodeFormOptions,
+            'hideCssClass' => $this->hideCssClass,
             'modelClass' => $modelClass,
             'formAction' => $this->nodeActions[Module::NODE_SAVE],
             'currUrl' => $url,
@@ -1253,6 +1265,7 @@ HTML;
         Dialog::widget($this->krajeeDialogSettings);
         $this->pluginOptions += [
             'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog'),
+            'hideCssClass' => $this->hideCssClass,
             'treeId' => $this->treeOptions['id'],
             'detailId' => $this->detailOptions['id'],
             'toolbarId' => $this->toolbarOptions['id'],

@@ -37,6 +37,7 @@ class TreeSecurity
         $nodeTitles = static::getNodeTitles($data);
         $defaults = [
             'modelClass' => '',
+            'hideCssClass' => '',
             'defaultBtnCss' => '',
             'formAction' => '',
             'currUrl' => '',

@@ -12,7 +12,7 @@
  */
 (function ($) {
     /*jshint bitwise: false*/
-    "use strict";
+    'use strict';
 
     var $h, TreeView;
 
@@ -34,13 +34,13 @@
         },
         escapeRegExp: function (str) {
             // noinspection RegExpRedundantEscape
-            return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
         },
         addCss: function ($el, css) {
             $el.removeClass(css).addClass(css);
         },
         hashString: function (s) {
-            return s.split("").reduce(function (a, b) {
+            return s.split('').reduce(function (a, b) {
                 a = ((a << 5) - a) + b.charCodeAt(0);
                 return a & a;
             }, 0);
@@ -118,6 +118,7 @@
         getAjaxData: function (data) {
             var objCsrf = {}, msg = this.messages,
                 nodeTitles = {nodeTitle: msg.nodeTitle, nodeTitlePlural: msg.nodeTitlePlural};
+            //noinspection JSUnresolvedVariable
             objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken(); // jshint ignore:line
             return $.extend(true, {}, data, objCsrf, nodeTitles);
         },
@@ -145,7 +146,7 @@
             }
             var $nodes = self.$tree.find('li');
             $nodes.removeClass('kv-selected');
-            selected = selected.split(",");
+            selected = selected.split(',');
             $(selected).each(function (i, key) {
                 $h.addCss(self.$tree.find('li[data-key="' + key + '"]'), 'kv-selected');
             });
@@ -179,14 +180,14 @@
         showAlert: function (msg, type, callback) {
             var self = this, $detail = self.$detail, $alert = $detail.find('.alert-' + type);
             $detail.find('.kv-select-node-msg').remove();
-            $alert.removeClass('hide').hide().find('div').remove();
+            $alert.removeClass(self.hideCssClass).hide().find('div').remove();
             $alert.append('<div>' + msg + '</div>').fadeIn(self.alertFadeDuration, function () {
                 self.trigAlert($alert, callback);
             });
         },
         removeAlert: function () {
             var self = this;
-            self.$detail.find('.alert').addClass('hide');
+            self.$detail.find('.alert').addClass(self.hideCssClass);
         },
         renderForm: function (key, par, mesg) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
@@ -202,6 +203,7 @@
                 data: self.getAjaxData({
                     'id': key,
                     'modelClass': self.modelClass,
+                    'hideCssClass': self.hideCssClass,
                     'defaultBtnCss': self.defaultBtnCss,
                     'isAdmin': self.isAdmin,
                     'formAction': self.formAction,
@@ -498,7 +500,7 @@
                     };
                     break;
                 default:
-                    throw "Invalid move direction '" + dir + "'";
+                    throw 'Invalid move direction \'' + dir + '\'';
             }
             keyFrom = $nodeFrom.data('key');
             keyTo = $nodeTo.data('key');
@@ -550,7 +552,8 @@
                             }
                         });
                     } else {
-                        if ($detail.length > 0 && self.raise('treeview.moveerror', [dir, keyFrom, keyTo, data, textStatus, jqXHR])) {
+                        if ($detail.length > 0 && self.raise('treeview.moveerror',
+                            [dir, keyFrom, keyTo, data, textStatus, jqXHR])) {
                             self.showAlert(data.out, 'danger');
                         }
                     }
@@ -620,7 +623,7 @@
             if (!self.raise('treeview.create', [key])) {
                 return;
             }
-            $newNode = $(document.createElement("li")).attr({
+            $newNode = $(document.createElement('li')).attr({
                 'data-key': 'empty-' + $node.data('key'),
                 'class': 'kv-empty'
             });
@@ -632,7 +635,7 @@
                 $node.children('ul').append($newNode);
             } else {
                 $h.addCss($node, 'kv-parent');
-                $n = $(document.createElement("ul")).append($newNode);
+                $n = $(document.createElement('ul')).append($newNode);
                 $node.append($n);
             }
             self.renderForm(null, $node.data('key'));
@@ -660,7 +663,7 @@
                 return;
             }
             var content = self.getNewNode(),
-                $node = $(document.createElement("li")).attr({'data-key': 'empty-root', 'class': 'kv-empty'});
+                $node = $(document.createElement('li')).attr({'data-key': 'empty-root', 'class': 'kv-empty'});
             $node.html(content);
             $treeRoot.append($node);
             self.renderForm(null, self.rootKey);
@@ -802,7 +805,7 @@
             if (self.hasActiveFilter) {
                 self.hasActiveFilter = false;
             }
-            self.$treeContainer.removeClass("kv-active-filter");
+            self.$treeContainer.removeClass('kv-active-filter');
             self.$treeContainer.find('.kv-highlight').removeClass('kv-highlight');
             self.$treeContainer.find('.kv-tree-container li.kv-filter-match').removeClass('kv-filter-match');
         },
@@ -853,12 +856,12 @@
                     self.toggleAll('collapse', false);
                     filter = $h.escapeRegExp(filter);
                     self.$tree.find('.kv-node-label').each(function () {
-                        var $label = $(this), text = $label.text(), pos = text.search(new RegExp(filter, "i")), s, mark;
+                        var $label = $(this), text = $label.text(), pos = text.search(new RegExp(filter, 'i')), s, mark;
                         if (pos < 0) {
                             $label.removeClass('kv-highlight');
                         } else {
                             $h.addCss($label, 'kv-highlight');
-                            s = new RegExp(filter, "ig");
+                            s = new RegExp(filter, 'ig');
                             mark = text.replace(s, function (term) {
                                 return '<span class="kv-search-found">' + term + '</span>';
                             });
@@ -943,7 +946,7 @@
             });
             self.$detail.find('.alert').each(function () {
                 var $alert = $(this);
-                if (!$alert.hasClass('hide')) {
+                if (!$alert.hasClass(self.hideCssClass)) {
                     $alert.hide().fadeIn(1500);
                     self.trigAlert($alert);
                 }

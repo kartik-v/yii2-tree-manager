@@ -74,11 +74,6 @@ class TreeViewInput extends TreeView
     public $dropdownConfig = [];
 
     /**
-     * @var array the HTML attributes for the input that will store the selected nodes for the widget
-     */
-    public $options = ['class' => 'form-control hide'];
-
-    /**
      * @var string default caret markup rendered for the dropdown toggle
      */
     protected $_defaultCaret;
