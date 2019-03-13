@@ -3,7 +3,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.2
 
-**Date:** _under development_
+**Date:** 13-Mar-2019
 
 - (enh #244): Correct hidden css to use `BS_HIDE` within `bsCssMap`.
 - (enh #240): Rename events triggered via jquery to start with `treeview:`.
