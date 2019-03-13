@@ -801,7 +801,7 @@ HTML;
             $this->allowNewRoots = false;
         }
         if (!isset($this->hideCssClass)) {
-            $this->hideCssClass = $this->getCssClass(self::BS_HIDDEN_XS);
+            $this->hideCssClass = $this->getCssClass(self::BS_HIDE);
         }
         $this->initIcons();
         $this->_nodes = $this->query->all();

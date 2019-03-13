@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _under development_
 
+- (enh #244): Correct hidden css to use `BS_HIDE` within `bsCssMap`.
 - (enh #240): Rename events triggered via jquery to start with `treeview:`.
 - (enh #239): Allow CSS class to hide elements to be configurable (for BS 3.x / 4.x). New property `hideCssClass`.
 - (enh #238): Add Chinese Translations.
