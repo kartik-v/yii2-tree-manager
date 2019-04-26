@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
  * @package   yii2-tree-manager
- * @version   1.1.2
+ * @version   1.1.3
  */
 
 use kartik\form\ActiveForm;

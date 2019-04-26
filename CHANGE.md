@@ -1,6 +1,12 @@
 Change Log: `yii2-tree-manager`
 ===============================
 
+## Version 1.1.3
+
+**Date:** 26-Apr-2019
+
+- (bug #247): Correct migration error.
+
 ## Version 1.1.2
 
 **Date:** 13-Mar-2019
