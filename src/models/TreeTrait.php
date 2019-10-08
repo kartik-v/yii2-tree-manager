@@ -125,7 +125,7 @@ trait TreeTrait
                 $nameAttribute,
                 'filter',
                 'filter' => function ($value) {
-                    return Html::encode($value,false);
+                    return Html::encode($value, false);
                 },
             ];
         }

@@ -3,8 +3,11 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.3
 
-**Date:** 26-Apr-2019
+**Date:** _under development_
 
+- (enh #255): Prevent double encoding of names.
+- (enh #252): Activate open collective.
+- (bug #253): Correct TreeSecurity parsing of icons list.
 - (bug #247): Correct migration error.
 
 ## Version 1.1.2
