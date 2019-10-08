@@ -606,14 +606,14 @@ HTML;
     public $footerTemplate = "{toolbar}";
 
     /**
+     * @var string the icon prefix
+     */
+    public $iconPrefix;
+
+    /**
      * @var Module the tree management module.
      */
     protected $_module;
-
-    /**
-     * @var string the icon prefix
-     */
-    protected $_iconPrefix = 'glyphicon glyphicon-';
 
     /**
      * @var mixed the icons list
@@ -805,7 +805,9 @@ HTML;
         }
         $this->initIcons();
         $this->_nodes = $this->query->all();
-        $this->_iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
+        if (!isset($this->iconPrefix)) {
+            $this->iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
+        }
         $this->_nodeSelected = $this->options['id'] . '-nodesel';
         $this->initSelectedNode();
         $this->nodeFormOptions['id'] = $this->options['id'] . '-nodeform';
@@ -1432,7 +1434,7 @@ HTML;
     {
         if (!empty($icon)) {
             $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $css = $this->_iconPrefix . $icon;
+            $css = $this->iconPrefix . $icon;
             $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $css]) : $icon;
             return Html::tag('span', $icon, $options);
         }
@@ -1510,7 +1512,7 @@ HTML;
      */
     protected function renderIcon($icon, $options = [])
     {
-        Html::addCssClass($options, $this->_iconPrefix . $icon);
+        Html::addCssClass($options, $this->iconPrefix . $icon);
         return Html::tag('span', '', $options);
     }
 
@@ -1537,7 +1539,7 @@ HTML;
                 Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions) . ')',
         ];
         foreach ($settings as $suffix => $label) {
-            $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->_iconPrefix . $suffix]) . ' ' . $label;
+            $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->iconPrefix . $suffix]) . ' ' . $label;
         }
         return $newSettings;
     }

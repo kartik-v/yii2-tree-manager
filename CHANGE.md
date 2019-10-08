@@ -8,6 +8,7 @@ Change Log: `yii2-tree-manager`
 - (enh #255): Prevent double encoding of names.
 - (enh #252): Activate open collective.
 - (bug #253): Correct TreeSecurity parsing of icons list.
+- (enh #251): Rename `_iconPrefix` to `iconPrefix` and make it public.
 - (bug #247): Correct migration error.
 
 ## Version 1.1.2
