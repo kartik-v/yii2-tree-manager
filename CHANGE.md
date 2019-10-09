@@ -5,6 +5,7 @@ Change Log: `yii2-tree-manager`
 
 **Date:** _under development_
 
+- (enh #257): Enhanced BS4 custom checkbox and radio styling for toggle inputs.
 - (enh #257): Enhance search close icon styling.
 - (enh #255): Prevent double encoding of names.
 - (enh #252): Activate open collective.
