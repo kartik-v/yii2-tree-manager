@@ -22,7 +22,8 @@ use yii\web\View;
  * @var string $nameAttribute
  * @var string $iconAttribute
  * @var string $iconTypeAttribute
- * @var array|string $iconsList
+ * @var string $iconsListShow
+ * @var array|null $iconsList
  * @var string $formAction
  * @var array $breadcrumbs
  * @var array $nodeAddlViews
@@ -247,7 +248,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
      * SECTION 7: Basic node attributes for editing.
      */
     ?>
-    <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
+    <?php if ($iconsListShow == 'text' || $iconsListShow == 'none'): ?>
         <?php if ($showIDAttribute && $showNameAttribute): ?>
             <div class="row">
                 <div class="col-sm-4">
@@ -261,7 +262,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
             <?= $keyField ?>
             <?= $nameField ?>
         <?php endif; ?>
-        <?php if ($iconsList === 'text'): ?>
+        <?php if ($iconsListShow === 'text'): ?>
             <div class="row">
                 <div class="col-sm-4">
                     <?= $form->field($node, $iconTypeAttribute)->dropdownList([

@@ -650,6 +650,11 @@ HTML;
     ];
 
     /**
+     * @var string the icons list show type set under iconEditSettings
+     */
+    protected $_iconsListShow;
+
+    /**
      * Returns the tree view module
      *
      * @return \yii\base\Module
@@ -797,6 +802,7 @@ HTML;
     public function initOptions()
     {
         $isBs4 = $this->isBs4();
+        $this->_iconsListShow = ArrayHelper::getValue($this->iconEditSettings, 'show', 'text');
         if (!$this->_module->treeStructure['treeAttribute']) {
             $this->allowNewRoots = false;
         }
@@ -1218,6 +1224,7 @@ HTML;
             'formAction' => $this->nodeActions[Module::NODE_SAVE],
             'currUrl' => $url,
             'isAdmin' => $this->isAdmin,
+            'iconsListShow' => $this->_iconsListShow,
             'iconsList' => $this->_nodeIconsList,
             'softDelete' => $this->softDelete,
             'allowNewRoots' => $this->allowNewRoots,
@@ -1285,6 +1292,7 @@ HTML;
             'isAdmin' => $this->isAdmin,
             'showInactive' => $this->showInactive,
             'softDelete' => $this->softDelete,
+            'iconsListShow' => $this->_iconsListShow,
             'iconsList' => $this->_nodeIconsList,
             'showFormButtons' => $this->showFormButtons,
             'showIDAttribute' => $this->showIDAttribute,
@@ -1519,13 +1527,12 @@ HTML;
     /**
      * Renders the markup for the detail form to edit/view the selected tree node
      *
-     * @return array
+     * @return null|array
      */
     protected function getIconsList()
     {
-        $show = ArrayHelper::getValue($this->iconEditSettings, 'show', 'text');
-        if ($show != 'list') {
-            return $show;
+        if ($this->_iconsListShow != 'list') {
+            return null;
         }
         $type = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);
         $settings = ArrayHelper::getValue($this->iconEditSettings, 'listData', []);

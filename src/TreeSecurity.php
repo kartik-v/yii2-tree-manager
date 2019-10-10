@@ -57,6 +57,7 @@ class TreeSecurity
             'nodeViewButtonLabels' => [],
             'nodeViewParams' => '',
             'icons' => [],
+            'iconsListShow' => 'text',
             'iconsList' => [],
             'breadcrumbs' => [],
         ];
