@@ -3,8 +3,15 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.3
 
-**Date:** 26-Apr-2019
+**Date:** _under development_
 
+- (bug #259): Correct icons list display based on `iconEditSettings['show']`.
+- (enh #258): Enhanced BS4 custom checkbox and radio styling for toggle inputs.
+- (enh #257): Enhance search close icon styling.
+- (enh #255): Prevent double encoding of names.
+- (enh #252): Activate open collective.
+- (bug #253): Correct TreeSecurity parsing of icons list.
+- (enh #251): Rename `_iconPrefix` to `iconPrefix` and make it public.
 - (bug #247): Correct migration error.
 
 ## Version 1.1.2

@@ -267,6 +267,7 @@ ul.kv-tree, .kv-tree ul {
 
 .kv-search-container .kv-search-clear {
     position: absolute;
+    cursor: default;
     padding: 10px;
     right: 0;
 }

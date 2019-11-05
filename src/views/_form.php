@@ -22,7 +22,8 @@ use yii\web\View;
  * @var string $nameAttribute
  * @var string $iconAttribute
  * @var string $iconTypeAttribute
- * @var array|string $iconsList
+ * @var string $iconsListShow
+ * @var array|null $iconsList
  * @var string $formAction
  * @var array $breadcrumbs
  * @var array $nodeAddlViews
@@ -138,9 +139,10 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 ?>
 <?php if (!$node->isNewRecord || !empty($parentKey)): ?>
     <?php
-    $isAdmin = ($isAdmin == true || $isAdmin === "true"); // admin mode flag
-    $inputOpts = [];                                      // readonly/disabled input options for node
-    $flagOptions = ['class' => 'kv-parent-flag'];         // node options for parent/child
+    $cbxOptions = ['custom' => true];                           // default checkbox/ radio options (useful for BS4)
+    $isAdmin = ($isAdmin == true || $isAdmin === "true");       // admin mode flag
+    $inputOpts = [];                                            // readonly/disabled input options for node
+    $flagOptions = $cbxOptions + ['class' => 'kv-parent-flag']; // node options for parent/child
 
     /**
      * the primary key input field
@@ -246,7 +248,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
      * SECTION 7: Basic node attributes for editing.
      */
     ?>
-    <?php if ($iconsList == 'text' || $iconsList == 'none'): ?>
+    <?php if ($iconsListShow == 'text' || $iconsListShow == 'none'): ?>
         <?php if ($showIDAttribute && $showNameAttribute): ?>
             <div class="row">
                 <div class="col-sm-4">
@@ -260,7 +262,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
             <?= $keyField ?>
             <?= $nameField ?>
         <?php endif; ?>
-        <?php if ($iconsList === 'text'): ?>
+        <?php if ($iconsListShow === 'text'): ?>
             <div class="row">
                 <div class="col-sm-4">
                     <?= $form->field($node, $iconTypeAttribute)->dropdownList([
@@ -282,19 +284,11 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
             </div>
             <div class="col-sm-6">
                 <?= /** @noinspection PhpUndefinedMethodInspection */
-                $form->field($node, $iconAttribute)->multiselect($iconsList, [
-                    'item' => function ($index, $label, $name, $checked, $value) use ($inputOpts) {
-                        if ($index == 0 && $value == '') {
-                            $checked = true;
-                            $value = '';
-                        }
-                        return '<div class="radio">' . Html::radio($name, $checked, [
-                                'value' => $value,
-                                'label' => $label,
-                                'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled']),
-                            ]) . '</div>';
-                    },
-                    'selector' => 'radio',
+                $form->field($node, $iconAttribute)->radioList($iconsList, [
+                    'class' => 'form-control',
+                    'style' => 'height:135px; overflow-y:auto',
+                    'custom' => true,
+                    'disabled' => !empty($inputOpts['readonly']) || !empty($inputOpts['disabled']),
                 ]) ?>
             </div>
         </div>
@@ -329,23 +323,23 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
         ?>
         <div class="row">
             <div class="col-sm-4">
-                <?= $form->field($node, 'active')->checkbox() ?>
-                <?= $form->field($node, 'visible')->checkbox() ?>
-                <?= $form->field($node, 'readonly')->checkbox() ?>
-                <?= $form->field($node, 'disabled')->checkbox() ?>
-                <?= $form->field($node, 'child_allowed')->checkbox() ?>
+                <?= $form->field($node, 'active')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'visible')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'readonly')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'disabled')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'child_allowed')->checkbox($cbxOptions) ?>
             </div>
             <div class="col-sm-4">
-                <?= $form->field($node, 'selected')->checkbox() ?>
+                <?= $form->field($node, 'selected')->checkbox($cbxOptions) ?>
                 <?= $form->field($node, 'collapsed')->checkbox($flagOptions) ?>
-                <?= $form->field($node, 'removable')->checkbox() ?>
+                <?= $form->field($node, 'removable')->checkbox($cbxOptions) ?>
                 <?= $form->field($node, 'removable_all')->checkbox($flagOptions) ?>
             </div>
             <div class="col-sm-4">
-                <?= $form->field($node, 'movable_u')->checkbox() ?>
-                <?= $form->field($node, 'movable_d')->checkbox() ?>
-                <?= $form->field($node, 'movable_l')->checkbox() ?>
-                <?= $form->field($node, 'movable_r')->checkbox() ?>
+                <?= $form->field($node, 'movable_u')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'movable_d')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'movable_l')->checkbox($cbxOptions) ?>
+                <?= $form->field($node, 'movable_r')->checkbox($cbxOptions) ?>
             </div>
         </div>
 

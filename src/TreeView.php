@@ -606,14 +606,14 @@ HTML;
     public $footerTemplate = "{toolbar}";
 
     /**
+     * @var string the icon prefix
+     */
+    public $iconPrefix;
+
+    /**
      * @var Module the tree management module.
      */
     protected $_module;
-
-    /**
-     * @var string the icon prefix
-     */
-    protected $_iconPrefix = 'glyphicon glyphicon-';
 
     /**
      * @var mixed the icons list
@@ -648,6 +648,11 @@ HTML;
         'defaultParentNodeIcon' => ['folder', 'folder', 'folder-close', 'kv-node-closed'],
         'defaultParentNodeOpenIcon' => ['folder-open', 'folder-open', 'folder-open', 'kv-node-opened'],
     ];
+
+    /**
+     * @var string the icons list show type set under iconEditSettings
+     */
+    protected $_iconsListShow;
 
     /**
      * Returns the tree view module
@@ -797,6 +802,7 @@ HTML;
     public function initOptions()
     {
         $isBs4 = $this->isBs4();
+        $this->_iconsListShow = ArrayHelper::getValue($this->iconEditSettings, 'show', 'text');
         if (!$this->_module->treeStructure['treeAttribute']) {
             $this->allowNewRoots = false;
         }
@@ -805,7 +811,9 @@ HTML;
         }
         $this->initIcons();
         $this->_nodes = $this->query->all();
-        $this->_iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
+        if (!isset($this->iconPrefix)) {
+            $this->iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
+        }
         $this->_nodeSelected = $this->options['id'] . '-nodesel';
         $this->initSelectedNode();
         $this->nodeFormOptions['id'] = $this->options['id'] . '-nodeform';
@@ -1216,6 +1224,7 @@ HTML;
             'formAction' => $this->nodeActions[Module::NODE_SAVE],
             'currUrl' => $url,
             'isAdmin' => $this->isAdmin,
+            'iconsListShow' => $this->_iconsListShow,
             'iconsList' => $this->_nodeIconsList,
             'softDelete' => $this->softDelete,
             'allowNewRoots' => $this->allowNewRoots,
@@ -1283,6 +1292,7 @@ HTML;
             'isAdmin' => $this->isAdmin,
             'showInactive' => $this->showInactive,
             'softDelete' => $this->softDelete,
+            'iconsListShow' => $this->_iconsListShow,
             'iconsList' => $this->_nodeIconsList,
             'showFormButtons' => $this->showFormButtons,
             'showIDAttribute' => $this->showIDAttribute,
@@ -1432,7 +1442,7 @@ HTML;
     {
         if (!empty($icon)) {
             $options = $child ? $this->childNodeIconOptions : $this->parentNodeIconOptions;
-            $css = $this->_iconPrefix . $icon;
+            $css = $this->iconPrefix . $icon;
             $icon = $iconType == self::ICON_CSS ? Html::tag('span', '', ['class' => $css]) : $icon;
             return Html::tag('span', $icon, $options);
         }
@@ -1510,20 +1520,19 @@ HTML;
      */
     protected function renderIcon($icon, $options = [])
     {
-        Html::addCssClass($options, $this->_iconPrefix . $icon);
+        Html::addCssClass($options, $this->iconPrefix . $icon);
         return Html::tag('span', '', $options);
     }
 
     /**
      * Renders the markup for the detail form to edit/view the selected tree node
      *
-     * @return array
+     * @return null|array
      */
     protected function getIconsList()
     {
-        $show = ArrayHelper::getValue($this->iconEditSettings, 'show', 'text');
-        if ($show != 'list') {
-            return $show;
+        if ($this->_iconsListShow != 'list') {
+            return null;
         }
         $type = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);
         $settings = ArrayHelper::getValue($this->iconEditSettings, 'listData', []);
@@ -1537,7 +1546,7 @@ HTML;
                 Html::tag('span', $this->defaultChildNodeIcon, $this->childNodeIconOptions) . ')',
         ];
         foreach ($settings as $suffix => $label) {
-            $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->_iconPrefix . $suffix]) . ' ' . $label;
+            $newSettings[$suffix] = Html::tag('span', '', ['class' => $this->iconPrefix . $suffix]) . ' ' . $label;
         }
         return $newSettings;
     }
