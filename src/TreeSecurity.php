@@ -42,6 +42,7 @@ class TreeSecurity
             'formAction' => '',
             'currUrl' => '',
             'nodeView' => '',
+            'nodeUser' => '',
             'nodeSelected' => '',
             'nodeTitle' => $nodeTitles['node'],
             'nodeTitlePlural' => $nodeTitles['nodes'],

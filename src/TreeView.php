@@ -137,6 +137,11 @@ class TreeView extends Widget
     public $nodeView;
 
     /**
+     * @var string the view file that will render the form for displaying the node data.
+     */
+    public $nodeUser;
+
+    /**
      * @var array the markup for the submit and reset button labels in the node view form
      */
     public $nodeViewButtonLabels = ['submit' => null, 'reset' => null];
@@ -1232,6 +1237,7 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
+            'nodeUser' => $this->nodeUser,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeViewParams' => serialize($this->nodeViewParams),
@@ -1256,7 +1262,10 @@ HTML;
                 'treeRemoveHash' => $removeData['newHash'],
                 'treeMoveHash' => $moveData['newHash'],
             ] + $manageData['out'] + $this->nodeViewParams;
-        $content = $this->render($this->nodeView, ['params' => $params]);
+
+        $content = $this->render(
+                    $this->isAdmin ? $this->nodeView : $this->nodeUser,
+                    ['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);
     }
 
@@ -1298,6 +1307,7 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
+            'nodeUser' => $this->nodeUser,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeViewParams' => serialize($this->nodeViewParams),
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,

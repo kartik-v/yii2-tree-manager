@@ -80,6 +80,7 @@ class Module extends \kartik\base\Module
      */
     public $treeViewSettings = [
         'nodeView' => '@kvtree/views/_form',
+        'nodeUser' => '@kvtree/views/_user',
         'nodeAddlViews' => [
             self::VIEW_PART_1 => '',
             self::VIEW_PART_2 => '',

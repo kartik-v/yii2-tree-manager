@@ -275,7 +275,9 @@ class NodeController extends Controller
                 Event::on(View::class, View::EVENT_AFTER_RENDER, $cb);
             }
             TreeSecurity::checkSignature('manage', $oldHash, $newHash);
-            return $this->renderAjax($out['nodeView'], ['params' => $params]);
+            return $this->renderAjax(
+                $out['isAdmin'] ? $out['nodeView'] : $out['nodeUser'],
+                ['params' => $params]);
         };
         return self::process(
             $callback,
