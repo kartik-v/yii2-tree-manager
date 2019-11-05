@@ -2,7 +2,7 @@
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
  * @package yii2-tree-manager
  * @version 1.1.3
- * 
+ *
  * Tree View Validation Module.
  *
  * Author: Kartik Visweswaran
@@ -218,6 +218,7 @@
                     'showNameAttribute': self.showNameAttribute,
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
+                    'nodeUser': self.nodeUser,
                     'nodeAddlViews': self.nodeAddlViews,
                     'nodeViewButtonLabels': self.nodeViewButtonLabels,
                     'nodeViewParams': self.nodeViewParams,

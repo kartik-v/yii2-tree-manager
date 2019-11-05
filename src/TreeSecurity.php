@@ -16,6 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\VarDumper;
 use yii\console\Application;
 
 /**
@@ -41,8 +42,8 @@ class TreeSecurity
             'defaultBtnCss' => '',
             'formAction' => '',
             'currUrl' => '',
-            'nodeView' => '',
-            'nodeUser' => '',
+            'nodeView' => '@kvtree/views/_form',
+            'nodeUser' => '@kvtree/views/_user',
             'nodeSelected' => '',
             'nodeTitle' => $nodeTitles['node'],
             'nodeTitlePlural' => $nodeTitles['nodes'],
@@ -62,6 +63,9 @@ class TreeSecurity
             'iconsList' => [],
             'breadcrumbs' => [],
         ];
+
+        yii::debug( 'data: ' . VarDumper::dumpAsString($data));
+
         $out = static::getParsedData($defaults, $data, function ($type, $key, $value) {
             if ($type === 'array' && $key === 'iconsList' && is_array($value)) {
                 $new = [];

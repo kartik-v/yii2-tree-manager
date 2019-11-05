@@ -39,6 +39,7 @@ use yii\web\View;
  * @var array $params
  * @var string $keyField
  * @var string $nodeView
+ * @var string $nodeUser
  * @var string $nodeAddlViews
  * @var array $nodeViewButtonLabels
  * @var string $noNodesMessage
