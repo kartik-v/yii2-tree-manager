@@ -4,7 +4,7 @@ Change Log: `yii2-tree-manager`
 ## Version 1.1.3
 
 **Date:** _under development_
-- (bug #260): User Mode View
+- (enh #260): Seperate User Mode and Admin Mode Views
 - (bug #259): Correct icons list display based on `iconEditSettings['show']`.
 - (enh #258): Enhanced BS4 custom checkbox and radio styling for toggle inputs.
 - (enh #257): Enhance search close icon styling.
