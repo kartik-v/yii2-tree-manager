@@ -155,6 +155,14 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
      */
     ?>
     <div class="kv-detail-heading">
+        <?php if ($isAdmin): ?>
+            <div class="float-right pull-right">
+               <?= Html::button("<span class='fa fa-user-tie' aria-hidden='true'></span>",
+                   ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode']
+               ) ?>
+            </div>
+        <?php endif; ?>
+
         <div class="float-left kv-detail-crumbs"><span class="kv-crumb-active">View:&nbsp;</span></div>
         <div class="kv-detail-crumbs"><?= $name . ' (' . $node->$keyAttribute .')' ?></div>
         <div class="clearfix"></div>
@@ -206,38 +214,39 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
      * SECTION 9: Administrator attributes zone.
      */
     ?>
-        <h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
+    <h4><?= Yii::t('kvtree', 'Admin Settings') ?></h4>
 
-        <?php
-        /**
-         * SECTION 11: Default mandatory admin controlled attributes.
-         */
-        ?>
-        <div class="row">
-            <div class="col-sm-3">
-                <?= '<i class="fas ' . ($node->isActive() ? 'fa-check-circle' : 'fa-circle') . '"></i> isActive()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isActive() ? 'fa-check-circle' : 'fa-circle') . '"></i> isVisible()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isReadonly() ? 'fa-check-circle' : 'fa-circle') . '"></i> isReadonly()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isDisabled() ? 'fa-check-circle' : 'fa-circle') . '"></i> isDisabled()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isChildAllowed() ? 'fa-check-circle' : 'fa-circle') . '"></i> isChildAllowed()<br/>'  ?>
-            </div>
-            <div class="col-sm-3">
-                <?= '<i class="fas ' . ($node->isSelected() ? 'fa-check-circle' : 'fa-circle') . '"></i> isSelected()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isCollapsed() ? 'fa-check-circle' : 'fa-circle') . '"></i> isCollapsed()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isRemovable() ? 'fa-check-circle' : 'fa-circle') . '"></i> isRemovable()<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isRemovableAll() ? 'fa-check-circle' : 'fa-circle') . '"></i> isRemovableAll()<br/>'  ?>
-            </div>
-            <div class="col-sm-3">
-                <?= '<i class="fas ' . ($node->isMovable('u') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'u\')<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isMovable('d') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'d\')<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isMovable('l') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'l\')<br/>'  ?>
-                <?= '<i class="fas ' . ($node->isMovable('r') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'r\')<br/>'  ?>
-            </div>
+    <?php
+    /**
+     * SECTION 11: Default mandatory admin controlled attributes.
+     */
+    ?>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= '<i class="fas ' . ($node->isActive() ? 'fa-check-circle' : 'fa-circle') . '"></i> isActive()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isActive() ? 'fa-check-circle' : 'fa-circle') . '"></i> isVisible()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isReadonly() ? 'fa-check-circle' : 'fa-circle') . '"></i> isReadonly()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isDisabled() ? 'fa-check-circle' : 'fa-circle') . '"></i> isDisabled()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isChildAllowed() ? 'fa-check-circle' : 'fa-circle') . '"></i> isChildAllowed()<br/>'  ?>
         </div>
+        <div class="col-sm-3">
+            <?= '<i class="fas ' . ($node->isSelected() ? 'fa-check-circle' : 'fa-circle') . '"></i> isSelected()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isCollapsed() ? 'fa-check-circle' : 'fa-circle') . '"></i> isCollapsed()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isRemovable() ? 'fa-check-circle' : 'fa-circle') . '"></i> isRemovable()<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isRemovableAll() ? 'fa-check-circle' : 'fa-circle') . '"></i> isRemovableAll()<br/>'  ?>
+        </div>
+        <div class="col-sm-3">
+            <?= '<i class="fas ' . ($node->isMovable('u') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'u\')<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isMovable('d') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'d\')<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isMovable('l') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'l\')<br/>'  ?>
+            <?= '<i class="fas ' . ($node->isMovable('r') ? 'fa-check-circle' : 'fa-circle') . '"></i> isMovable(\'r\')<br/>'  ?>
+        </div>
+    </div>
 
 <?php else: ?>
     <?= $noNodesMessage ?>
 <?php endif; ?>
+
 <?php
 /**
  * END VALID NODE DISPLAY

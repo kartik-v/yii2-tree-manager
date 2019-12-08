@@ -198,15 +198,21 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
     ?>
     <div class="kv-detail-heading">
         <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
+
             <div class="float-right pull-right">
-                <?= Html::resetButton(
-                    ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle),
-                    ['class' => 'btn ' . $defaultBtnCss, 'title' => $resetTitle]
-                ) ?>
-                <?= Html::submitButton(
-                    ArrayHelper::getValue($nodeViewButtonLabels, 'submit', $submitTitle),
-                    ['class' => 'btn btn-primary', 'title' => $submitTitle]
-                ) ?>
+                    <?= Html::button("<span class='fa fa-user' aria-hidden='true'></span>",
+                        ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode']
+                    ) ?>
+
+                    <?= Html::resetButton(
+                        ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle),
+                            ['class' => 'btn ' . $defaultBtnCss, 'title' => $resetTitle]
+                    ) ?>
+
+                    <?= Html::submitButton(
+                        ArrayHelper::getValue($nodeViewButtonLabels, 'submit', $submitTitle),
+                            ['class' => 'btn btn-primary', 'title' => $submitTitle]
+                    ) ?>
             </div>
         <?php endif; ?>
         <div class="kv-detail-crumbs"><?= $name ?></div>

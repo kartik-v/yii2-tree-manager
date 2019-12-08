@@ -189,10 +189,10 @@
             var self = this;
             self.$detail.find('.alert').addClass(self.hideCssClass);
         },
-        renderForm: function (key, par, mesg) {
+        renderForm: function (key, par, mesg, act=this.actions.manage) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = $h.hashString(key + self.modelClass + self.isAdmin + parent), $form = $detail.find('form'),
-                vUrl = self.actions.manage, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
+                vUrl = act, sep = vUrl && vUrl.indexOf('?') !== -1 ? '&' : '?';
             vUrl += encodeURI(sep + $h.QUERY_PARAM + '=' + params);
             self.formViewBegin = true;
             self.parseCache();
@@ -272,6 +272,9 @@
                     }
                 }
             });
+        },
+        flipview: function() {
+            this.renderForm(this.key, '', '', this.actions.flip)
         },
         select: function (key, init, mesg) {
             if ($h.isEmpty(key)) {
@@ -918,6 +921,10 @@
                     self.removeAlert();
                 });
             });
+            // flipview button
+            self.$detail.find('.kv-flipview').on('click', function () {
+                self.flipview();
+            });
             // create node
             self.$toolbar.find('.kv-' + self.btns.create).on('click', function () {
                 self.create();
@@ -1011,7 +1018,7 @@
         alertFadeDuration: 1000,
         cacheTimeout: 300000,
         showInactive: false,
-        actions: {'manage': '', 'move': '', 'delete': ''},
+        actions: {'manage': '', 'move': '', 'delete': '', 'flip':''},
         messages: {
             emptyNode: '',
             nodeDisabled: '',

@@ -25,6 +25,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\Session;
 use yii\web\View;
 
 /**
@@ -127,6 +128,65 @@ class NodeController extends Controller
         }
     }
 
+  /**
+     * Sets/increments the display mode rhwn  redirects back to the ID
+     * @throws InvalidConfigException
+     * @throws ErrorException
+     */
+    public function actionFlip()
+    {
+        // Flip the view Mode
+        $session  = yii::$app->session;
+        $viewMode = $session->get('viewMode');
+        $viewMode = ($viewMode == 1) ? 0 : 1;
+        $session->set('viewMode', $viewMode);
+
+        Yii::debug('actionFlip()',__METHOD__);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $res = array(
+            'body'    => "<h1>actionMode()</h1>",
+            'success' => true,
+        );
+
+        return $res;
+
+ //       $data = static::getPostData();
+ //       $parsedData = TreeSecurity::parseManageData($data);
+ //       $out = $parsedData['out'];
+
+//        $id = ArrayHelper::getValue($data, 'id', null);
+//        $parentKey = ArrayHelper::getValue($data, 'parentKey', '');
+//        $parsedData = TreeSecurity::parseManageData($data);
+//        $out = $parsedData['out'];
+//        $oldHash = $parsedData['oldHash'];
+//        $newHash = $parsedData['newHash'];
+//        $treeClass = $out['treeClass'];
+//
+//        if (!isset($id) || empty($id)) {
+//            $node = new $treeClass;
+//            $node->initDefaults();
+//        }
+//        else {
+//            $node = $treeClass::findOne($id);
+//        }
+//
+//     $module = TreeView::module();
+//       $params = $module->treeStructure + $module->dataStructure + [
+//                'node' => $node,
+//                'parentKey' => $parentKey,
+//                'treeManageHash' => $newHash,
+//                'treeRemoveHash' => ArrayHelper::getValue($data, 'treeRemoveHash', ''),
+//                'treeMoveHash' => ArrayHelper::getValue($data, 'treeMoveHash', ''),
+//            ] + $out;
+//        if (!empty($data['nodeViewParams'])) {
+//            $params = ArrayHelper::merge($params, unserialize($data['nodeViewParams']));
+//        }
+
+        // TODO: Reflect isAdmin and viewMode
+//        return $this->render(
+//                $out['isAdmin'] ? $out['nodeView'] : $out['nodeUser'], 	// Pick the view to display  *** Modify to reflect
+//		          ['params' => $params]);								// With these params//
+    }
 
     /**
      * Saves a node once form is submitted

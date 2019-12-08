@@ -926,11 +926,15 @@ HTML;
                 'options' => ['title' => Yii::t('kvtree', 'Refresh')],
                 'url' => Yii::$app->request->url,
             ],
+
         ];
+
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
+
         if (!$this->allowNewRoots) {
-            unset($this->toolbar[self::BTN_CREATE_ROOT]);
-        }
+                unset($this->toolbar[self::BTN_CREATE_ROOT]);
+            }
+
         $this->sortToolbar();
         $this->_nodeIconsList = $this->getIconsList();
     }
@@ -983,6 +987,8 @@ HTML;
      */
     public function renderToolbar()
     {
+        if (!$this->isAdmin ) return;
+
         $out = Html::beginTag('div', $this->toolbarOptions) . "\n" .
             Html::beginTag('div', $this->buttonGroupOptions);
         foreach ($this->toolbar as $btn => $settings) {
@@ -1054,6 +1060,7 @@ HTML;
      */
     public function renderFooter()
     {
+        if (!$this->isAdmin ) return ("");
         return Html::tag('div', $this->footerTemplate, $this->footerOptions);
     }
 
@@ -1349,7 +1356,7 @@ HTML;
         if (empty($this->emptyNodeMsg)) {
             $this->emptyNodeMsg = Yii::t(
                 'kvtree',
-                'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.',
+                'No valid {nodes} are available for display.',
                 ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural]
             );
         }

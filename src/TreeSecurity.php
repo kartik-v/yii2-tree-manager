@@ -64,7 +64,7 @@ class TreeSecurity
             'breadcrumbs' => [],
         ];
 
-        yii::debug( 'data: ' . VarDumper::dumpAsString($data));
+//        yii::debug( 'data: ' . VarDumper::dumpAsString($data));
 
         $out = static::getParsedData($defaults, $data, function ($type, $key, $value) {
             if ($type === 'array' && $key === 'iconsList' && is_array($value)) {
