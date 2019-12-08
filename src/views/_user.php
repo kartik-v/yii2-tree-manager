@@ -157,10 +157,10 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
     <div class="kv-detail-heading">
         <?php if ($isAdmin): ?>
             <div class="float-right pull-right">
-               <?= Html::button("<span class='fa fa-user-tie' aria-hidden='true'></span>",
+                <?= Html::button("<span class='fa fa-user' aria-hidden='true'></span>",
                    ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode']
-               ) ?>
-            </div>
+                ) ?>
+           </div>
         <?php endif; ?>
 
         <div class="float-left kv-detail-crumbs"><span class="kv-crumb-active">View:&nbsp;</span></div>

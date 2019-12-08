@@ -128,6 +128,25 @@ class NodeController extends Controller
         }
     }
 
+   /**
+    * returns the view to render
+    *
+    * @paramter out The output array information
+    * @returns the view to use
+    */
+    private function selectView($out)
+    {
+        $view = $out['nodeUser'];
+
+        if ($out['isAdmin']) {
+                $session  = yii::$app->session;
+                $viewMode = $session->get('viewMode', 0);
+                $view = ($viewMode == 0) ?  $out['nodeView'] : $out['nodeUser'];
+         }
+        Yii::debug('return '.$view,__METHOD__);
+       return $view;
+    }
+
   /**
      * Sets/increments the display mode rhwn  redirects back to the ID
      * @throws InvalidConfigException
@@ -142,52 +161,8 @@ class NodeController extends Controller
         $session->set('viewMode', $viewMode);
 
         Yii::debug('actionFlip()',__METHOD__);
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $res = array(
-            'body'    => "<h1>actionMode()</h1>",
-            'success' => true,
-        );
-
-        return $res;
-
- //       $data = static::getPostData();
- //       $parsedData = TreeSecurity::parseManageData($data);
- //       $out = $parsedData['out'];
-
-//        $id = ArrayHelper::getValue($data, 'id', null);
-//        $parentKey = ArrayHelper::getValue($data, 'parentKey', '');
-//        $parsedData = TreeSecurity::parseManageData($data);
-//        $out = $parsedData['out'];
-//        $oldHash = $parsedData['oldHash'];
-//        $newHash = $parsedData['newHash'];
-//        $treeClass = $out['treeClass'];
-//
-//        if (!isset($id) || empty($id)) {
-//            $node = new $treeClass;
-//            $node->initDefaults();
-//        }
-//        else {
-//            $node = $treeClass::findOne($id);
-//        }
-//
-//     $module = TreeView::module();
-//       $params = $module->treeStructure + $module->dataStructure + [
-//                'node' => $node,
-//                'parentKey' => $parentKey,
-//                'treeManageHash' => $newHash,
-//                'treeRemoveHash' => ArrayHelper::getValue($data, 'treeRemoveHash', ''),
-//                'treeMoveHash' => ArrayHelper::getValue($data, 'treeMoveHash', ''),
-//            ] + $out;
-//        if (!empty($data['nodeViewParams'])) {
-//            $params = ArrayHelper::merge($params, unserialize($data['nodeViewParams']));
-//        }
-
-        // TODO: Reflect isAdmin and viewMode
-//        return $this->render(
-//                $out['isAdmin'] ? $out['nodeView'] : $out['nodeUser'], 	// Pick the view to display  *** Modify to reflect
-//		          ['params' => $params]);								// With these params//
+        return $this->actionManage();
     }
-
     /**
      * Saves a node once form is submitted
      * @throws InvalidConfigException
@@ -294,7 +269,8 @@ class NodeController extends Controller
      */
     public function actionManage()
     {
-        static::checkValidRequest();
+       Yii::debug('actionManage()',__METHOD__);
+       static::checkValidRequest();
         $data = static::getPostData();
         $nodeTitles = TreeSecurity::getNodeTitles($data);
         $callback = function () use ($data, $nodeTitles) {
@@ -337,7 +313,7 @@ class NodeController extends Controller
             }
             TreeSecurity::checkSignature('manage', $oldHash, $newHash);
             return $this->renderAjax(
-                $out['isAdmin'] ? $out['nodeView'] : $out['nodeUser'],
+                $this->selectView($out),
                 ['params' => $params]);
         };
         return self::process(
