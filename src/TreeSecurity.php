@@ -44,6 +44,7 @@ class TreeSecurity
             'currUrl' => '',
             'nodeView' => '@kvtree/views/_form',
             'nodeUser' => '@kvtree/views/_user',
+            'modeView' => 0,
             'nodeSelected' => '',
             'nodeTitle' => $nodeTitles['node'],
             'nodeTitlePlural' => $nodeTitles['nodes'],

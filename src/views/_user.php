@@ -40,6 +40,7 @@ use yii\web\View;
  * @var string $keyField
  * @var string $nodeView
  * @var string $nodeUser
+ * @var int $modeeUser
  * @var string $nodeAddlViews
  * @var array $nodeViewButtonLabels
  * @var string $noNodesMessage
@@ -107,6 +108,7 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
+<?= Html::hiddenInput('modeView', $modeView) ?>
 <?= Html::hiddenInput('treeManageHash', $treeManageHash) ?>
 <?= Html::hiddenInput('treeRemoveHash', $treeRemoveHash) ?>
 <?= Html::hiddenInput('treeMoveHash', $treeMoveHash) ?>
@@ -155,14 +157,14 @@ if (array_key_exists('depth', $breadcrumbs) && $breadcrumbs['depth'] === null) {
      */
     ?>
     <div class="kv-detail-heading">
-        <?php if ($isAdmin): ?>
+        <?php // Uncomment if your want flip view button here
+            //if ($isAdmin): ?><!--
             <div class="float-right pull-right">
                 <?= Html::button("<span class='fa fa-user' aria-hidden='true'></span>",
                    ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode']
                 ) ?>
-           </div>
-        <?php endif; ?>
-
+           </div>-->
+        <?php // endif; ?>
         <div class="float-left kv-detail-crumbs"><span class="kv-crumb-active">View:&nbsp;</span></div>
         <div class="kv-detail-crumbs"><?= $name . ' (' . $node->$keyAttribute .')' ?></div>
         <div class="clearfix"></div>

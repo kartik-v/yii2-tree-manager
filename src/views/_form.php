@@ -40,6 +40,7 @@ use yii\web\View;
  * @var string $keyField
  * @var string $nodeView
  * @var string $nodeUser
+ * @var int $modeUser
  * @var string $nodeAddlViews
  * @var array $nodeViewButtonLabels
  * @var string $noNodesMessage
@@ -123,6 +124,7 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
 <?= Html::hiddenInput('currUrl', $currUrl) ?>
 <?= Html::hiddenInput('modelClass', $modelClass) ?>
 <?= Html::hiddenInput('nodeSelected', $nodeSelected) ?>
+<?= Html::hiddenInput('modeView', $modeView) ?>
 
 <?php
 /**
@@ -200,11 +202,11 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
         <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
 
             <div class="float-right pull-right">
-                    <?= Html::button("<span class='fa fa-user' aria-hidden='true'></span>",
-                        ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode']
-                    ) ?>
-
-                    <?= Html::resetButton(
+                     <?php // Uncomment if your want flipview here
+                     //Html::button("<span class='fa fa-user' aria-hidden='true'></span>",
+                     //   ['class'=>'btn btn-outline-secondary kv-flipview', 'title'=>'Flip Display Mode'] )
+                     ?>
+                     <?= Html::resetButton(
                         ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle),
                             ['class' => 'btn ' . $defaultBtnCss, 'title' => $resetTitle]
                     ) ?>

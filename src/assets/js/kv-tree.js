@@ -1,4 +1,4 @@
-/*!
+/**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
  * @package yii2-tree-manager
  * @version 1.1.3
@@ -16,7 +16,8 @@
 
     var $h, TreeView;
 
-    // internal helper methods and constants
+    /**
+     * internal helper methods and constants
     $h = {
         QUERY_PARAM: 'kvtree',
         DEFAULT_BUTTONS: {
@@ -29,22 +30,37 @@
             'moveR': 'move-right',
             'refresh': 'refresh'
         },
+        /**
+         *
+         */
         isEmpty: function (value, trim) {
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
+        /**
+         *
+         */
         escapeRegExp: function (str) {
             // noinspection RegExpRedundantEscape
             return str.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
         },
+        /**
+         *
+         */
         addCss: function ($el, css) {
             $el.removeClass(css).addClass(css);
         },
+        /**
+         *
+         */
         hashString: function (s) {
             return s.split('').reduce(function (a, b) {
                 a = ((a << 5) - a) + b.charCodeAt(0);
                 return a & a;
             }, 0);
         },
+        /**
+         *
+         */
         delay: (function () {
             var timer = 0;
             return function (callback, ms) {
@@ -53,13 +69,18 @@
             };
         })()
     };
-    // TreeView constructor
+    /**
+     * TreeView construcor
+     */
     TreeView = function (element, options) {
         var self = this;
         self.$element = $(element);
         self.init(options);
         self.listen();
     };
+    /**
+     * TreeView prototypes
+     */
     TreeView.prototype = {
         constructor: TreeView,
         init: function (options) {
@@ -79,6 +100,7 @@
             self.$search = self.$wrapper.find('.kv-search-input');
             self.$clear = self.$wrapper.find('.kv-search-clear');
             $form = self.$detail.find('form');
+            self.modeView = $form.find('input[name="modeView"]').val();
             self.treeManageHash = $form.find('input[name="treeManageHash"]').val();
             self.treeRemoveHash = $form.find('input[name="treeRemoveHash"]').val();
             self.treeMoveHash = $form.find('input[name="treeMoveHash"]').val();
@@ -88,6 +110,9 @@
             self.selectNodes();
             self.validateTooltips();
         },
+        /**
+         *
+         */
         initCache: function () {
             var self = this;
             self.treeCache = {
@@ -115,6 +140,9 @@
                 }
             };
         },
+        /**
+         *
+         */
         getAjaxData: function (data) {
             var objCsrf = {}, msg = this.messages,
                 nodeTitles = {nodeTitle: msg.nodeTitle, nodeTitlePlural: msg.nodeTitlePlural};
@@ -122,6 +150,9 @@
             objCsrf[yii.getCsrfParam() || '_csrf'] = yii.getCsrfToken(); // jshint ignore:line
             return $.extend(true, {}, data, objCsrf, nodeTitles);
         },
+        /**
+         *
+         */
         validateTooltips: function () {
             var self = this;
             if (self.showTooltips) {
@@ -129,6 +160,9 @@
                 self.$detail.find('.btn').tooltip();
             }
         },
+        /**
+         *
+         */
         trigAlert: function ($alert, callback) {
             var dur = this.alertFadeDuration;
             if (!callback || !$.isFunction(callback)) {
@@ -139,6 +173,9 @@
                 $alert.fadeOut(dur, callback());
             }, dur * 2);
         },
+        /**
+         *
+         */
         selectNodes: function () {
             var self = this, selected = self.$element.val();
             if (selected.length === 0 || $h.isEmpty(selected)) {
@@ -151,6 +188,9 @@
                 $h.addCss(self.$tree.find('li[data-key="' + key + '"]'), 'kv-selected');
             });
         },
+        /**
+         *
+         */
         raise: function (event, params) {
             var self = this, e = $.Event(event);
             if (params !== undefined) {
@@ -160,23 +200,38 @@
             }
             return !e.isDefaultPrevented() && e.result !== false;
         },
+        /**
+         *
+         */
         enableToolbar: function () {
             var self = this;
             self.$toolbar.find('button:not([data-always-disabled])').removeAttr('disabled');
         },
+        /**
+         *
+         */
         disableToolbar: function () {
             var self = this;
             self.$toolbar.find('button').attr('disabled', true);
             self.$toolbar.find('.kv-' + self.btns.createR + ':not([data-always-disabled])').removeAttr('disabled');
         },
+        /**
+         *
+         */
         enable: function (action) {
             var self = this;
             self.$toolbar.find('.kv-' + self.btns[action]).removeAttr('disabled');
         },
+        /**
+         *
+         */
         disable: function (action) {
             var self = this;
             self.$toolbar.find('.kv-' + self.btns[action]).attr('disabled', true);
         },
+        /**
+         *
+         */
         showAlert: function (msg, type, callback) {
             var self = this, $detail = self.$detail, $alert = $detail.find('.alert-' + type);
             $detail.find('.kv-select-node-msg').remove();
@@ -185,10 +240,16 @@
                 self.trigAlert($alert, callback);
             });
         },
+        /**
+         *
+         */
         removeAlert: function () {
             var self = this;
             self.$detail.find('.alert').addClass(self.hideCssClass);
         },
+        /**
+         *
+         */
         renderForm: function (key, par, mesg, act=this.actions.manage) {
             var self = this, $detail = self.$detail, parent = par || '', msg = mesg || false,
                 params = $h.hashString(key + self.modelClass + self.isAdmin + parent), $form = $detail.find('form'),
@@ -219,6 +280,7 @@
                     'multiple': self.multiple,
                     'nodeView': self.nodeView,
                     'nodeUser': self.nodeUser,
+                    'modeView': self.modeView,
                     'nodeAddlViews': self.nodeAddlViews,
                     'nodeViewButtonLabels': self.nodeViewButtonLabels,
                     'nodeViewParams': self.nodeViewParams,
@@ -267,15 +329,39 @@
                     self.raise('treeview:selectajaxerror', [key, jqXHR, textStatus, errorThrown]);
                 },
                 complete: function (jqXHR) {
+                    self.enableflip();
                     if (self.raise('treeview:selectajaxcomplete', [key, jqXHR])) {
                         self.validateTooltips();
                     }
                 }
             });
         },
-        flipview: function() {
-            this.renderForm(this.key, '', '', this.actions.flip)
+        /**
+         *
+         */
+        enableflip: function(){
+            var self = this;
+            $(".kv-flipview").on('click', function () {
+                self.flipview();
+            });
+
         },
+        /**
+         * flipview() - Flip the view mode and refresh the detail view.
+         *
+         * Note: self.key can be out of date with the detail is being showed
+         *       so we find the key that has the focus.
+         */
+        flipview: function() {
+            var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
+                $node = $nodeText.closest('li'), key = $node.data('key');
+
+            self.modeView = (self.modeView == '0') ? '1' : '0';
+            self.renderForm( key, '', '', this.actions.flip);
+        },
+        /**
+         *
+         */
         select: function (key, init, mesg) {
             if ($h.isEmpty(key)) {
                 return;
@@ -324,6 +410,9 @@
             }
             self.parseParentFlag(key);
         },
+        /**
+         *
+         */
         parseParentFlag: function (key) {
             var self = this, $flags = self.$detail.find('input[class="kv-parent-flag"]'), $div,
                 $node = self.$tree.find('li[data-key="' + key + '"]');
@@ -339,6 +428,9 @@
                 }
             });
         },
+        /**
+         *
+         */
         remove: function () {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $node = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
@@ -384,6 +476,8 @@
                     data: self.getAjaxData({
                         'id': key,
                         'modelClass': self.modelClass,
+                        'modeView': self.modeView,
+                        'modeView': self.modeView,
                         'softDelete': self.softDelete,
                         'treeRemoveHash': self.treeRemoveHash
                     }),
@@ -437,6 +531,9 @@
                 });
             });
         },
+        /**
+         *
+         */
         move: function (dir) {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'),
                 $nodeFrom = $nodeText.closest('li'), msg = self.messages, $detail = self.$detail,
@@ -516,6 +613,7 @@
                     'idFrom': keyFrom,
                     'idTo': keyTo,
                     'modelClass': self.modelClass,
+                    'modeView': self.modeView,
                     'dir': dir,
                     'allowNewRoots': self.allowNewRoots,
                     'treeMoveHash': self.treeMoveHash
@@ -578,6 +676,9 @@
                 }
             });
         },
+        /**
+         *
+         */
         setSelected: function () {
             var self = this, keys = '', desc = '';
             self.$tree.find('.kv-selected').each(function () {
@@ -591,6 +692,9 @@
             self.$element.val(keys);
             self.raise('change');
         },
+        /**
+         *
+         */
         getNewNode: function () {
             var self = this;
             return '<div class="kv-tree-list" tabindex="-1">\n' +
@@ -600,6 +704,9 @@
                 '   </div>\n' +
                 '</div>';
         },
+        /**
+         *
+         */
         create: function () {
             var self = this, $nodeText = self.$tree.find('li .kv-node-detail.kv-focussed'), $n, key,
                 $node = $nodeText.closest('li'), msg = self.messages, content, $nodeDetail, $newNode;
@@ -655,6 +762,9 @@
                 self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
         },
+        /**
+         *
+         */
         createRoot: function () {
             var self = this, $treeRoot = self.$tree.find('.kv-tree'),
                 $root = $treeRoot.children('li.kv-empty');
@@ -682,6 +792,9 @@
                 self.$toolbar.find('.kv-' + self.btns.trash).removeAttr('disabled');
             });
         },
+        /**
+         *
+         */
         toggle: function ($tog) {
             var self = this, $node = $tog.closest('li.kv-parent'), nodeKey = $node.data('key');
             if ($node.hasClass('kv-collapsed')) {
@@ -694,6 +807,9 @@
                 }
             }
         },
+        /**
+         *
+         */
         toggleAll: function (action, trig) {
             var self = this;
             if (action === 'expand') {
@@ -710,6 +826,9 @@
             $h.addCss(self.$treeContainer.find('li.kv-parent'), 'kv-collapsed');
             $h.addCss(self.$treeContainer, 'kv-collapsed');
         },
+        /**
+         *
+         */
         check: function ($chk) {
             // noinspection EqualityComparisonWithCoercionJS
             var self = this, isRoot = ($chk === true), desc, $node = isRoot ? self.$tree : $chk.closest('li'),
@@ -757,12 +876,18 @@
                 self.setSelected();
             }
         },
+        /**
+         *
+         */
         clear: function () {
             var self = this;
             self.$treeContainer.removeClass('kv-loading-search');
             self.$tree.find('.kv-highlight').removeClass('kv-highlight');
             self.blurFilter();
         },
+        /**
+         *
+         */
         parseCache: function () {
             var self = this;
             if (!self.enableCache) {
@@ -789,6 +914,9 @@
                 }
             });
         },
+        /**
+         *
+         */
         focusFilter: function () {
             var self = this;
             if (!self.hideUnmatchedSearchItems) {
@@ -801,6 +929,9 @@
                 $h.addCss(self.$treeContainer, 'kv-active-filter');
             }
         },
+        /**
+         *
+         */
         blurFilter: function () {
             var self = this;
             self.clearSearchResults();
@@ -814,6 +945,9 @@
             self.$treeContainer.find('.kv-highlight').removeClass('kv-highlight');
             self.$treeContainer.find('.kv-tree-container li.kv-filter-match').removeClass('kv-filter-match');
         },
+        /**
+         *
+         */
         clearSearchResults: function () {
             var self = this;
             self.$tree.find('.kv-node-label .kv-search-found').each(function () {
@@ -821,6 +955,9 @@
                 $tmp.unwrap().remove();
             });
         },
+        /**
+         *
+         */
         listen: function () {
             var self = this;
             // node toggle actions
@@ -922,9 +1059,7 @@
                 });
             });
             // flipview button
-            self.$detail.find('.kv-flipview').on('click', function () {
-                self.flipview();
-            });
+            self.enableflip();
             // create node
             self.$toolbar.find('.kv-' + self.btns.create).on('click', function () {
                 self.create();
@@ -961,22 +1096,37 @@
                 }
             });
         },
+        /**
+         *
+         */
         expandAll: function () {
             this.toggleAll('expand');
         },
+        /**
+         *
+         */
         collapseAll: function () {
             this.toggleAll('collapse');
         },
+        /**
+         *
+         */
         checkAll: function () {
             var self = this;
             self.$tree.removeClass('kv-selected');
             self.check(true);
         },
+        /**
+         *
+         */
         uncheckAll: function () {
             var self = this;
             $h.addCss(self.$tree, 'kv-selected');
             self.check(true);
         },
+        /**
+         *
+         */
         checkNode: function (key) {
             var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
             if ($node.length) {
@@ -984,6 +1134,9 @@
                 self.check($node);
             }
         },
+        /**
+         *
+         */
         uncheckNode: function (key) {
             var self = this, $node = self.$tree.find('li[data-key="' + key + '"]');
             if ($node.length) {
@@ -992,6 +1145,9 @@
             }
         }
     };
+    /**
+     *
+     */
     $.fn.treeview = function (option) {
         var args = Array.apply(null, arguments), $this, data, options;
         args.shift();
@@ -1008,6 +1164,9 @@
             }
         });
     };
+    /**
+     *
+     */
     $.fn.treeview.defaults = {
         btns: {},
         treeId: '',

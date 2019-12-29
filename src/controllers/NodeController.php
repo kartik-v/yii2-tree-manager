@@ -134,35 +134,40 @@ class NodeController extends Controller
     * @paramter out The output array information
     * @returns the view to use
     */
-    private function selectView($out)
+    private function selectView($out, $modeView=0)
     {
         $view = $out['nodeUser'];
-
         if ($out['isAdmin']) {
-                $session  = yii::$app->session;
-                $viewMode = $session->get('viewMode', 0);
-                $view = ($viewMode == 0) ?  $out['nodeView'] : $out['nodeUser'];
-         }
+           $view = ($modeView == 0) ?  $out['nodeView'] : $out['nodeUser'];
+        }
         Yii::debug('return '.$view,__METHOD__);
        return $view;
     }
 
-  /**
-     * Sets/increments the display mode rhwn  redirects back to the ID
-     * @throws InvalidConfigException
-     * @throws ErrorException
+    /**
+     * Flip the detail view between User mode and Admin Mode
+     *
      */
     public function actionFlip()
     {
-        // Flip the view Mode
-        $session  = yii::$app->session;
-        $viewMode = $session->get('viewMode');
-        $viewMode = ($viewMode == 1) ? 0 : 1;
-        $session->set('viewMode', $viewMode);
+        $post = Yii::$app->request->post();
+        $data = static::getPostData();
 
-        Yii::debug('actionFlip()',__METHOD__);
-        return $this->actionManage();
+        $module = TreeView::module();
+        $keyAttr = $module->dataStructure['keyAttribute'];
+        $id = ArrayHelper::getValue($data,$keyAttr);;
+
+        $session = Yii::$app->session;
+        $name = ArrayHelper::getValue($data, 'nodeSelected', 'kvNodeId');
+        $session->set($name, $id);
+
+        $mode = ArrayHelper::getValue($data, 'modeView', 0);
+        $session->set('modeView', $mode);
+
+        $currUrl = ArrayHelper::getValue($data, 'currUrl', '');
+        return $this->redirect($currUrl);
     }
+
     /**
      * Saves a node once form is submitted
      * @throws InvalidConfigException
@@ -275,6 +280,7 @@ class NodeController extends Controller
         $nodeTitles = TreeSecurity::getNodeTitles($data);
         $callback = function () use ($data, $nodeTitles) {
             $id = ArrayHelper::getValue($data, 'id', null);
+            $modeView = ArrayHelper::getValue($data, 'modeView', 0);
             $parentKey = ArrayHelper::getValue($data, 'parentKey', '');
             $parsedData = TreeSecurity::parseManageData($data);
             $out = $parsedData['out'];
@@ -296,6 +302,7 @@ class NodeController extends Controller
             $params = $module->treeStructure + $module->dataStructure + [
                     'node' => $node,
                     'parentKey' => $parentKey,
+                    'modeView' => $modeView,
                     'treeManageHash' => $newHash,
                     'treeRemoveHash' => ArrayHelper::getValue($data, 'treeRemoveHash', ''),
                     'treeMoveHash' => ArrayHelper::getValue($data, 'treeMoveHash', ''),
@@ -313,7 +320,7 @@ class NodeController extends Controller
             }
             TreeSecurity::checkSignature('manage', $oldHash, $newHash);
             return $this->renderAjax(
-                $this->selectView($out),
+                $this->selectView($out, $modeView),
                 ['params' => $params]);
         };
         return self::process(
