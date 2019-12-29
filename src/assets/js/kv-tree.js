@@ -18,6 +18,7 @@
 
     /**
      * internal helper methods and constants
+     */
     $h = {
         QUERY_PARAM: 'kvtree',
         DEFAULT_BUTTONS: {
