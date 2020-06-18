@@ -40,6 +40,11 @@ class Module extends \kartik\base\Module
      */
     const NODE_SAVE = 'save';
     /**
+     * Flip node action
+     */
+     const NODE_FLIP = 'flip';
+
+    /**
      * Tree details form view - Section Part 1
      */
     const VIEW_PART_1 = 1;
@@ -80,6 +85,8 @@ class Module extends \kartik\base\Module
      */
     public $treeViewSettings = [
         'nodeView' => '@kvtree/views/_form',
+        'nodeUser' => '@kvtree/views/_user',
+        'modeView' => 0,
         'nodeAddlViews' => [
             self::VIEW_PART_1 => '',
             self::VIEW_PART_2 => '',
@@ -129,6 +136,7 @@ class Module extends \kartik\base\Module
             self::NODE_SAVE => Url::to(['/treemanager/node/save']),
             self::NODE_REMOVE => Url::to(['/treemanager/node/remove']),
             self::NODE_MOVE => Url::to(['/treemanager/node/move']),
+            self::NODE_FLIP => Url::to(['/treemanager/node/flip']),
         ];
         $this->treeViewSettings['nodeActions'] = $nodeActions;
     }

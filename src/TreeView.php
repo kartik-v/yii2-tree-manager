@@ -43,6 +43,10 @@ class TreeView extends Widget
      */
     const BTN_CREATE = 'create';
     /**
+     * Flip View Mode button
+     */
+    const BTN_FLIPVIEW = 'flipview';
+    /**
      * Remove tree node button
      */
     const BTN_REMOVE = 'remove';
@@ -135,6 +139,16 @@ class TreeView extends Widget
      * @var string the view file that will render the form for editing the node.
      */
     public $nodeView;
+
+    /**
+     * @var string the view file that will render the form for displaying the node data.
+     */
+    public $nodeUser;
+
+   /**
+     * @var int The view mode when in isAdmin mode.  0=admin, 1=user.
+     */
+    public $modeView = 0;
 
     /**
      * @var array the markup for the submit and reset button labels in the node view form
@@ -921,11 +935,19 @@ HTML;
                 'options' => ['title' => Yii::t('kvtree', 'Refresh')],
                 'url' => Yii::$app->request->url,
             ],
+           self::BTN_FLIPVIEW => [
+                'icon' => 'user',
+                'options' => ['title' => 'Flip View'],
+            ],
+
         ];
+
         $this->toolbar = array_replace_recursive($defaultToolbar, $this->toolbar);
+
         if (!$this->allowNewRoots) {
-            unset($this->toolbar[self::BTN_CREATE_ROOT]);
-        }
+                unset($this->toolbar[self::BTN_CREATE_ROOT]);
+            }
+
         $this->sortToolbar();
         $this->_nodeIconsList = $this->getIconsList();
     }
@@ -978,6 +1000,8 @@ HTML;
      */
     public function renderToolbar()
     {
+        if (!$this->isAdmin ) return;
+
         $out = Html::beginTag('div', $this->toolbarOptions) . "\n" .
             Html::beginTag('div', $this->buttonGroupOptions);
         foreach ($this->toolbar as $btn => $settings) {
@@ -1049,6 +1073,7 @@ HTML;
      */
     public function renderFooter()
     {
+        if (!$this->isAdmin ) return ("");
         return Html::tag('div', $this->footerTemplate, $this->footerOptions);
     }
 
@@ -1217,6 +1242,9 @@ HTML;
             $node->$iconTypeAttribute = ArrayHelper::getValue($this->iconEditSettings, 'type', self::ICON_CSS);
         }
         $url = Yii::$app->request->url;
+
+        $this->initViewMode();
+
         $manageData = TreeSecurity::parseManageData([
             'formOptions' => $this->nodeFormOptions,
             'hideCssClass' => $this->hideCssClass,
@@ -1232,6 +1260,8 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
+            'nodeUser' => $this->nodeUser,
+            'modeView' => $this->modeView,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
             'nodeViewParams' => serialize($this->nodeViewParams),
@@ -1252,11 +1282,18 @@ HTML;
         ]);
         $params = $this->_module->treeStructure + $this->_module->dataStructure + [
                 'node' => $node,
+                'modeView' => $this->modeView,
                 'treeManageHash' => $manageData['newHash'],
                 'treeRemoveHash' => $removeData['newHash'],
                 'treeMoveHash' => $moveData['newHash'],
             ] + $manageData['out'] + $this->nodeViewParams;
-        $content = $this->render($this->nodeView, ['params' => $params]);
+
+        $view = $this->nodeUser;
+        if ($this->isAdmin and $this->modeView ) {
+           $view =$this->nodeView;
+        }
+
+        $content = $this->render($view,['params' => $params]);
         return Html::tag('div', $content, $this->detailOptions);
     }
 
@@ -1298,6 +1335,7 @@ HTML;
             'showIDAttribute' => $this->showIDAttribute,
             'showNameAttribute' => $this->showNameAttribute,
             'nodeView' => $this->nodeView,
+            'nodeUser' => $this->nodeUser,
             'nodeAddlViews' => $this->nodeAddlViews,
             'nodeViewParams' => serialize($this->nodeViewParams),
             'nodeViewButtonLabels' => $this->nodeViewButtonLabels,
@@ -1339,7 +1377,7 @@ HTML;
         if (empty($this->emptyNodeMsg)) {
             $this->emptyNodeMsg = Yii::t(
                 'kvtree',
-                'No valid {nodes} are available for display. Use toolbar buttons to add {nodes}.',
+                'No valid {nodes} are available for display.',
                 ['node' => $this->nodeTitle, 'nodes' => $this->nodeTitlePlural]
             );
         }
@@ -1381,6 +1419,22 @@ HTML;
             $this->displayValue = $key;
         }
         $session->set($id, null);
+    }
+
+    /**
+     * Initializes the view mode
+     *
+     * @return void
+     */
+    protected function initViewMode()
+    {
+        if (Yii::$app->has('session')) {
+            $session = Yii::$app->session;
+            yii::debug( 'modeView = ' . $this->modeView . ' isAdmin = ' . $this->isAdmin );
+            $this->modeView  = $session->get('modeView', $this->isAdmin );
+            yii::debug( 'modeView = ' . $this->modeView . ' isAdmin = ' . $this->isAdmin );
+        }
+//      $session->set('modeView', 0);
     }
 
     /**
