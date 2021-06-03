@@ -124,12 +124,15 @@ class Module extends \kartik\base\Module
             'iconTypeAttribute' => 'icon_type'
         ];
         $nodeActions = ArrayHelper::getValue($this->treeViewSettings, 'nodeActions', []);
-        $nodeActions += [
-            self::NODE_MANAGE => Url::to(['/treemanager/node/manage']),
-            self::NODE_SAVE => Url::to(['/treemanager/node/save']),
-            self::NODE_REMOVE => Url::to(['/treemanager/node/remove']),
-            self::NODE_MOVE => Url::to(['/treemanager/node/move']),
-        ];
+        // prepends Error in Console Applications
+        if (\Yii::$app instanceof \yii\web\Application) {
+            $nodeActions += [
+                self::NODE_MANAGE => Url::to(['/treemanager/node/manage']),
+                self::NODE_SAVE => Url::to(['/treemanager/node/save']),
+                self::NODE_REMOVE => Url::to(['/treemanager/node/remove']),
+                self::NODE_MOVE => Url::to(['/treemanager/node/move']),
+            ];
+        }
         $this->treeViewSettings['nodeActions'] = $nodeActions;
     }
 }
