@@ -1,5 +1,5 @@
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package yii2-tree-manager
  * @version 1.1.3
  */

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree-manager
  * @version   1.1.3
  */
@@ -10,6 +10,7 @@ namespace kartik\tree\controllers;
 
 use Closure;
 use Exception;
+use kartik\base\Lib;
 use kartik\tree\Module;
 use kartik\tree\models\Tree;
 use kartik\tree\TreeView;
@@ -27,9 +28,9 @@ use yii\web\Response;
 use yii\web\View;
 
 /**
- * The `NodeController` class manages all the manipulation actions for each tree node. It includes security
- * validations to ensure the actions are accessible only via `ajax` or `post` requests. In addition, it includes
- * stateless signature token validation to cross check data is not tampered before the request is sent via POST.
+ * NodeController manages all the manipulation actions for each tree node. It includes security validations to ensure
+ * the actions are accessible only via `ajax` or `post` requests. In addition, it includes stateless signature token
+ * validation to cross check that data is not tampered before the request is sent via POST.
  */
 class NodeController extends Controller
 {
@@ -156,7 +157,7 @@ class NodeController extends Controller
             $successMsg = Yii::t('kvtree', 'The {node} was successfully created.', $nodeTitles);
             $errorMsg = Yii::t('kvtree', 'Error while creating the {node}. Please try again later.', $nodeTitles);
         } else {
-            $tag = explode("\\", $treeClass);
+            $tag = Lib::explode("\\", $treeClass);
             $tag = array_pop($tag);
             $id = $post[$tag][$keyAttr];
             $node = $treeClass::findOne($id);

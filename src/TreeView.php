@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree-manager
  * @version   1.1.3
  */
@@ -9,7 +9,9 @@
 namespace kartik\tree;
 
 use Closure;
+use Exception;
 use kartik\base\Config;
+use kartik\base\Lib;
 use kartik\base\Widget;
 use kartik\dialog\Dialog;
 use kartik\tree\models\Tree;
@@ -22,11 +24,28 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * An enhanced tree view widget for Yii Framework 2 that allows management and manipulation of hierarchical data using
- * nested sets.
+ * TreeView is an enhanced tree view widget for Yii Framework 2 that allows management and manipulation of hierarchical
+ * data using nested sets. The widget utilizes the [yii2-nested-sets](https://github.com/creocoder/yii2-nested-sets) extension to
+ * manage the tree structure in your database.
+ *
+ * For example,
+ *
+ * ```php
+ * use kartik\tree\TreeView;
+ * echo TreeView::widget([
+ *     // single query fetch to render the tree
+ *     'query'             => Tree::find()->addOrderBy('root, lft'),
+ *     'headingOptions'    => ['label' => 'Categories'],
+ *     'isAdmin'           => false,                       // optional (toggle to enable admin mode)
+ *     'displayValue'      => 1,                           // initial display value
+ *     //'softDelete'      => true,                        // normally not needed to change
+ *     //'cacheSettings'   => ['enableCache' => true]      // normally not needed to change
+ * ]);
+ * ```
+ *
+ * @see https://github.com/creocoder/yii2-nested-sets
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since  1.0
  */
 class TreeView extends Widget
 {
@@ -261,6 +280,7 @@ class TreeView extends Widget
 
     /**
      * @var boolean whether to use font awesome icons. Defaults to `false`.
+     * @deprecated since v1.1.3 (for Bootstrap 4.x and above this will always be true)
      */
     public $fontAwesome = false;
 
@@ -359,41 +379,36 @@ class TreeView extends Widget
     /**
      * @var string the icon markup for the opened parent node if no icon was setup in the database. If not set will
      * default to:
-     *    - `<i class="fas fa-plus-square"></i>` if [[bsVersion]] is `4.x`.
-     *    - `<i class="fa fa-plus-square-o"></i>` if [[fontAwesome]] is `true` and [[bsVersion]] is `3.x`.
-     *    - `<i class="glyphicon glyphicon-expand"></i>` if [[fontAwesome]] is `false` and [[bsVersion]] is `3.x`.
+     *    - `<i class="fas fa-plus-square"></i>` if [[bsVersion]] is not `3.x` or [[fontAwesome]] is `true`.
+     *    - `<i class="glyphicon glyphicon-expand"></i>` if [[bsVersion]] is `3.x` and [[fontAwesome]] is `false` .
      */
     public $defaultParentNodeOpenIcon;
 
     /**
      * @var string the default icon for expanding the node. If not set will default to:
-     *    - `<i class="fas fa-plus-square"></i>` if [[bsVersion]] is `4.x`.
-     *    - `<i class="fa fa-plus-square-o"></i>` if [[fontAwesome]] is `true` and [[bsVersion]] is `3.x`.
-     *    - `<i class="glyphicon glyphicon-expand"></i>` if [[fontAwesome]] is `false` and [[bsVersion]] is `3.x`.
+     *    - `<i class="fas fa-plus-square"></i>` if [[bsVersion]] is not `3.x` or [[fontAwesome]] is `true`.
+     *    - `<i class="glyphicon glyphicon-expand"></i>` if [[bsVersion]] is `3.x` and [[fontAwesome]] is `false` .
      */
     public $defaultExpandNodeIcon;
 
     /**
      * @var string the default icon for collapsing the node. If not set will default to:
-     *    - `<i class="fas fa-minus-square"></i>` if [[bsVersion]] is `4.x`.
-     *    - `<i class="fa fa-minus-square-o"></i>`  if [[fontAwesome]] is `true` and [[bsVersion]] is `3.x`.
-     *    - `<i class="glyphicon glyphicon-collapse-down"></i>` if [[fontAwesome]] is `false` and [[bsVersion]] is `3.x`.
+     *    - `<i class="fas fa-minus-square"></i>` if [[bsVersion]] is not `3.x` or [[fontAwesome]] is `true`.
+     *    - `<i class="glyphicon glyphicon-collapse-down"></i>` if [[bsVersion]] is `3.x` and [[fontAwesome]] is `false` .
      */
     public $defaultCollapseNodeIcon;
 
     /**
      * @var array default icon for a checked node which will represent a checked checkbox. If not set will default to:
-     *    - `<i class="fas fa-check-square"></i>` if [[bsVersion]] is `4.x`.
-     *    - `<i class="fa fa-check-square-o"></i>` if [[fontAwesome]] is `true` and [[bsVersion]] is `3.x`.
-     *    - `<i class="glyphicon glyphicon-checked"></i>` if [[fontAwesome]] is `false` and [[bsVersion]] is `3.x`.
+     *    - `<i class="fas fa-check-square"></i>` if [[bsVersion]] is not `3.x` or [[fontAwesome]] is `true`.
+     *    - `<i class="glyphicon glyphicon-checked"></i>` if [[bsVersion]] is `3.x` and [[fontAwesome]] is `false` .
      */
     public $defaultCheckedNodeIcon;
 
     /**
      * @var string the HTML attributes for an unchecked node which will represent an unchecked checkbox. If not set will default to:
-     *    - `<i class="fas fa-square"></i>` if [[bsVersion]] is `4.x`.
-     *    - `<i class="fa fa-square-o"></i>` if [[fontAwesome]] is `true` and [[bsVersion]] is `3.x`.
-     *    - `<i class="glyphicon glyphicon-unchecked"></i>` if [[fontAwesome]] is `false` and [[bsVersion]] is `3.x`.
+     *    - `<i class="fas fa-square"></i>` if [[bsVersion]] is not `3.x` or [[fontAwesome]] is `true`.
+     *    - `<i class="glyphicon glyphicon-unchecked"></i>` if [[bsVersion]] is `3.x` and [[fontAwesome]] is `false` .
      */
     public $defaultUncheckedNodeIcon;
 
@@ -473,7 +488,7 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the indicator which will represent a checked checkbox. The following special
      * options are recognized:
-     * - `label`: _string_, the label for the indicator. If not set will default to [[defaultCheckNodeIcon]].
+     * - `label`: _string_, the label for the indicator. If not set will default to [[defaultCheckedNodeIcon]].
      */
     public $checkedNodeOptions = [];
 
@@ -506,7 +521,7 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the search container
      */
-    public $searchContainerOptions = ['class' => 'kv-search-sm'];
+    public $searchContainerOptions = [];
 
     /**
      * @var array the HTML attributes for the search input
@@ -516,7 +531,7 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the search clear indicator
      */
-    public $searchClearOptions = ['class' => 'close'];
+    public $searchClearOptions = [];
 
     /**
      * @var boolean whether to hide unmatched search items when searching
@@ -636,17 +651,17 @@ HTML;
     protected $_nodeSelected = null;
 
     /**
-     * @var array configuration of icons for BS3, BS4, and FA. The 4th array value is optional and includes any
+     * @var array configuration of icons for Glyphicons and Font Awesome. The 3rd array value is optional and includes any
      * additional css class to be added.
      */
     protected static $_nodeIcons = [
-        'defaultExpandNodeIcon' => ['expand', 'plus-square', 'plus-square-o'],
-        'defaultCollapseNodeIcon' => ['collapse', 'minus-square', 'minus-square-o'],
-        'defaultCheckedNodeIcon' => ['checked', 'check-square', 'check-square-o'],
-        'defaultUncheckedNodeIcon' => ['unchecked', 'square', 'square-o'],
-        'defaultChildNodeIcon' => ['file', 'file', 'file'],
-        'defaultParentNodeIcon' => ['folder', 'folder', 'folder-close', 'kv-node-closed'],
-        'defaultParentNodeOpenIcon' => ['folder-open', 'folder-open', 'folder-open', 'kv-node-opened'],
+        'defaultExpandNodeIcon' => ['glyphicon glyphicon-expand', 'far fa-plus-square'],
+        'defaultCollapseNodeIcon' => ['glyphicon glyphicon-collapse', 'far fa-minus-square'],
+        'defaultCheckedNodeIcon' => ['glyphicon glyphicon-checked', 'far fa-check-square'],
+        'defaultUncheckedNodeIcon' => ['glyphicon glyphicon-unchecked', 'far fa-square'],
+        'defaultChildNodeIcon' => ['glyphicon glyphicon-file', 'fas fa-file'],
+        'defaultParentNodeIcon' => ['glyphicon glyphicon-folder', 'fas fa-folder', 'kv-node-closed'],
+        'defaultParentNodeOpenIcon' => ['glyphicon glyphicon-folder-open', 'fas fa-folder-open', 'kv-node-opened'],
     ];
 
     /**
@@ -667,23 +682,19 @@ HTML;
 
     /**
      * Initialize icons
-     * @throws InvalidConfigException
+     *
+     * @throws InvalidConfigException|Exception
      */
     protected function initIcons()
     {
-        $isBs4 = $this->isBs4();
-        $prefix = $this->getDefaultIconPrefix();
+        $notBs3 = !$this->isBs(3);
         foreach (static::$_nodeIcons as $prop => $setting) {
             if (!isset($this->$prop)) {
-                $icon = $isBs4 ? $setting[1] : ($this->fontAwesome ? $setting[2] : $setting[0]);
-                $pre = $this->fontAwesome && !$isBs4 ? 'fa fa-' : $prefix;
-                if ($isBs4 && substr($setting[2], -2) === '-o') {
-                    $pre = 'far fa-';
+                $icon = $notBs3 || $this->fontAwesome ? $setting[1] : $setting[0];
+                if (isset($setting[2])) {
+                    $icon .= ' ' . $setting[2];
                 }
-                if (isset($setting[3])) {
-                    $icon .= ' ' . $setting[3];
-                }
-                $this->$prop = Html::tag('i', '', ['class' => $pre . $icon]);
+                $this->$prop = Html::tag('i', '', ['class' => $icon]);
             }
         }
     }
@@ -752,7 +763,7 @@ HTML;
                 return true;
             }
             $traitsToSearch = array_merge($newTraits, $traitsToSearch);
-        };
+        }
         foreach ($traits as $t => $str) {
             $traits = array_merge(class_uses($t, $autoload), $traits);
             if (in_array($trait, $traits)) {
@@ -776,7 +787,7 @@ HTML;
 
     /**
      * @inheritdoc
-     * @throws \Exception
+     * @throws Exception
      */
     public function init()
     {
@@ -801,7 +812,7 @@ HTML;
      */
     public function initOptions()
     {
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3);
         $this->_iconsListShow = ArrayHelper::getValue($this->iconEditSettings, 'show', 'text');
         if (!$this->_module->treeStructure['treeAttribute']) {
             $this->allowNewRoots = false;
@@ -812,7 +823,7 @@ HTML;
         $this->initIcons();
         $this->_nodes = $this->query->all();
         if (!isset($this->iconPrefix)) {
-            $this->iconPrefix = $this->isBs4() ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
+            $this->iconPrefix = !$this->isBs(3) ? 'fas fa-' : ($this->fontAwesome ? 'fa fa-' : 'glyphicon glyphicon-');
         }
         $this->_nodeSelected = $this->options['id'] . '-nodesel';
         $this->initSelectedNode();
@@ -824,7 +835,7 @@ HTML;
         if (empty($this->options['class'])) {
             $this->options['class'] = 'form-control ' . $this->hideCssClass ;
         }
-        Html::addCssClass($this->treeWrapperOptions, 'kv-tree-wrapper');
+        Html::addCssClass($this->treeWrapperOptions, ['kv-tree-wrapper', 'tree-bs' . $this->getBsVer()]);
         Html::addCssClass($this->headerOptions, 'kv-header-container');
         Html::addCssClass($this->headingOptions, 'kv-heading-container');
         Html::addCssClass($this->toolbarOptions, 'kv-toolbar-container');
@@ -917,7 +928,7 @@ HTML;
             ],
             self::BTN_SEPARATOR,
             self::BTN_REFRESH => [
-                'icon' => $isBs4 ? 'sync-alt' : 'refresh',
+                'icon' => $notBs3 ? 'sync-alt' : 'refresh',
                 'options' => ['title' => Yii::t('kvtree', 'Refresh')],
                 'url' => Yii::$app->request->url,
             ],
@@ -938,13 +949,13 @@ HTML;
      */
     public function renderWidget()
     {
-        $content = strtr(
+        $content = Lib::strtr(
             $this->mainTemplate, [
                 '{wrapper}' => $this->renderWrapper(),
                 '{detail}' => $this->renderDetail(),
             ]
         );
-        return strtr(
+        return Lib::strtr(
                 $content, [
                     '{heading}' => $this->renderHeading(),
                     '{search}' => $this->renderSearch(),
@@ -958,10 +969,11 @@ HTML;
      * Renders the tree wrapper container
      *
      * @return string
+     * @throws Exception
      */
     public function renderWrapper()
     {
-        $content = strtr(
+        $content = Lib::strtr(
             $this->wrapperTemplate, [
                 '{header}' => $this->renderHeader(),
                 '{tree}' => $this->renderTree(),
@@ -975,6 +987,7 @@ HTML;
      * Renders the markup for the button actions toolbar
      *
      * @return string
+     * @throws Exception
      */
     public function renderToolbar()
     {
@@ -1084,6 +1097,7 @@ HTML;
      * Renders the markup for the tree hierarchy - uses a fast non-recursive mode of tree traversal.
      *
      * @return string
+     * @throws Exception
      */
     public function renderTree()
     {
@@ -1129,10 +1143,10 @@ HTML;
                 $out .= Html::beginTag('ul') . "\n";
                 $currDepth = $currDepth + ($nodeDepth - $currDepth);
             } elseif ($nodeDepth < $currDepth) {
-                $out .= str_repeat("</li>\n</ul>", $currDepth - $nodeDepth) . "</li>\n";
+                $out .= Lib::str_repeat("</li>\n</ul>", $currDepth - $nodeDepth) . "</li>\n";
                 $currDepth = $currDepth - ($currDepth - $nodeDepth);
             }
-            if (trim($indicators) == null) {
+            if (Lib::trim($indicators) == null) {
                 $indicators = '&nbsp;';
             }
             $nodeOptions = [
@@ -1170,8 +1184,8 @@ HTML;
             if (!$node->isActive()) {
                 $css[] = 'kv-inactive ';
             }
-            $indicators .= $this->renderToggleIconContainer(false) . "\n";
-            $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer(false) . "\n" : '';
+            $indicators .= $this->renderToggleIconContainer() . "\n";
+            $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer() . "\n" : '';
             if (!empty($css)) {
                 Html::addCssClass($nodeOptions, $css);
             }
@@ -1187,7 +1201,7 @@ HTML;
                 '</div>' . "\n";
             ++$counter;
         }
-        $out .= str_repeat("</li>\n</ul>", $nodeDepth) . "</li>\n";
+        $out .= Lib::str_repeat("</li>\n</ul>", $nodeDepth) . "</li>\n";
         $out .= "</ul>\n";
         if (!$this->hideTopRoot && !$this->topRootAsHeading) {
             $out = $this->renderRoot() . $out;
@@ -1262,7 +1276,7 @@ HTML;
 
     /**
      * Registers the client assets for the widget
-     * @throws \Exception
+     * @throws Exception
      */
     public function registerAssets()
     {
@@ -1333,7 +1347,7 @@ HTML;
             $this->bsVersion = $this->_module->bsVersion;
         }
         $this->initBsVersion();
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3);
         $prefix = $this->getDefaultIconPrefix();
         $defaultBtnCss = $this->getDefaultBtnCss();
         if (empty($this->emptyNodeMsg)) {
@@ -1346,11 +1360,11 @@ HTML;
 
         if (!isset($this->nodeViewButtonLabels['submit'])) {
             $this->nodeViewButtonLabels['submit'] = Html::tag('i', '',
-                ['class' => $prefix . ($isBs4 ? 'save' : 'floppy-disk')]);
+                ['class' => $prefix . ($notBs3 ? 'save' : 'floppy-disk')]);
         }
         if (!isset($this->nodeViewButtonLabels['reset'])) {
             $this->nodeViewButtonLabels['reset'] = Html::tag('i', '',
-                ['class' => $prefix . ($isBs4 ? 'redo' : 'repeat')]);
+                ['class' => $prefix . ($notBs3 ? 'redo' : 'repeat')]);
         }
         if (!isset($this->buttonOptions['class'])) {
             $this->buttonOptions['class'] = 'btn ' . $defaultBtnCss;
@@ -1375,8 +1389,8 @@ HTML;
             return;
         }
         $session = Yii::$app->session;
-        $id = $this->_nodeSelected ? $this->_nodeSelected : 'kvNodeId';
-        $key = $session->get($id, null);
+        $id = isset($this->_nodeSelected) ? $this->_nodeSelected : 'kvNodeId';
+        $key = $session->get($id);
         if ($key) {
             $this->displayValue = $key;
         }
@@ -1428,7 +1442,7 @@ HTML;
     }
 
     /**
-     * Render the default node icon markup
+     * Render the default node icon markup.
      *
      * @param string $icon the current node's icon
      * @param integer $iconType the current node's icon type, must be one of:
@@ -1475,7 +1489,7 @@ HTML;
      */
     protected function renderToggleIconContainer($root = false)
     {
-        $content = $this->renderToggleIcon('expand') . $this->renderToggleIcon('collapse');
+        $content = $this->renderToggleIcon('expand') . $this->renderToggleIcon();
         $options = $root ? $this->rootNodeToggleOptions : $this->nodeToggleOptions;
         return Html::tag('span', $content, $options);
     }
@@ -1505,7 +1519,7 @@ HTML;
      */
     protected function renderCheckboxIconContainer($root = false)
     {
-        $content = $this->renderCheckboxIcon(true) . $this->renderCheckboxIcon(false);
+        $content = $this->renderCheckboxIcon(true) . $this->renderCheckboxIcon();
         $options = $root ? $this->rootNodeCheckboxOptions : $this->nodeCheckboxOptions;
         return Html::tag('span', $content, $options);
     }
@@ -1528,6 +1542,7 @@ HTML;
      * Renders the markup for the detail form to edit/view the selected tree node
      *
      * @return null|array
+     * @throws Exception
      */
     protected function getIconsList()
     {

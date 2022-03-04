@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree-manager
  * @version   1.1.3
  */
@@ -19,7 +19,8 @@ use yii\helpers\Json;
 use yii\console\Application;
 
 /**
- * Tree data security and data hashing helper class
+ * Tree data security and data hashing helper class. This class and its methods are used by the [[TreeView]]
+ * widget to manage data transfer between the client and the server in a secure way.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0

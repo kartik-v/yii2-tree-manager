@@ -1,67 +1,81 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree
  * @version   1.1.3
  */
 
 namespace kartik\tree;
 
+use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\web\Application as WebApplication;
 
 /**
- * The tree management module for Yii Framework 2.0.
+ * Module is the tree management module for Yii Framework 2.0 that enables the [[TreeView]] widget functionality.
  *
+ * To use, configure the module named `treemanager` in the modules section of your Yii configuration file.
+ *
+ * For example,
+ * 
+ * ```php
+ * 'modules' => [
+ *    'treemanager' =>  [
+ *         'class' => '\kartik\tree\Module',
+ *         // other module settings, refer detailed documentation
+ *     ]
+ * ]
+ * ```
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
 class Module extends \kartik\base\Module
 {
     /**
-     * The module name for Krajee treeview
+     * @var string module name for the Krajee Tree management module
      */
     const MODULE = 'treemanager';
     /**
-     * Manage node action
+     * @var string manage node action
      */
     const NODE_MANAGE = 'manage';
     /**
-     * Remove node action
+     * @var string remove node action
      */
     const NODE_REMOVE = 'remove';
     /**
-     * Move node action
+     * @var string move node action
      */
     const NODE_MOVE = 'move';
     /**
-     * Save node action
+     * @var string save node action
      */
     const NODE_SAVE = 'save';
     /**
-     * Tree details form view - Section Part 1
+     * @var int section part 1 of the tree details form view
      */
     const VIEW_PART_1 = 1;
     /**
-     * Tree details form view - Section Part 2
+     * @var int section part 2 of the tree details form view
      */
     const VIEW_PART_2 = 2;
     /**
-     * Tree details form view - Section Part 3
+     * @var int section part 3 of the tree details form view
      */
     const VIEW_PART_3 = 3;
     /**
-     * Tree details form view - Section Part 4
+     * @var int section part 4 of the tree details form view
      */
     const VIEW_PART_4 = 4;
     /**
-     * Tree details form view - Section Part 5
+     * @var int section part 5 of the tree details form view
      */
     const VIEW_PART_5 = 5;
 
     /**
-     * @var array the configuration of nested set attributes structure
+     * @var array the configuration of nested set attributes structure.
      */
     public $treeStructure = [];
 
@@ -124,8 +138,7 @@ class Module extends \kartik\base\Module
             'iconTypeAttribute' => 'icon_type'
         ];
         $nodeActions = ArrayHelper::getValue($this->treeViewSettings, 'nodeActions', []);
-        // prepends Error in Console Applications
-        if (\Yii::$app instanceof \yii\web\Application) {
+        if (Yii::$app instanceof WebApplication) {
             $nodeActions += [
                 self::NODE_MANAGE => Url::to(['/treemanager/node/manage']),
                 self::NODE_SAVE => Url::to(['/treemanager/node/save']),

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree-manager
  * @version   1.1.3
  */
@@ -197,14 +197,14 @@ $icons = is_array($iconsList) ? array_values($iconsList) : $iconsList;
     ?>
     <div class="kv-detail-heading">
         <?php if (empty($inputOpts['disabled']) || ($isAdmin && $showFormButtons)): ?>
-            <div class="float-right pull-right">
+            <div style="float:right">
                 <?= Html::resetButton(
                     ArrayHelper::getValue($nodeViewButtonLabels, 'reset', $resetTitle),
-                    ['class' => 'btn ' . $defaultBtnCss, 'title' => $resetTitle]
+                    ['class' => 'btn btn-sm ' . $defaultBtnCss, 'title' => $resetTitle]
                 ) ?>
                 <?= Html::submitButton(
                     ArrayHelper::getValue($nodeViewButtonLabels, 'submit', $submitTitle),
-                    ['class' => 'btn btn-primary', 'title' => $submitTitle]
+                    ['class' => 'btn btn-sm btn-primary', 'title' => $submitTitle]
                 ) ?>
             </div>
         <?php endif; ?>

@@ -5,10 +5,12 @@
     <br>
     yii2-tree-manager
     <hr>
+    <p align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DTP3NZQ6G2AYU"
-       title="Donate via Paypal" target="_blank">
-        <img src="http://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/>
-    </a>
+       title="Donate via Paypal" target="_blank"><img height="90" src="https://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/></a>
+    &nbsp; &nbsp; &nbsp;
+    <a href="https://www.buymeacoffee.com/kartikv" title="Buy me a coffee" ><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" align="top" height="50" alt="kartikv"/></a>
+    </p>
 </h1>
 
 [![Stable Version](https://poser.pugx.org/kartik-v/yii2-tree-manager/v/stable)](https://packagist.org/packages/kartik-v/yii2-tree-manager)
@@ -58,7 +60,7 @@ The following important PHP classes are available with this module:
 6. **kartik\tree\controllers\NodeController:** _Controller_, the controller actions that manages the editing of each node for create, update, delete, or reorder (move).
 
 ## Demo
-You can see detailed [documentation](http://demos.krajee.com/tree-manager) and [TreeView demonstration](http://demos.krajee.com/tree-manager-demo/treeview) or [TreeViewInput demonstration](http://demos.krajee.com/tree-manager-demo/tree-view-input) on usage of the extension.
+You can see detailed [documentation](http://demos.krajee.com/tree-manager), [API Code Documentation](https://docs.krajee.com/kartik-tree-treeview) and [TreeView demonstration](http://demos.krajee.com/tree-manager-demo/treeview) or [TreeViewInput demonstration](http://demos.krajee.com/tree-manager-demo/tree-view-input) on usage of the extension.
 
 ## Installation
 
@@ -132,7 +134,7 @@ use Yii;
 
 class Tree extends \yii\db\ActiveRecord
 {
-    use kartik\tree\models\TreeTrait.
+    use kartik\tree\models\TreeTrait;
 
     /**
      * @inheritdoc

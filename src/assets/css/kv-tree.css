@@ -1,12 +1,12 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package yii2-tree-manager
  * @version 1.1.3
  *
  * Tree View Style Sheet
  *
  * Author: Kartik Visweswaran
- * Copyright: 2015 - 2019, Kartik Visweswaran, Krajee.com
+ * Copyright: 2015 - 2022, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
@@ -95,11 +95,6 @@
     position: relative;
     top: 1em;
     width: 100%;
-    cursor: default;
-}
-
-.kv-node-detail:hover {
-    background-color: #e8e8e8;
     cursor: default;
 }
 
@@ -268,8 +263,21 @@ ul.kv-tree, .kv-tree ul {
 .kv-search-container .kv-search-clear {
     position: absolute;
     cursor: default;
-    padding: 10px;
+    padding: 6px 8px;
     right: 0;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    line-height: 1;
+    opacity: .5;
+    font-size: 22px;
+}
+
+.tree-bs3 .kv-search-container .kv-search-clear {
+    padding: 2px 8px;
+}
+
+.kv-search-container .kv-search-clear:hover {
+    opacity: .85;
 }
 
 .kv-highlight {
@@ -280,11 +288,6 @@ ul.kv-tree, .kv-tree ul {
 
 .kv-node-label .kv-search-found {
     font-weight: bold;
-}
-
-.kv-search-sm .kv-search-clear {
-    font-size: 1.4em;
-    padding: 6px 9px;
 }
 
 .kv-tree-wrapper .kv-tree {
@@ -325,7 +328,12 @@ li.kv-invisible > .kv-tree-list .kv-node-label {
 }
 
 .kv-node-detail:focus, .kv-focussed {
-    background-color: #f5f5f5;
+    background-color: #eaeaea;
+}
+
+.kv-node-detail:hover {
+    background-color: #cecece;
+    cursor: default;
 }
 
 .kv-node-message {

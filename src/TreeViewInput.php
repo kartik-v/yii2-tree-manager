@@ -1,13 +1,16 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package   yii2-tree-manager
  * @version   1.1.3
  */
 
 namespace kartik\tree;
 
+use Exception;
+use kartik\base\Lib;
+use kartik\tree\models\Tree;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -17,7 +20,29 @@ use yii\base\InvalidConfigException;
 use yii\web\View;
 
 /**
- * An input widget that extends [[TreeView]], and allows one to select records from the tree.
+ * An input widget that extends [[TreeView]], and allows one to select records from the tree. This widget should be used,
+ * if you wish the user to select items from a list displayed in a tree structure.
+ *
+ * For example,
+ *
+ * ```php
+ * use kartik\tree\TreeViewInput;
+ * echo TreeViewInput::widget([
+ *     // single query fetch to render the tree
+ *     'query'             => Tree::find()->addOrderBy('root, lft'),
+ *     'headingOptions'    => ['label' => 'Categories'],
+ *     'name'              => 'kv-product',    // input name
+ *     'value'             => '1,2,3',         // values selected (comma separated for multiple select)
+ *     'asDropdown'        => true,            // will render the tree input widget as a dropdown.
+ *     'multiple'          => true,            // set to false if you do not need multiple selection
+ *     'fontAwesome'       => true,            // render font awesome icons
+ *     'rootOptions'       => [
+ *         'label' => '<i class="fas fa-tree"></i>',
+ *         'class' => 'text-success'
+ *     ],                                      // custom root label
+ *     //'options'         => ['disabled' => true],
+ * ]);
+ * ```
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
@@ -25,7 +50,7 @@ use yii\web\View;
 class TreeViewInput extends TreeView
 {
     /**
-     * @var Model the data model that this widget is associated with.
+     * @var Tree|Model the tree data model that this widget is associated with.
      */
     public $model;
 
@@ -98,11 +123,11 @@ class TreeViewInput extends TreeView
         }
         $this->showCheckbox = true;
         $css = 'kv-tree-input-widget';
-        if ($this->isBs4()) {
-            $carets = '<span class="kv-dn"><i class="fas fa-caret-down"></i></span>' .
+        if (!$this->isBs(3)) {
+            $carets = '<span class="kv-dn"><i class="fas fa-caret-down"></i></span>'.
                 '<span class="kv-up"><i class="fas fa-caret-up"></i></span>';
         } else {
-            $carets = '<span class="kv-dn"><i class="caret"></i></span>' .
+            $carets = '<span class="kv-dn"><i class="caret"></i></span>'.
                 '<span class="kv-up"><i class="caret"></i></span>';
         }
         $this->_defaultCaret = Html::tag('div', $carets, ['class' => 'kv-carets']);
@@ -146,18 +171,19 @@ class TreeViewInput extends TreeView
         Html::addCssClass($input, $css);
         Html::addCssClass($dropdown, ['dropdown-menu', 'kv-tree-dropdown']);
         Html::addCssClass($options, ['dropdown', 'kv-tree-dropdown-container']);
-        $id = $this->options['id'] . '-tree-input';
+        $id = $this->options['id'].'-tree-input';
         $this->_placeholder = ArrayHelper::remove($input, 'placeholder', Yii::t('kvtree', 'Select...'));
         $this->_placeholder = Html::tag('span', $this->_placeholder, ['class' => 'kv-placeholder']);
         $config['dropdown'] = array_replace_recursive([
-            'id' => $id . '-menu',
+            'id' => $id.'-menu',
             'role' => 'menu',
             'aria-labelledby' => $id,
         ], $dropdown);
+        $dataToggle = 'data-' . ($this->isBs(5) ? 'bs-' : '') . 'toggle';
         $config['input'] = array_replace_recursive([
             'id' => $id,
             'tabindex' => -1,
-            'data-toggle' => 'dropdown',
+            $dataToggle => 'dropdown',
             'aria-haspopup' => 'true',
             'aria-expanded' => 'false',
         ], $input);
@@ -174,33 +200,35 @@ class TreeViewInput extends TreeView
     public function renderWidget()
     {
         if (!$this->showToolbar) {
-            $this->wrapperTemplate = strtr($this->wrapperTemplate, ['{footer}' => '']);
+            $this->wrapperTemplate = Lib::strtr($this->wrapperTemplate, ['{footer}' => '']);
         }
-        $content = strtr($this->renderWrapper(), [
+        $content = Lib::strtr($this->renderWrapper(), [
                 '{heading}' => $this->renderHeading(),
                 '{search}' => $this->renderSearch(),
                 '{toolbar}' => $this->renderToolbar(),
-            ]) . "\n" .
+            ])."\n".
             $this->getInput();
         if ($this->asDropdown) {
             return $this->renderDropdown($content);
         }
+
         return $content;
     }
 
     /**
      * Generates the dropdown tree menu
      *
-     * @param string $content the content to be embedded in the dropdown menu
+     * @param  string  $content  the content to be embedded in the dropdown menu
      *
      * @return string
      */
     protected function renderDropdown($content)
     {
         $config = $this->dropdownConfig;
-        $input = Html::tag('div', $config['caret'] . $this->_placeholder, $config['input']);
+        $input = Html::tag('div', $config['caret'].$this->_placeholder, $config['input']);
         $dropdown = Html::tag('div', $content, $config['dropdown']);
-        return Html::tag('div', $input . $dropdown, $config['options']);
+
+        return Html::tag('div', $input.$dropdown, $config['options']);
     }
 
     /**
@@ -213,6 +241,7 @@ class TreeViewInput extends TreeView
         if ($this->hasModel()) {
             return Html::activeHiddenInput($this->model, $this->attribute, $this->options);
         }
+
         return Html::hiddenInput($this->name, $this->value, $this->options);
     }
 
@@ -220,6 +249,7 @@ class TreeViewInput extends TreeView
      * Renders the markup for the button actions toolbar
      *
      * @return string
+     * @throws Exception
      */
     public function renderToolbar()
     {
@@ -227,6 +257,7 @@ class TreeViewInput extends TreeView
             return '';
         }
         unset($this->toolbar[self::BTN_CREATE], $this->toolbar[self::BTN_CREATE_ROOT], $this->toolbar[self::BTN_REMOVE]);
+
         return parent::renderToolbar();
     }
 
@@ -259,8 +290,8 @@ class TreeViewInput extends TreeView
             'caret' => $this->dropdownConfig['caret'],
             'autoCloseOnSelect' => $this->autoCloseOnSelect,
         ]);
-        $var = $name . '_' . hash('crc32', $opts);
-        $this->options['data-krajee-' . $name] = $var;
+        $var = $name.'_'.hash('crc32', $opts);
+        $this->options['data-krajee-'.$name] = $var;
         $view->registerJs("var {$var}={$opts};", View::POS_HEAD);
         $view->registerJs("jQuery('#{$id}').{$name}({$var});");
     }

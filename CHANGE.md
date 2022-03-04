@@ -3,8 +3,10 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.3
 
-**Date:** _under development_
+**Date:** 04-Mar-2022
 
+- Enhancements for Bootstrap 5.x support.
+- PHP 8.1 enhancements for native functions.
 - (bug #259): Correct icons list display based on `iconEditSettings['show']`.
 - (enh #258): Enhanced BS4 custom checkbox and radio styling for toggle inputs.
 - (enh #257): Enhance search close icon styling.
@@ -16,7 +18,7 @@ Change Log: `yii2-tree-manager`
 
 ## Version 1.1.2
 
-**Date:** 13-Mar-2019
+**Date:** 13-Mar-2021
 
 - (enh #244): Correct hidden css to use `BS_HIDE` within `bsCssMap`.
 - (enh #240): Rename events triggered via jquery to start with `treeview:`.
