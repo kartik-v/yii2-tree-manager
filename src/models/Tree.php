@@ -106,4 +106,14 @@ class Tree extends ActiveRecord
      * @var bool attribute to cache the `active` state before a model update.
      */
     public $activeOrig = true;
+
+    /**
+     * @var bool attribute to cache the `visible` state before a model update.
+     */
+    public $visibleOrig = true;
+
+    /**
+     * @var bool attribute to cache the `disabled` state before a model update.
+     */
+    public $disabledOrig = true;
 }

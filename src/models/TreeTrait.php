@@ -458,6 +458,8 @@ trait TreeTrait
                  * @var Tree $child
                  */
                 $child->active = true;
+                $child->visible = $this->visible;
+                $child->disabled = $this->disabled;
                 if (!$child->save()) {
                     /** @noinspection PhpUndefinedVariableInspection */
                     $this->nodeActivationErrors[] = [

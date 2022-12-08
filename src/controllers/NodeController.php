@@ -165,6 +165,8 @@ class NodeController extends Controller
             $errorMsg = Yii::t('kvtree', 'Error while saving the {node}. Please try again later.', $nodeTitles);
         }
         $node->activeOrig = $node->active;
+        $node->visibleOrig = $node->visible;
+        $node->disabledOrig = $node->disabled;
         $isNewRecord = $node->isNewRecord;
         $node->load($post);
         $errors = $success = false;
@@ -191,8 +193,8 @@ class NodeController extends Controller
         }
         if ($node->save()) {
             // check if active status was changed
-            if (!$isNewRecord && $node->activeOrig != $node->active) {
-                if ($node->active) {
+            if (!$isNewRecord && $node->activeOrig != $node->active || !$isNewRecord && $node->visibleOrig != $node->visible || !$isNewRecord && $node->disabledOrig != $node->disabled) {
+                if ($node->active || $node->visible || $node->disabled) {
                     $success = $node->activateNode(false);
                     $errors = $node->nodeActivationErrors;
                 } else {
