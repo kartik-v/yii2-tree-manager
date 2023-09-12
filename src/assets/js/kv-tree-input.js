@@ -76,7 +76,7 @@
             self.$element.on('treeview:change', function (event, keys, desc) {
                 self.setInput(desc.split(','));
                 if (self.autoCloseOnSelect) {
-                    self.$input.closest('.kv-tree-dropdown-container').removeClass('open');
+                    self.$dropdown.removeClass('show');
                 }
             });
         }
